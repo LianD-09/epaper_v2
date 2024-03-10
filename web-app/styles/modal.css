@@ -1,0 +1,265 @@
+.nextui-c-cgxxHA {
+    background: none !important;
+}
+
+.nextui-backdrop {
+    background-color: rgba(0, 0, 0, 0.484);
+    filter: none;
+    cursor: default;
+    z-index: 200 !important;
+}
+
+.nextui-backdrop .nextui-c-grJsex-ikUaMfZ-css {
+    width: auto;
+    max-width: 1000px;
+}
+
+.nextui-backdrop .nextui-backdrop-content {
+    width: auto !important;
+}
+
+.modal {
+    background: rgba(46, 46, 46, 255);
+    border: 1px solid rgba(106, 106, 106, 0.863) !important;
+    border-radius: 15px;
+    color: white;
+}
+
+.modal .modal-heading {
+    text-align: left;
+    color: white;
+}
+
+.modal .modal-heading h1 {
+    font-weight: 700;
+    font-size: 25px;
+}
+
+.modal .modal-heading p {
+    font-weight: 200;
+    font-size: 15px;
+    color: rgb(168, 168, 168);
+}
+
+.modal .stats {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    border: 1px solid rgba(86, 86, 86, 0.736);
+    padding: 15px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+.stats h1 {
+    font-weight: 700;
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.stats p {
+    font-weight: 200;
+    text-align: left;
+}
+
+.stats hr {
+    margin: 15px 0px;
+}
+
+.stats .separator {
+    width: 100%;
+    height: 1px;
+    margin: 15px 0px !important;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, #fbfbfb96 25%, #fbfbfb 50%, #fbfbfb96 75%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+.modal form {
+    text-align: justify;
+}
+
+.modal .modal-footer {
+    margin-top: 10px;
+}
+
+.modal-footer button {
+    /* border: 1px solid red; */
+    color: white;
+}
+
+.modal-footer button.delete-button {
+    color: rgb(255, 215, 215);
+    background-color: #4d2b2b !important;
+    border: 1px solid rgb(121, 70, 70);
+}
+
+.modal-footer button.delete-button:hover {
+    color: rgb(254, 192, 192);
+    /* background-color: #d18080 !important; */
+    box-shadow: 6px 6px 10px #411e1e, -6px -6px 10px #623636;
+}
+
+.modal form {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal form>div {
+    margin: 10px 0px;
+}
+
+.modal form>button {
+    margin: 10px 0px;
+}
+
+.modal .responses {
+    margin-top: 20px;
+}
+
+.responses div.nextui-table-container {
+    border: none;
+    border-radius: 0px;
+}
+
+.responses table {
+    display: table-header-group;
+    width: 100%;
+    height: 520px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(86, 86, 86, 0.736);
+    border-radius: 10px !important;
+    padding: 5px;
+    margin-top: 10px;
+}
+
+thead th {
+    text-align: left;
+    font-size: 15px !important;
+}
+
+tbody::-webkit-scrollbar {
+    width: 8px;
+}
+
+tbody::-webkit-scrollbar-thumb {
+    background: #535353;
+    border-radius: 10px;
+}
+
+tbody::-webkit-scrollbar-thumb:hover {
+    background: #6e6e6e;
+}
+
+tbody tr {
+    width: 100%;
+    border-bottom: 1px solid rgba(86, 86, 86, 0.736);
+}
+
+
+td {
+    font-weight: 100 !important;
+    white-space: nowrap;
+    width: 200px;
+    font-size: 14px;
+    height: 50px;
+    color: rgb(223, 223, 223);
+}
+
+tr td:nth-child(1) {
+    width: 200px;
+}
+
+tr td:nth-child(2) {
+    width: 120px;
+}
+
+tr td:nth-child(3) {
+    width: 130px;
+}
+
+tr td:nth-last-child(2) {
+    width: 200px;
+}
+
+tr td:nth-last-child(1) {
+    width: 100px;
+}
+
+td p.name {
+    font-weight: 500;
+}
+
+td p.id {
+    font-size: 11px;
+    color: rgb(177, 177, 177);
+    font-weight: 100;
+}
+
+td.empty {
+    text-align: center;
+    width: 0px;
+}
+
+tfoot tr th nav button {
+    border: 1px solid red;
+    background-color: #53535371 !important;
+    color: white !important;
+}
+
+.modal .time-left {
+    text-align: center;
+    font-size: 40px;
+    padding-top: 20px;
+    font-weight: 800;
+}
+
+.small-icon {
+    height: 20px;
+    width: 20px;
+    margin: 0px 2px;
+}
+
+.small-icon:hover {
+    box-shadow: none;
+    background-color: transparent;
+}
+
+.small-icon img {
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+}
+
+.small-icon:hover img {
+    color: red;
+}
+
+.modal .separator {
+    margin: 20px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, #898989 50%, rgba(0, 0, 0, 0) 100%);
+}
+
+.modal .detail-left {
+    max-width: 900px;
+    height: 100%;
+}
+
+
+.modal .debug-right {
+    width: 400px;
+    display: flex;
+    margin: 0px;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.debug-right h1 {
+    font-size: 22px;
+    font-weight: 700;
+}
+
+ .drag-file-area {
+    gap: 15px;
+	border: 1px dashed #606060;
+}
