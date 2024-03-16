@@ -83,7 +83,7 @@ const LogInForm = () => {
                             style={{ "display": "none" }}
                         />
                         <label htmlFor="remember-me" className="select-none cursor-pointer font-thin">
-                            <span className="inline-block align-middle relative w-6 h-6 align-middle">
+                            <span className="inline-block relative w-6 h-6 align-middle">
                                 <svg className="absolute stroke-2" width="12px" height="9px" viewBox="0 0 12 9">
                                     <polyline points="1 5 4 8 11 1"></polyline>
                                 </svg>
@@ -98,7 +98,7 @@ const LogInForm = () => {
 
                 <div className="separator flex items-center text-center">Or</div>
                 <button type="button" className="h-12 w-full font-thin text-lg" onClick={() => router.push('/register')}>Don&apos;t have an account? Sign Up</button>
-                <a className="forgot block font-thin text-center underline w-full">Forgot your password?<br/>Sorry I can&apos;t help, I&apos;m even not a button lol</a>
+                <a className="forgot block font-thin text-center underline w-full">Forgot your password?<br />Sorry I can&apos;t help, I&apos;m even not a button lol</a>
             </div>
 
 

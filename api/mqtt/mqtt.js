@@ -10,9 +10,9 @@ const PASS = process.env.PASS;
 let client = null;
 const responseTimeout = 6000;
 let globalMessageHandlers = new Map();
-const ca = fs.readFileSync(`/etc/ssl/mongoKey/ca.crt`);
-const cert = fs.readFileSync(`/etc/ssl/mongoKey/backend.crt`);
-const key = fs.readFileSync(`/etc/ssl/mongoKey/backend.key`);
+// const ca = fs.readFileSync(`/etc/ssl/mongoKey/ca.crt`);
+// const cert = fs.readFileSync(`/etc/ssl/mongoKey/backend.crt`);
+// const key = fs.readFileSync(`/etc/ssl/mongoKey/backend.key`);
 
 const writeDeviceHandler = (data) => {
   return async (topic, oldDataID) => {
@@ -85,9 +85,9 @@ exports.connect = () => {
       username: USER,
       password: PASS,
       clientId: "backend-client",
-      ca: ca,
-      cert: cert,
-      key: key,
+      // ca: ca,
+      // cert: cert,
+      // key: key,
     })
 
     client.on("connect", async () => {

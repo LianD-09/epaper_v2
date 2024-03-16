@@ -37,3 +37,6 @@ next-env.d.ts
 .env
 *.lock
 package-lock.json
+
+notes.txt
+*.xlsx

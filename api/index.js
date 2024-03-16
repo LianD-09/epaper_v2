@@ -18,13 +18,13 @@ mongoose.set('strictQuery', false);
 mongoose.connect(
   process.env.MONGODB_URI,
   {
-    tls: true,
+    // tls: true,
     authMechanism: "SCRAM-SHA-256",
-    user: process.env.USER,
-    pass: process.env.PASS,
-    dbName: "epaper",
-    tlsCAFile: `/etc/ssl/mongoKey/ca.crt`,
-    tlsCertificateKeyFile: `/etc/ssl/mongoKey/backend.pem`
+    user: process.env.USER_MONGODB,
+    pass: process.env.PASSWORD_MONGODB,
+    dbName: "epaper_v2",
+    // tlsCAFile: `/etc/ssl/mongoKey/ca.crt`,
+    // tlsCertificateKeyFile: `/etc/ssl/mongoKey/backend.pem`
   });
 
 //middleware
