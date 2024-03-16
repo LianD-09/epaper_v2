@@ -4,9 +4,9 @@ const DeviceModel = require("../models/Device");
 const DataModel = require("../models/Data");
 
 require('dotenv').config();
-const BROKER = process.env.BROKER;
-const USER = process.env.USER;
-const PASS = process.env.PASS;
+const BROKER = process.env.MQTT_BROKER;
+const USER = process.env.MQTT_USER;
+const PASS = process.env.MQTT_PASSWORD;
 let client = null;
 const responseTimeout = 6000;
 let globalMessageHandlers = new Map();
