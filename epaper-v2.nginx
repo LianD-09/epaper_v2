@@ -24,8 +24,8 @@ server {
         #         proxy_pass http://135.181.20.154:15672/;
         # }
 
-        ssl_certificate /home/linhda/certs/archive/epaper.toolhub.app/fullchain.pem; # managed by Certbot
-        ssl_certificate_key /home/linhda/certs/archive/epaper.toolhub.app/privkey.pem;
+        ssl_certificate /home/linhda/certs/live/epaper.toolhub.app/fullchain.pem; # managed by Certbot
+        ssl_certificate_key /home/linhda/certs/live/epaper.toolhub.app/privkey.pem;
 
         # managed by Certbot
 }
