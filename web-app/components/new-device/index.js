@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import GetUSBDevice from "./get-usb";
 import Link from "next/link";
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 const NewDevice = () => {
     const [submitted, setSubmitted] = useState(false);
@@ -62,12 +62,12 @@ const NewDevice = () => {
                 });
                 const writer = port.writable.getWriter();
                 for (const [key, value] of Object.entries(response.data.data)) {
-                 if (key !== "_v" && key !== "createdBy" && key !== "name" && key !== "active") {
-                     const keyValue = `${key}:${value}\n`;
-                     console.log(keyValue);
-                     const data = new TextEncoder().encode(keyValue);
-                     await writer.write(data);
-                 }
+                    if (key !== "_v" && key !== "createdBy" && key !== "name" && key !== "active") {
+                        const keyValue = `${key}:${value}\n`;
+                        console.log(keyValue);
+                        const data = new TextEncoder().encode(keyValue);
+                        await writer.write(data);
+                    }
                 }
                 writer.releaseLock();
                 Notify.success(`Write info to device successfully!`, {

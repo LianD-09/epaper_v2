@@ -8,7 +8,7 @@ import Image from "next/image";
 import { usePiP } from '@/services/pip';
 import { FileInput, Label } from 'flowbite-react';
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 const DebugModal = ({ data, onClose }) => {
     const [data1, setData1] = useState();

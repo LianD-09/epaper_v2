@@ -1,6 +1,6 @@
 import { instanceCoreApi } from "@/services/setupAxios";
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
-import {Notify} from "notiflix";
+const API = process.env.NEXT_PUBLIC_API;
+import { Notify } from "notiflix";
 const DeleteModal = ({ type, data, onConfirm, onClose }) => {
     const deleteItem = async () => {
         Notify.info("Deleting item", {
@@ -25,8 +25,8 @@ const DeleteModal = ({ type, data, onConfirm, onClose }) => {
                     <h1 className="text-mainRed heading-lg" style={{ fontSize: '30px' }}>Delete this data?</h1>
                     <p>{data.type}: {data.name}</p>
                 </div>
-                <p style={{fontWeight:"200", marginBottom: "10px", marginTop: "20px"}}>Are you sure you want to delete this data? All displayed devices will be removed after the data is deleted.</p>
-                <p style={{fontSize: "20px", marginBottom: "30px"}}>THIS ACTION CAN NOT BE REVERSED.</p>
+                <p style={{ fontWeight: "200", marginBottom: "10px", marginTop: "20px" }}>Are you sure you want to delete this data? All displayed devices will be removed after the data is deleted.</p>
+                <p style={{ fontSize: "20px", marginBottom: "30px" }}>THIS ACTION CAN NOT BE REVERSED.</p>
                 <div className="modal-footer flex gap-4">
                     <button className="ok delete-button flex-1 text-white text-base rounded-full p-2 transition duration-200" onClick={() => {
                         onConfirm();
@@ -47,8 +47,8 @@ const DeleteModal = ({ type, data, onConfirm, onClose }) => {
                     <h1 className="text-mainRed heading-lg" style={{ fontSize: '30px' }}>Delete this device?</h1>
                     <p>{data.name}: {data._id}</p>
                 </div>
-                <p style={{fontWeight:"200", marginBottom: "10px", marginTop: "20px"}}>Are you sure you want to delete this device? This device and its data display status will be deleted.</p>
-                <p style={{fontSize: "20px", marginBottom: "30px"}}>THIS ACTION CAN NOT BE REVERSED.</p>
+                <p style={{ fontWeight: "200", marginBottom: "10px", marginTop: "20px" }}>Are you sure you want to delete this device? This device and its data display status will be deleted.</p>
+                <p style={{ fontSize: "20px", marginBottom: "30px" }}>THIS ACTION CAN NOT BE REVERSED.</p>
 
                 <div className="modal-footer flex gap-4">
                     <button className="ok delete-button flex-1 text-white text-base rounded-full p-2 transition duration-200" onClick={() => {

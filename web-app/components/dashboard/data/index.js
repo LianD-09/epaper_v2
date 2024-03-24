@@ -10,7 +10,7 @@ import DeleteModal from "../modal/delete-modal";
 import EditModal from "../modal/edit-modal";
 import DetailModal from "../modal/detail-modal";
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 export const DataList = () => {
   const [data, setData] = useState([]);

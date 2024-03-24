@@ -4,7 +4,7 @@ import { Notify } from "notiflix";
 import Data from "./data";
 import Device from "./device";
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 const EditModal = ({ type, data }) => {
   const [port, setPort] = useState(null);

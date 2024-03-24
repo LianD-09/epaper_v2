@@ -4,22 +4,22 @@ import { Dropdown } from "@nextui-org/react";
 import Link from "next/link";
 import { Notify } from "notiflix";
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleReset, handleSubmit }) => {
     const [deviceLoading, setDeviceLoading] = useState(0);
     const [devices, setDevices] = useState();
-    const fonts = [ "Monospace 12pt",
-                    "Monospace 16pt",
-                    "Monospace 20pt",
-                    "Segoe UI Light, 11pt",
-                    "Segoe UI Bold, 11pt",
-                    "Segoe UI Light, 16pt",
-                    "Segoe UI Bold, 16pt",
-                    "Segoe UI Light, 20pt",
+    const fonts = ["Monospace 12pt",
+        "Monospace 16pt",
+        "Monospace 20pt",
+        "Segoe UI Light, 11pt",
+        "Segoe UI Bold, 11pt",
+        "Segoe UI Light, 16pt",
+        "Segoe UI Bold, 16pt",
+        "Segoe UI Light, 20pt",
     ]
     const themes = ["Theme 1",
-                    "Theme 2",
+        "Theme 2",
     ]
     const canvaRef = useRef(null);
 
@@ -93,9 +93,9 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
                 style["font"] = "bold 20px Segoe UI";
             } else if (dataCreated.fontStyle === "Segoe UI Light, 16pt") {
                 style["font"] = "200 24px Segoe UI";
-            }  else if (dataCreated.fontStyle === "Segoe UI Bold, 16pt") {
+            } else if (dataCreated.fontStyle === "Segoe UI Bold, 16pt") {
                 style["font"] = "bold 24px Segoe UI";
-            }  else if (dataCreated.fontStyle === "Segoe UI Light, 20pt") {
+            } else if (dataCreated.fontStyle === "Segoe UI Light, 20pt") {
                 style["font"] = "200 36px Segoe UI";
             } else {
                 style["font"] = "bold 24px Segoe UI"; // default to Segoe UI Bold, 16pt
@@ -106,11 +106,11 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
                     ctx.font = '200 12px Segoe UI';
                     ctx.fillStyle = style.color;
                     ctx.fillText(`${dataCreated.input2}`, 10, 40);
-    
+
                     ctx.font = style.font;
                     ctx.fillStyle = style.color;
                     ctx.fillText(`${dataCreated.name}`, 10, 70);
-    
+
                     ctx.font = "bold 36px Segoe UI";
                     ctx.fillStyle = style.color;
                     ctx.fillText(`${dataCreated.input3}`, 120, 90);
@@ -118,11 +118,11 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
                     ctx.font = style.font;
                     ctx.fillStyle = style.color;
                     ctx.fillText(`${dataCreated.input2}`, 10, 30);
-    
+
                     ctx.font = style.font;
                     ctx.fillStyle = style.color;
                     ctx.fillText(`${dataCreated.name}`, 10, 60);
-    
+
                     ctx.font = style.font;
                     ctx.fillStyle = style.color;
                     ctx.fillText(`Email: ${dataCreated.input3}`, 10, 90);
@@ -154,8 +154,8 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
     return (
         (stage === 2) ? (
             <>
-            {console.log(dataCreated)}
-                <h1 style ={{
+                {console.log(dataCreated)}
+                <h1 style={{
                     marginBottom: "10px",
                 }}>Choose display device</h1>
                 <canvas className="render-canvas" ref={canvaRef} width="340" height="150" />
@@ -209,7 +209,7 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
                                     Getting active devices ...
                                 </Dropdown.Item>
                             ) : (
-                                <Dropdown.Item css={{color: "white"}}>
+                                <Dropdown.Item css={{ color: "white" }}>
                                     No active devices are found!
                                 </Dropdown.Item>
                             )}
@@ -305,7 +305,7 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
         ) : (
             <div className="content text-light-text dark:text-dark-text">
                 <h1>Your data is submitted successfully!</h1>
-                <p style={{textAlign: "center", marginTop: "10px"}}>And it is also being displayed on device {`${dataCreated.deviceName}`}. You can go to Dashboard/Data to see and manage your data.</p>
+                <p style={{ textAlign: "center", marginTop: "10px" }}>And it is also being displayed on device {`${dataCreated.deviceName}`}. You can go to Dashboard/Data to see and manage your data.</p>
                 <br />
                 <button className="ok" onClick={() => {
                     setStage(-1);

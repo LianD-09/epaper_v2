@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Notify } from "notiflix";
 import TimeSlider from "./time-slider";
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 const DetailModal = ({ type, data, switchToEdit, switchToDelete }) => {
   const [data1, setData1] = useState();
@@ -128,7 +128,7 @@ const DetailModal = ({ type, data, switchToEdit, switchToDelete }) => {
             </>
           ) : (
             <>
-              <p style={{textAlign: "center"}}>The device currently has no data to display. Go to <Link href="/dashboard/data"><em className="hover:font-medium hover:underline"> Data Dashboard</em></Link> to select data to display, or create a new data <Link href="/new-data"><em className="hover:font-medium hover:underline">here</em></Link>.</p>
+              <p style={{ textAlign: "center" }}>The device currently has no data to display. Go to <Link href="/dashboard/data"><em className="hover:font-medium hover:underline"> Data Dashboard</em></Link> to select data to display, or create a new data <Link href="/new-data"><em className="hover:font-medium hover:underline">here</em></Link>.</p>
             </>
           )}
         </div>

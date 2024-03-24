@@ -5,7 +5,7 @@ import ChooseDevice from "./choose-device";
 import DataType from "./data-type";
 import { Notify } from "notiflix";
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 const NewData = () => {
     const [stage, setStage] = useState(-1); // -1 - Choose data type

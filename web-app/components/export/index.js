@@ -3,7 +3,7 @@ import { instanceCoreApi } from "@/services/setupAxios";
 import * as XLSX from "xlsx";
 import { Notify } from "notiflix";
 
-const API = process.env.NEXT_PUBLIC_API || "http://65.108.79.164:3007/api";
+const API = process.env.NEXT_PUBLIC_API;
 
 const Export = () => {
     const handleExport = (event) => {
@@ -19,7 +19,7 @@ const Export = () => {
                 const filteredObj = {};
                 Object.keys(obj).forEach(key => {
                     if (!fieldsToRemove.has(key)) {
-                    filteredObj[key] = obj[key];
+                        filteredObj[key] = obj[key];
                     }
                 });
                 return filteredObj;
