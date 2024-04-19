@@ -6,11 +6,17 @@
 #include <Display.h>
 #include <ota.h>
 #include <stdlib.h>
+#include "NimBLEDevice.h"
+using namespace std;
+
+#define ENABLE_BLUETOOTH 1
 
 Preferences preferences;
 UBYTE *BlackImage;
 UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
+uint64_t chipid = ESP.getEfuseMac();
 
+NimBLEServer *pServer;
 void setup()
 {
     Serial.println("epd say hi");
@@ -20,7 +26,7 @@ void setup()
     Serial.begin(115200);
     pinMode(9, INPUT_PULLUP);
     DEV_Module_Init();
-    
+
     EPD_2IN9_V2_Init();
     EPD_2IN9_V2_Clear();
     DEV_Delay_ms(500);
@@ -39,15 +45,16 @@ void setup()
     preferences.begin("my-app", false);
 
     bool debugMode = preferences.getBool("debugMode", false);
-    if (debugMode) {
+    if (debugMode)
+    {
         enterDebugMode(BlackImage);
         preferences.putBool("debugMode", false); // Clear flag
         ESP.restart();
     }
 
-#if 1
+#if 0
     Paint_Clear(0xff);
-    const char * Welcome = "Pi's Epaper Project";
+    const char *Welcome = "Pi's Epaper Project";
 
     Paint_DrawString_segment(60, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
     EPD_2IN9_V2_Display(BlackImage);
@@ -76,43 +83,104 @@ void setup()
     Serial.println(dataID);
     Serial.println(dataType);
 
-    if (!ssid.isEmpty() && !password.isEmpty()) {
+    if (!ssid.isEmpty() && !password.isEmpty())
+    {
         // If SSID and password are available in Preferences, use them to connect to Wi-Fi
         MQTT_Client_Init(ssid.c_str(), password.c_str(), topic.c_str(), BlackImage);
-    } else { 
+    }
+    else
+    {
         MQTT_Client_Init(SSID, PASS, topic.c_str(), BlackImage);
     }
-        MQTT_Connect(topic.c_str(), BlackImage);
+    MQTT_Connect(topic.c_str(), BlackImage);
 
-    if (!dataID.isEmpty() && dataType != 0) {
+    if (!dataID.isEmpty() && dataType != 0)
+    {
         Paint_ClearWindows(30, 70, 30 + 14 * 20, 70 + Segoe11.Height, WHITE);
         Paint_DrawString_segment(70, 70, "Displaying stored data", &Segoe11, BLACK, WHITE);
         EPD_2IN9_V2_Display_Partial(BlackImage);
 
-        if (dataType == 1) {
+        if (dataType == 1)
+        {
             displayWrite1(BlackImage);
-        } else if (dataType == 2) {
+        }
+        else if (dataType == 2)
+        {
             displayWrite2(BlackImage);
-        } else if (dataType == 3) {
+        }
+        else if (dataType == 3)
+        {
             displayWrite3(BlackImage);
-        } else if (dataType == 4) {
+        }
+        else if (dataType == 4)
+        {
             displayWrite4(BlackImage);
-        } else if (dataType == 5) {
+        }
+        else if (dataType == 5)
+        {
             displayWrite5(BlackImage);
         }
-    } else {
+    }
+    else
+    {
         displayEmpty(BlackImage);
     }
 #endif
 
+#if defined(ENABLE_BLUETOOTH)
+    Serial.println("Starting NimBLE Server");
+    string bleSName = "EPD-" + to_string(chipid);
+    NimBLEDevice::init(bleSName);
+#ifdef ESP_PLATFORM
+    NimBLEDevice::setPower(ESP_PWR_LVL_P9); /** +9db */
+#else
+    NimBLEDevice::setPower(9); /** +9db */
+#endif
 
+    NimBLEDevice::setSecurityAuth(true, true, true);
+    NimBLEDevice::setSecurityPasskey(123456);
+    NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY);
+    pServer = NimBLEDevice::createServer();
+    NimBLEService *pService = pServer->createService("ABCD");
+    NimBLECharacteristic *pNonSecureCharacteristic = pService->createCharacteristic("1234", NIMBLE_PROPERTY::READ);
+    NimBLECharacteristic *pSecureCharacteristic = pService->createCharacteristic(
+        "1235",
+        NIMBLE_PROPERTY::READ |
+            NIMBLE_PROPERTY::READ_ENC |
+            NIMBLE_PROPERTY::READ_AUTHEN |
+            NIMBLE_PROPERTY::WRITE |
+            NIMBLE_PROPERTY::WRITE_ENC |
+            NIMBLE_PROPERTY::WRITE_AUTHEN);
+    pService->start();
+    pNonSecureCharacteristic->setValue("Hello Non Secure BLE");
+    pSecureCharacteristic->setValue("Hello Secure BLE");
+
+    NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
+    pAdvertising->addServiceUUID("ABCD");
+    Serial.println("Starting...");
+    pAdvertising->start();
+#endif
 }
 
 void loop()
 {
-    if (digitalRead(9) == LOW) {  // Check if the button is pressed
-        Serial.println("Button pressed!");  // Print a message to the serial monitor
-        delay(500);                 // Debounce delay to avoid multiple detections
+    if (pServer->getConnectedCount())
+    {
+        NimBLEService *pSvc = pServer->getServiceByUUID("ABCD");
+        if (pSvc)
+        {
+            NimBLECharacteristic *pChr = pSvc->getCharacteristic("1235");
+            if (pChr)
+            {
+                pChr->notify(true);
+            }
+        }
+    }
+#if 0
+    if (digitalRead(9) == LOW)
+    {                                      // Check if the button is pressed
+        Serial.println("Button pressed!"); // Print a message to the serial monitor
+        delay(500);                        // Debounce delay to avoid multiple detections
         EPD_2IN9_V2_Init();
         Paint_Clear(0xff);
         Paint_DrawString_segment(60, 40, "Enter Debugging mode", &Segoe16, BLACK, WHITE);
@@ -124,11 +192,15 @@ void loop()
     static String value = "";
     static bool isKey = true;
     static bool updated = false;
-    while (Serial.available()) { // Check if data is available to read
+    while (Serial.available())
+    { // Check if data is available to read
         char c = Serial.read();
-        if (c == ':') {
+        if (c == ':')
+        {
             isKey = false;
-        } else if (c == '\n') {
+        }
+        else if (c == '\n')
+        {
             Serial.print("Received ");
             Serial.print(key);
             Serial.print(":");
@@ -138,17 +210,23 @@ void loop()
             key = "";
             value = "";
             isKey = true;
-        } else {
-            if (isKey) {
+        }
+        else
+        {
+            if (isKey)
+            {
                 key += c;
-            } else {
+            }
+            else
+            {
                 value += c;
             }
         }
     }
 
     // Reconfig after Preferences update
-    if (updated) {
+    if (updated)
+    {
         String ssid = preferences.getString("ssid", "");
         String password = preferences.getString("pass", "");
         String topic = preferences.getString("_id", "");
@@ -161,27 +239,41 @@ void loop()
         MQTT_Client_Init(ssid.c_str(), password.c_str(), topic.c_str(), BlackImage);
         MQTT_Connect(topic.c_str(), BlackImage);
 
-        if (!dataID.isEmpty()) {
-            if (dataType == 1) {
+        if (!dataID.isEmpty())
+        {
+            if (dataType == 1)
+            {
                 displayWrite1(BlackImage);
-            } else if (dataType == 2) {
+            }
+            else if (dataType == 2)
+            {
                 displayWrite2(BlackImage);
-            } else if (dataType == 3) {
+            }
+            else if (dataType == 3)
+            {
                 displayWrite3(BlackImage);
-            } else if (dataType == 4) {
+            }
+            else if (dataType == 4)
+            {
                 displayWrite4(BlackImage);
-            } else if (dataType == 5) {
+            }
+            else if (dataType == 5)
+            {
                 displayWrite5(BlackImage);
             }
-        } else {
+        }
+        else
+        {
             displayEmpty(BlackImage);
         }
         MQTT_Loop(topic.c_str(), BlackImage);
         updated = false;
-    } else {
+    }
+    else
+    {
         String topic = preferences.getString("_id", "");
         MQTT_Loop(topic.c_str(), BlackImage);
     }
     printf("loop done, updated = %d\r\n", updated);
-
+#endif
 }

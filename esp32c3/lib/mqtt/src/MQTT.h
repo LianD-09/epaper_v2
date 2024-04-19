@@ -1,5 +1,5 @@
 #ifndef __MQTT // RabbitMQ
-#define __MQTT 
+#define __MQTT
 
 #include <WiFi.h>
 #include <Wire.h>
@@ -9,13 +9,13 @@
 
 // Replace the next variables with your SSID/Password combination
 
-#define SSID            "Pi's Network"
-#define PASS            "3.14159265358979"
-#define MQTT_BROKER     "mqtt.epaper.artsakh.ventures"
-#define MQTT_PORT       1883
-#define MQTT_USERNAME   "masterpi"
-#define MQTT_PASSWORD   "masterpi"
-#define CA              "-----BEGIN CERTIFICATE----- \
+#define SSID "Pi's Network"
+#define PASS "3.14159265358979"
+#define MQTT_BROKER "sinno.soict.ai"
+#define MQTT_PORT 1883
+#define MQTT_USERNAME "linhda"
+#define MQTT_PASSWORD "20194314"
+#define CA "-----BEGIN CERTIFICATE----- \
 MIIFSzCCAzOgAwIBAgIUIf99ZMGmgxa1e6paqCDZ5R3O0KswDQYJKoZIhvcNAQEL\
 BQAwLTEZMBcGA1UECgwQQXJ0c2FraCBWZW50dXJlczEQMA4GA1UEAwwHUm9vdCBD\
 QTAeFw0yNDAxMDcxNjUyMzZaFw00NDAxMDIxNjUyMzZaMC0xGTAXBgNVBAoMEEFy\
@@ -77,7 +77,7 @@ OruL+TMxqlB9MgnExIPnOqNnFrV6ygAukiFVkjE4/aW3mG6ppDGJzHgCqBKsM9X3\
 bT8oy4LI3/sPr3W17qDss4AAXsANucydfVZF3a2rzq56+NkE1qiY4A3JjSM9FXEQ\
 UcOKkZhG3LY=\
 -----END CERTIFICATE-----"
-#define CERT            "-----BEGIN CERTIFICATE-----\
+#define CERT "-----BEGIN CERTIFICATE-----\
 MIIFvTCCA6WgAwIBAgIUfI5OPjub83EMqWQtbF38xMqOkFswDQYJKoZIhvcNAQEL\
 BQAwNTEZMBcGA1UECgwQQXJ0c2FraCBWZW50dXJlczEYMBYGA1UEAwwPSW50ZXJt\
 ZWRpYXRlIENBMB4XDTI0MDEwNzE3MzU1OVoXDTI1MDEwNjE3MzU1OVowNDEZMBcG\
@@ -110,7 +110,7 @@ J6tKD4jXScBEKrzX4SoJpyilJ1G5SlSzXeb5UTL7LXhZKvzyaAsW39VmSmDjSstK\
 PX0B5hAORK6v7AvPY3wXbD0JW14QySHxAwrGCiAUqypx2qkJfmL1GdMUgS6VWTeK\
 sRefhgfJXds93ayCAX0HslFXhQ5T7JoKKL3XAPq7uZvv\
 -----END CERTIFICATE-----"
-#define KEY             "-----BEGIN PRIVATE KEY-----\
+#define KEY "-----BEGIN PRIVATE KEY-----\
 MIIJQgIBADANBgkqhkiG9w0BAQEFAASCCSwwggkoAgEAAoICAQCjbIXFPqLslCuR\
 9Uf3JoxxStSfkvwZsosYflzmHzh9XZr0xenuxqVX2aM9jEsrtHJWsp6CmJAWUEe2\
 P8eZzmLlIpKCaSNU6GXMIZzxBqRhl+1TGvX/pIBVN3Pbry40UcRpjwL6N1dKl28+\
@@ -164,8 +164,8 @@ okmLeKAnXwjgNexvZVJFx75B76GDHg==\
 -----END PRIVATE KEY-----"
 // extern Preferences preferences;
 
-void MQTT_Client_Init(const char * ssid, const char * password, const char * id, UBYTE *Image);
-void MQTT_Connect(const char * id, UBYTE *Image);
-void MQTT_Loop(const char * id, UBYTE *Image);
+void MQTT_Client_Init(const char *ssid, const char *password, const char *id, UBYTE *Image);
+void MQTT_Connect(const char *id, UBYTE *Image);
+void MQTT_Loop(const char *id, UBYTE *Image);
 
 #endif /* __MQTT */
