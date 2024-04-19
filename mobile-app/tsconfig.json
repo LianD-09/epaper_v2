@@ -1,0 +1,20 @@
+{
+    "compilerOptions": {
+        "jsx": "react",
+        "outDir": "./dist/",
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "baseUrl": "./",
+    },
+    "extends": [
+        "expo/tsconfig.base",
+        "@tsconfig/react-native/tsconfig.json"
+    ],
+    "exclude": [
+        "dist",
+        "build",
+        "node_modules"
+    ]
+}
