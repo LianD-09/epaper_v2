@@ -24,14 +24,13 @@ const Dashbhoard = ({ navigation }) => {
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: {
-                    margin: 10,
-                    borderRadius: 30,
                     backgroundColor: Color.primary[700],
-                    elevation: 100
+                    elevation: 0,
+                    minHeight: 60,
+                    padding: 5
                 },
-                tabBarInactiveTintColor: Color.white[100],
+                tabBarInactiveTintColor: Color.disable[500],
                 tabBarActiveTintColor: Color.white[100],
-                tabBarActiveBackgroundColor: Color.info[600],
                 tabBarShowLabel: false,
                 tabBarButton: (props) => {
                     return <View
