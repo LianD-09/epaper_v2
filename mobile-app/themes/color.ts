@@ -76,4 +76,7 @@ export const Color = {
     }
 }
 
+export const toOpacity = (opacity: number, color: String) => color + (opacity * 255 < 16 ? '0' : '') + `${Math.round(opacity * 255).toString(16)}`;
+
+
 export default Color;

@@ -6,7 +6,12 @@
         "module": "commonjs",
         "sourceMap": true,
         "strictNullChecks": true,
-        "baseUrl": "./",
+        "baseUrl": ".",
+        "paths": {
+            "@": [
+                "./*"
+            ]
+        }
     },
     "extends": [
         "expo/tsconfig.base",

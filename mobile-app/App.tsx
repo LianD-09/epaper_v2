@@ -7,11 +7,14 @@ import { store } from './redux/store';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Login from './screens/Auth/Login';
-// import Home from './screens/Home';
+import Login from './screens/Auth/login';
 import { useCallback } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
+import Signup from './screens/Auth/signup';
+import Dashboard from './screens/Dashboard/dashboard';
+import Color from './themes/color';
+
 
 // LogBox.ignoreAllLogs();
 
@@ -71,23 +74,37 @@ export default function App() {
       <Provider store={store}>
         <SafeAreaProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="Sign in">
+            <Stack.Navigator
+              initialRouteName="Sign-in"
+              screenOptions={{
+                headerShown: false,
+                contentStyle: styles.container
+              }}
+            >
               <Stack.Screen
-                name="Sign in"
+                name="Sign-in"
                 component={Login}
                 options={{
                   title: 'Sign in',
                   headerShown: false,
                 }}
               />
-              {/* <Stack.Screen
-                name="Home"
-                component={Home}
+              <Stack.Screen
+                name="Sign-up"
+                component={Signup}
                 options={{
-                  title: 'Home',
+                  title: 'Sign up',
                   headerShown: false,
                 }}
-              /> */}
+              />
+              <Stack.Screen
+                name="Dashboard"
+                component={Dashboard}
+                options={{
+                  title: 'Dashboard',
+                  headerShown: false,
+                }}
+              />
             </Stack.Navigator>
           </NavigationContainer>
         </SafeAreaProvider>
@@ -99,6 +116,6 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: Color.white[100],
   },
 });

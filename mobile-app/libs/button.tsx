@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, DimensionValue } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, DimensionValue, StyleProp, ViewStyle } from 'react-native';
 import FontWeight from '../themes/font-weight';
 import FontSize from '../themes/font-size';
-import Color from '../themes/color';
+import Color, { toOpacity } from '../themes/color';
 
 type ButtonProps = {
     disable?: boolean,
@@ -20,6 +20,8 @@ type ButtonProps = {
     fontSize?: number,
     success?: boolean,
     children?: React.ReactNode
+    style?: StyleProp<ViewStyle>
+    opacity?: number
 }
 
 const Button = ({
@@ -37,22 +39,25 @@ const Button = ({
     startIcon,
     fontSize,
     success,
-    children
+    children,
+    style,
+    opacity = 1,
 }: ButtonProps) => {
+    const opacityApply = opacity < 0 || opacity > 1 ? 1 : opacity
     const [isPressed, setIsPressed] = useState(false);
 
     return (
-        <View >
+        <View style={[styles.wrap, style]}>
             <TouchableOpacity
-                style={[styles.container,
-                disable && { backgroundColor: Color.disable[200] },
-                deleted && { backgroundColor: Color.error[400] },
-                secondary && { backgroundColor: Color.secondary[300] },
-                highlight && { backgroundColor: Color.info[500] },
-                success && { backgroundColor: Color.success[500] },
+                style={[styles.container, { backgroundColor: toOpacity(opacityApply, Color.primary[700]) },
+                disable && { backgroundColor: toOpacity(opacityApply, Color.disable[200]) },
+                deleted && { backgroundColor: toOpacity(opacityApply, Color.error[400]) },
+                secondary && { backgroundColor: toOpacity(opacityApply, Color.secondary[300]) },
+                highlight && { backgroundColor: toOpacity(opacityApply, Color.info[500]) },
+                success && { backgroundColor: toOpacity(opacityApply, Color.success[500]) },
                 { height: height },
                 { width: width },
-                transparent && { backgroundColor: Color.white[100], borderWidth: 0 },
+                transparent && { backgroundColor: toOpacity(opacityApply, Color.white[100]), borderWidth: 0 },
                 close && { backgroundColor: '#fff', borderWidth: 0, height: 7 }
                 ]}
                 disabled={disable ? true : false}
@@ -89,11 +94,14 @@ const Button = ({
                     </Text>
                 </View>
             </TouchableOpacity >
-        </View >
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    wrap: {
+        flex: 1,
+    },
     container: {
         width: '100%',
         borderRadius: 100,
@@ -102,7 +110,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         fontFamily: FontWeight.w700,
-        backgroundColor: Color.primary[700],
     },
     content: {
         textAlign: 'center',

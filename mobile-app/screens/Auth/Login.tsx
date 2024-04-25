@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
   const handleSubmitEvent = () => {
     try {
       setIsLoading(true);
-      navigation.navigate('Home', { name: 'Home' });
+      navigation.navigate('Dashboard', { name: 'Dashboard' });
     }
     catch (e) {
       console.log(e);
@@ -65,6 +65,7 @@ const Login = ({ navigation }) => {
             />
             <View style={styles.inputView}>
               <TextField
+                keyboardType='email-address'
                 placeholder={'Your email'}
                 label={'Email'}
                 onChange={() => null}
@@ -115,13 +116,12 @@ const Login = ({ navigation }) => {
                 </Typography>
               </TouchableOpacity>
             </View>
-            <View style={{ marginTop: 20, paddingHorizontal: 40, width: '100%' }}>
-              <Button
-                onPress={handleSubmitEvent}
-              >
-                Login
-              </Button>
-            </View>
+            <Button
+              onPress={handleSubmitEvent}
+              style={{ marginTop: 20, paddingHorizontal: 40, width: '100%' }}
+            >
+              Login
+            </Button>
             <View
               style={{
                 margin: 10,
@@ -133,7 +133,7 @@ const Login = ({ navigation }) => {
               <Typography fontSize={FontSize.Small} lineHeight={18}>Don't have an account?</Typography>
               <TouchableOpacity
                 style={styles.forgotButtonText}
-                onPress={() => navigation.navigate('Sign up', { name: 'Sign up' })}
+                onPress={() => navigation.navigate('Sign-up')}
               >
                 <Typography
                   fontSize={FontSize.Small}
@@ -153,7 +153,7 @@ const Login = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   loading: {
-    backgroundColor: 'rgba(255, 255, 255)',
+    backgroundColor: Color.white[100],
     position: 'absolute',
     left: 0,
     right: 0,
@@ -177,20 +177,6 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'column',
     gap: 16
-  },
-  textInput: {
-    width: 220,
-    fontSize: 15,
-    padding: 8,
-    color: '#6D1D3A',
-  },
-  loginButton: {
-    width: 220,
-    backgroundColor: '#3A5BB3',
-    padding: 8,
-    alignItems: 'center',
-    marginTop: 25,
-    borderRadius: 10,
   },
   forgotButtonText: {
   },
