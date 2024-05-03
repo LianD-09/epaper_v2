@@ -2,6 +2,8 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
 import {
+    Image,
+    Pressable,
     StyleSheet,
     TouchableOpacity,
     View,
@@ -24,7 +26,7 @@ const Dashbhoard = ({ navigation }) => {
             screenOptions={{
                 headerShown: false,
                 tabBarStyle: {
-                    backgroundColor: Color.primary[700],
+                    backgroundColor: Color.primary[900],
                     elevation: 0,
                     minHeight: 60,
                     padding: 5
@@ -37,15 +39,15 @@ const Dashbhoard = ({ navigation }) => {
                         style={{
                             height: '100%',
                             flex: 1,
-                            backgroundColor: 'transparent',
+                            backgroundColor: Color.primary[900],
                             justifyContent: 'center',
                             alignItems: 'center',
-                            padding: 4
+                            padding: 4,
                         }}
                     >
-                        <TouchableOpacity {...props} style={[props.style, { flex: 0, aspectRatio: '1/1', height: '100%' }]}>
+                        <Pressable {...props} style={[props.style, { flex: 1, aspectRatio: '1/1', height: '100%' }]}>
                             {props.children}
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                 },
                 tabBarItemStyle: {
@@ -56,19 +58,46 @@ const Dashbhoard = ({ navigation }) => {
             <Tab.Screen
                 name='Home'
                 component={Home}
-                options={{ tabBarIcon: (props) => <Icon name='home' color={props.color} size={20} /> }}
+                options={{
+                    tabBarButton: (props) => <TouchableOpacity {...props}>{props.children}</TouchableOpacity>,
+                    tabBarIcon: (props) => props.focused ?
+                        <Image source={require('../../assets/icons/home-solid-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
+                        :
+                        <Image source={require('../../assets/icons/home-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
+
+                }}
             />
             <Tab.Screen
                 name='Home1'
                 component={Home}
-                options={{ tabBarIcon: (props) => <Icon name='home' color={props.color} size={20} /> }}
+                options={{
+                    tabBarButton: (props) => <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
+                        <View style={styles.bgMiddleIcon} >
+                            <TouchableOpacity {...props}>
+                                <View style={[styles.middleIcon, { backgroundColor: Color.secondary[300] }]} >
+                                    {props.children}
+                                </View>
+                            </TouchableOpacity>
+                        </View>
+                    </View>,
+                    tabBarIconStyle: styles.middleIcon,
+                    tabBarIcon: (props) =>
+                        <Image source={require('../../assets/icons/add-24px.png')} width={props.size} height={props.size} tintColor={Color.primary[700]} />
+
+                }}
             />
-            <Tab.Screen
+            < Tab.Screen
                 name='Home2'
                 component={Home}
-                options={{ tabBarIcon: (props) => <Icon name='home' color={props.color} size={20} /> }}
+                options={{
+                    tabBarButton: (props) => <TouchableOpacity {...props}>{props.children}</TouchableOpacity>,
+                    tabBarIcon: (props) => props.focused ?
+                        <Image source={require('../../assets/icons/notification-solid-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
+                        :
+                        <Image source={require('../../assets/icons/notification-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
+                }}
             />
-        </Tab.Navigator>
+        </Tab.Navigator >
     );
 };
 
@@ -76,6 +105,20 @@ const styles = StyleSheet.create({
     container: {
         paddingTop: Constants.statusBarHeight,
         backgroundColor: Color.white[100],
+    },
+    middleIcon: {
+        padding: 18,
+        borderRadius: 100,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    bgMiddleIcon: {
+        borderRadius: 100,
+        flex: 1,
+        padding: 6,
+        position: 'absolute',
+        transform: [{ translateY: -20 }],
+        backgroundColor: Color.primary[900]
     }
 });
 
