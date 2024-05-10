@@ -44,110 +44,114 @@ const Login = ({ navigation }) => {
   };
 
   return (
-    isLoading
-      ? <ActivityIndicator size="large" color='green' style={styles.loading} />
-      :
-      <ImageBackground source={require('../../assets/bg-white.jpg')} resizeMode='cover' style={{ flex: 1 }}>
-        <Card
-          style={{
-            width: 'auto',
-            height: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 0
-          }}
-          bgColor={'transparent'}
-        >
-          <View style={styles.container}>
-            <Image
-              style={styles.image}
-              source={icon}
-            />
-            <View style={styles.inputView}>
-              <TextField
-                keyboardType='email-address'
-                placeholder={'Your email'}
-                label={'Email'}
-                onChange={() => null}
-                disable={false}
-              />
-              <TextField
-                placeholder={'Your password'}
-                label={'Password'}
-                secure
-                onChange={(text) => setPassword(text)}
-                disable={false}
-              />
-            </View>
-            <View style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
+    <View style={{ flex: 1 }}>
+      {isLoading
+        ? <ActivityIndicator size="large" color='green' style={styles.loading} />
+        :
+        <ImageBackground source={require('../../assets/bg-white.jpg')} resizeMode='cover' style={{ flex: 1 }}>
+          <Card
+            style={{
+              width: 'auto',
+              height: '100%',
+              justifyContent: 'center',
               alignItems: 'center',
-              width: '100%',
-              paddingHorizontal: 10
-            }}>
+              borderRadius: 0,
+              marginHorizontal: 10
+            }}
+            bgColor={'transparent'}
+          >
+            <View style={styles.container}>
+              <Image
+                style={styles.image}
+                source={icon}
+              />
+              <View style={styles.inputView}>
+                <TextField
+                  keyboardType='email-address'
+                  placeholder={'Your email'}
+                  label={'Email'}
+                  onChange={() => null}
+                  disable={false}
+                />
+                <TextField
+                  placeholder={'Your password'}
+                  label={'Password'}
+                  secure
+                  onChange={(text) => setPassword(text)}
+                  disable={false}
+                />
+              </View>
+              <View style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                width: '100%',
+                paddingHorizontal: 10
+              }}>
+                <View
+                  style={{
+                    margin: 10,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <RadioButton
+                    status={remember ? 'checked' : 'unchecked'}
+                    color={Color.success[600]}
+                    uncheckedColor={Color.primary[600]}
+                    onPress={() => {
+                      setRemember(!remember);
+                    }}
+                    value={''} />
+                  <Typography fontSize={FontSize.Small} lineHeight={18}>Remember me</Typography>
+                </View>
+                <TouchableOpacity
+                  style={styles.forgotButtonText}
+                  onPress={() => navigation.navigate('Home', {})}
+                >
+                  <Typography
+                    fontSize={FontSize.Small}
+                    lineHeight={18}
+                    fontFamily={FontWeight.w700}
+                  >
+                    Forgot Password?
+                  </Typography>
+                </TouchableOpacity>
+              </View>
+              <Button
+                onPress={handleSubmitEvent}
+                style={{ marginTop: 20, paddingHorizontal: 40, width: '100%' }}
+              >
+                Login
+              </Button>
               <View
                 style={{
                   margin: 10,
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignItems: 'center',
+                  gap: 3
                 }}>
-                <RadioButton
-                  status={remember ? 'checked' : 'unchecked'}
-                  color={Color.success[600]}
-                  uncheckedColor={Color.primary[600]}
-                  onPress={() => {
-                    setRemember(!remember);
-                  }}
-                  value={''} />
-                <Typography fontSize={FontSize.Small} lineHeight={18}>Remember me</Typography>
+                <Typography fontSize={FontSize.Small} lineHeight={18}>Don't have an account?</Typography>
+                <TouchableOpacity
+                  style={styles.forgotButtonText}
+                  onPress={() => navigation.navigate('Sign-up')}
+                >
+                  <Typography
+                    fontSize={FontSize.Small}
+                    lineHeight={18}
+                    fontFamily={FontWeight.w700}
+                    color={Color.secondary[600]}
+                  >
+                    Sign up
+                  </Typography>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                style={styles.forgotButtonText}
-                onPress={() => navigation.navigate('Home', {})}
-              >
-                <Typography
-                  fontSize={FontSize.Small}
-                  lineHeight={18}
-                  fontFamily={FontWeight.w700}
-                >
-                  Forgot Password?
-                </Typography>
-              </TouchableOpacity>
             </View>
-            <Button
-              onPress={handleSubmitEvent}
-              style={{ marginTop: 20, paddingHorizontal: 40, width: '100%' }}
-            >
-              Login
-            </Button>
-            <View
-              style={{
-                margin: 10,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                gap: 3
-              }}>
-              <Typography fontSize={FontSize.Small} lineHeight={18}>Don't have an account?</Typography>
-              <TouchableOpacity
-                style={styles.forgotButtonText}
-                onPress={() => navigation.navigate('Sign-up')}
-              >
-                <Typography
-                  fontSize={FontSize.Small}
-                  lineHeight={18}
-                  fontFamily={FontWeight.w700}
-                  color={Color.secondary[600]}
-                >
-                  Sign up
-                </Typography>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Card>
-      </ImageBackground>
+          </Card>
+        </ImageBackground>
+      }
+    </View>
   );
 };
 

@@ -14,6 +14,7 @@ import React from 'react';
 import Signup from './screens/Auth/signup';
 import Dashboard from './screens/Dashboard/dashboard';
 import Color from './themes/color';
+import { navigationRef } from './navigation/root-navigation';
 
 
 // LogBox.ignoreAllLogs();
@@ -73,7 +74,7 @@ export default function App() {
       <StatusBar style='auto' />
       <Provider store={store}>
         <SafeAreaProvider>
-          <NavigationContainer>
+          <NavigationContainer ref={navigationRef}>
             <Stack.Navigator
               initialRouteName="Sign-in"
               screenOptions={{

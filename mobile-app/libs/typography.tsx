@@ -39,7 +39,7 @@ const Typography = ({
                     fontSize: fontSize ? fontSize : FontSize.Normal,
                     textAlign: textAlign ? textAlign : 'center',
                     letterSpacing: letterSpacing ? letterSpacing : 0.01,
-                    lineHeight: lineHeight ? lineHeight : 16,
+                    lineHeight: lineHeight ? lineHeight : (fontSize ?? 17) * 1.2,
                 }, styleText
             ]}>
                 {children}
@@ -53,10 +53,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'transparent',
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'flex-start',
     },
     titleStyle: {
         fontStyle: 'normal',
+        flexShrink: 1
     },
 });
 

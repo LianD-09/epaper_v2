@@ -27,7 +27,7 @@ const Card = forwardRef<View, CardProps>(({
     borderRadius = 20,
     borderColor,
     disabled,
-    borderWidth = 1,
+    borderWidth = 0,
     pt = 18,
     pb = 20,
     pl = 22,
@@ -37,7 +37,7 @@ const Card = forwardRef<View, CardProps>(({
     return (
         <Pressable style={[
             styles.container, {
-                backgroundColor: bgColor ? bgColor : Color.white[100],
+                backgroundColor: bgColor ? bgColor : Color.primary[200],
                 borderRadius: borderRadius,
                 borderColor: borderColor ? borderColor : Color.disable[200],
                 borderWidth: borderWidth,

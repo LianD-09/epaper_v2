@@ -12,8 +12,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Constants from 'expo-constants';
 import Color from '../../themes/color';
 import Home from '../Home/home';
-import Button from '../../libs/button';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import HomeStack from '../../navigation/home-stack';
 
 const Tab = createBottomTabNavigator();
 
@@ -57,9 +56,9 @@ const Dashbhoard = ({ navigation }) => {
         >
             <Tab.Screen
                 name='Home'
-                component={Home}
+                component={HomeStack}
                 options={{
-                    tabBarButton: (props) => <TouchableOpacity {...props}>{props.children}</TouchableOpacity>,
+                    tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.8}>{props.children}</TouchableOpacity>,
                     tabBarIcon: (props) => props.focused ?
                         <Image source={require('../../assets/icons/home-solid-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
                         :
@@ -73,7 +72,7 @@ const Dashbhoard = ({ navigation }) => {
                 options={{
                     tabBarButton: (props) => <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                         <View style={styles.bgMiddleIcon} >
-                            <TouchableOpacity {...props}>
+                            <TouchableOpacity {...props} activeOpacity={0.8}>
                                 <View style={[styles.middleIcon, { backgroundColor: Color.secondary[300] }]} >
                                     {props.children}
                                 </View>
@@ -90,7 +89,7 @@ const Dashbhoard = ({ navigation }) => {
                 name='Home2'
                 component={Home}
                 options={{
-                    tabBarButton: (props) => <TouchableOpacity {...props}>{props.children}</TouchableOpacity>,
+                    tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.8}>{props.children}</TouchableOpacity>,
                     tabBarIcon: (props) => props.focused ?
                         <Image source={require('../../assets/icons/notification-solid-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
                         :
@@ -103,7 +102,6 @@ const Dashbhoard = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        paddingTop: Constants.statusBarHeight,
         backgroundColor: Color.white[100],
     },
     middleIcon: {
