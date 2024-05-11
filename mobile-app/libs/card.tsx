@@ -1,4 +1,4 @@
-import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native"
+import { Pressable, StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from "react-native"
 import Color from "../themes/color";
 import { LegacyRef, forwardRef } from "react";
 import React from "react";
@@ -16,10 +16,11 @@ type CardProps = {
     pb?: number,
     pl?: number,
     pr?: number,
-    gap?: number
+    gap?: number,
+    pressOpacity?: number,
 }
 
-const Card = forwardRef<View, CardProps>(({
+const Card = forwardRef<TouchableOpacity, CardProps>(({
     style = {},
     onPress,
     children,
@@ -32,10 +33,11 @@ const Card = forwardRef<View, CardProps>(({
     pb = 20,
     pl = 22,
     pr = 22,
-    gap = 5
+    gap = 5,
+    pressOpacity = 1,
 }, ref) => {
     return (
-        <Pressable style={[
+        <TouchableOpacity style={[
             styles.container, {
                 backgroundColor: bgColor ? bgColor : Color.primary[200],
                 borderRadius: borderRadius,
@@ -52,9 +54,10 @@ const Card = forwardRef<View, CardProps>(({
             onPress={onPress}
             disabled={disabled}
             ref={ref}
+            activeOpacity={pressOpacity}
         >
             {children}
-        </Pressable>
+        </TouchableOpacity>
     )
 });
 

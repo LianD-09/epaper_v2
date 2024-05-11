@@ -44,7 +44,7 @@ const DataItem = ({
     }
 
     return (
-        <Card style={styles.mainContainer} onPress={onPress}>
+        <Card style={styles.mainContainer} onPress={onPress} pressOpacity={0.5}>
             <View style={styles.itemRow}>
                 <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{deviceName}</Typography>
                 <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} color={color}>{capitalize(Status[status])}</Typography>
@@ -60,7 +60,7 @@ const DataItem = ({
 
 const styles = StyleSheet.create({
     mainContainer: {
-        backgroundColor: Color.white[100],
+        backgroundColor: Color.primary[100],
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center'

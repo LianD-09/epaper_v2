@@ -49,6 +49,7 @@ const DataScreen = ({ navigation }) => {
                 headerTitle='Data dashboard'
             />
             <ScrollView
+                style={{ flex: 1 }}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.content}
             >
@@ -56,10 +57,11 @@ const DataScreen = ({ navigation }) => {
                     width: '100%',
                     flex: 1,
                     marginTop: 5,
-                    paddingBottom: 40
+                    paddingBottom: 40,
                 }}
                     pb={16}
                     pt={16}
+                    bgColor={Color.white[100]}
                 >
                     {mockdata.map((e, index) => <DataItem {...e} key={index} />)}
                 </Card>
@@ -74,7 +76,6 @@ const styles = StyleSheet.create({
         backgroundColor: Color.primary[100],
     },
     content: {
-        flexGrow: 1,
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',

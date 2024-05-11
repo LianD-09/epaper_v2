@@ -16,7 +16,7 @@ type FeatureItemType = {
 
 const FeaturesItem = memo((props: FeatureItemType) => {
     return (
-        <View style={{ flexDirection: 'row', gap: 5, maxWidth: 75, minWidth: 75, justifyContent: 'center' }}>
+        <View style={{ flexDirection: 'row', gap: 5, justifyContent: 'center' }}>
             <View style={{ flexDirection: 'column', justifyContent: 'flex-start', alignItems: 'center', gap: 5 }}>
                 <View style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 999, height: 48, width: 48, backgroundColor: props.color }}>
                     <Image source={props.iconSrc} style={{ width: 24, height: 24 }} tintColor={Color.white[100]} />
@@ -54,9 +54,9 @@ const FeaturesCard = (props: FeaturesCardProps) => {
 
     return (
         <View style={styles.container}>
-            <ScrollView horizontal contentContainerStyle={styles.listContainer} showsHorizontalScrollIndicator={false}>
+            <ScrollView scrollEnabled={false} style={{ flex: 1 }} contentContainerStyle={styles.listContainer} showsHorizontalScrollIndicator={false}>
                 {listFeatures.map((e, index) => (
-                    <TouchableOpacity style={{ flexDirection: 'row', gap: 5 }} activeOpacity={0.8} key={index}>
+                    <TouchableOpacity style={{ flexDirection: 'row', gap: 5, flex: 1 }} activeOpacity={0.5} key={index}>
                         <FeaturesItem {...e} />
                     </TouchableOpacity>
                 ))}
@@ -68,7 +68,7 @@ const FeaturesCard = (props: FeaturesCardProps) => {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
-        flexDirection: 'column',
+        flexDirection: 'row',
         gap: 15,
         marginBottom: 10
     },
@@ -80,7 +80,9 @@ const styles = StyleSheet.create({
     listContainer: {
         flexGrow: 1,
         gap: 15,
-        justifyContent: 'center'
+        justifyContent: 'center',
+        flexDirection: 'row',
+        overflow: 'hidden'
     }
 })
 

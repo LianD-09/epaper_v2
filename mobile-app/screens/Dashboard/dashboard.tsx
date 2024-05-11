@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
         padding: 18,
         borderRadius: 100,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     bgMiddleIcon: {
         borderRadius: 100,
