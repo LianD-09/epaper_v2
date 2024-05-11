@@ -15,6 +15,7 @@ import Signup from './screens/Auth/signup';
 import Dashboard from './screens/Dashboard/dashboard';
 import Color from './themes/color';
 import { navigationRef } from './navigation/root-navigation';
+import BottomModal from './components/modals/bottom-modal';
 
 
 // LogBox.ignoreAllLogs();
@@ -108,6 +109,7 @@ export default function App() {
               />
             </Stack.Navigator>
           </NavigationContainer>
+          <BottomModal />
         </SafeAreaProvider>
       </Provider>
     </View>

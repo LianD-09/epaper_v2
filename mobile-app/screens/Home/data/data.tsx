@@ -11,32 +11,117 @@ import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
 import DataItem from '../../../components/home/data/data-item';
-import { DataType, Status } from '../../../types/type';
+import { DataType, Status, Template } from '../../../types/type';
 
 const mockdata = [
     {
+        id: 1,
         name: 'Thịt gà Minh',
         deviceName: 'EPD 01',
         status: Status.ACTIVE,
         dataType: DataType.PRODUCT,
+        data: {
+            id: 1,
+            name: 'Thịt gà Minh',
+            category: 'Thực phẩm',
+            price: '10000',
+            active: true,
+            activeStartTime: 1715438397,
+            deviceName: 'EPD 01',
+            deviceID: 1,
+            activeTimestamp: [],
+            fontStyle: 'opensans',
+            designSchema: 'Theme 1',
+            createdBy: 1,
+        }
     },
     {
-        name: 'Thịt gà Minh',
+        id: 2,
+        name: 'Linh DA',
         deviceName: 'EPD 01',
         status: Status.INACTIVE,
-        dataType: DataType.PRODUCT,
+        dataType: DataType.STUDENT,
+        data: {
+            id: 1,
+            name: 'Linh DA',
+            email: 'linh@gmail.com',
+            studentId: '20194314',
+            class: 'IT2-02',
+            active: false,
+            activeStartTime: 1715438397,
+            deviceName: 'EPD 01',
+            deviceID: 1,
+            activeTimestamp: [],
+            fontStyle: 'opensans',
+            designSchema: 'Theme 1',
+            createdBy: 1,
+        }
     },
     {
-        name: 'Thịt gà Minh',
+        id: 3,
+        name: 'Minh',
         deviceName: 'EPD 01',
-        status: Status.PENDING,
-        dataType: DataType.PRODUCT,
+        status: Status.INACTIVE,
+        dataType: DataType.EMPLOYEE,
+        data: {
+            id: 1,
+            name: 'Minh',
+            email: 'linh@gmail.com',
+            employeeId: '20194333',
+            department: '8B',
+            active: false,
+            activeStartTime: 1715438397,
+            deviceName: 'EPD 01',
+            deviceID: 1,
+            activeTimestamp: [],
+            fontStyle: 'opensans',
+            designSchema: 'Theme 1',
+            createdBy: 1,
+        }
     },
     {
-        name: 'Thịt gà Minh',
+        id: 4,
+        name: 'Minh Linh',
         deviceName: 'EPD 01',
         status: Status.UNKNOWN,
-        dataType: DataType.PRODUCT,
+        dataType: DataType.CLIENT,
+        data: {
+            id: 1,
+            name: 'Minh Linh',
+            email: 'linh@gmail.com',
+            address: '141/7 - 8B',
+            active: false,
+            activeStartTime: 1715438397,
+            deviceName: 'EPD 01',
+            deviceID: 1,
+            activeTimestamp: [],
+            fontStyle: 'opensans',
+            designSchema: 'Theme 1',
+            createdBy: 1,
+        }
+    },
+    {
+        id: 5,
+        name: '1208B',
+        deviceName: 'EPD 01',
+        status: Status.ACTIVE,
+        dataType: DataType.ROOM,
+        data: {
+            id: 1,
+            name: '1208B',
+            email: 'linh@gmail.com',
+            purpose: 'Lao động',
+            manager: 'Linh DA',
+            roomStatus: 'Khả dụng',
+            active: true,
+            activeStartTime: 1715438397,
+            deviceName: 'EPD 01',
+            deviceID: 1,
+            activeTimestamp: [],
+            fontStyle: 'opensans',
+            designSchema: 'Theme 1',
+            createdBy: 1,
+        }
     },
 ]
 

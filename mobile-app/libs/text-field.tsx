@@ -42,7 +42,7 @@ const TextField = ({
     placeholder,
     placeholderTextColor = Color.disable[200],
     onChange,
-    keyboardType,
+    keyboardType = 'default',
     secure,
     disable,
     multiline = false,
@@ -85,7 +85,7 @@ const TextField = ({
 
     return (
         <View style={styles.contain}>
-            {(label && (value !== '' || multiline)) && (
+            {label != '' && (
                 <Text style={styles.label}>{label}</Text>
             )}
             <Card
@@ -111,7 +111,6 @@ const TextField = ({
                                     alignItems: 'center',
                                     flex: 1,
                                 } : undefined,
-                                (value === '' || !label) ? { paddingTop: 6.5, paddingBottom: 7.5 } : undefined
                             ] : undefined}
                         >
                             {startElement && typeof startElement === 'object' && (

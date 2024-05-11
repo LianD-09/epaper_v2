@@ -47,7 +47,7 @@ const Card = forwardRef<TouchableOpacity, CardProps>(({
                 paddingBottom: pb,
                 paddingLeft: pl,
                 paddingRight: pr,
-                gap: gap
+                gap: gap,
             },
             style
         ]}

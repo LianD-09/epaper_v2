@@ -6,22 +6,32 @@ import fontSize from "../../../themes/font-size";
 import fontWeight from "../../../themes/font-weight";
 import Card from "../../../libs/card";
 import Divider from "../../../libs/divider";
-import { DataType, Status } from "../../../types/type";
+import { DataType, Status, Template } from "../../../types/type";
 import { capitalize } from "../../../utils/utils";
+import { useDispatch } from "react-redux";
+import { openBottomModal } from "../../../redux/slice/bottom-modal-slice";
+import DataDetail from "./data-detail";
+import { navigate } from "../../../navigation/root-navigation";
+import { EditDataScreenProps } from "../../../navigation/param-types";
 
 export type DataItemProps = {
+    id: string | number,
     name: string;
     deviceName: string;
     status: Status;
     dataType: DataType;
+    data: any
 }
 
 const DataItem = ({
+    id,
     name,
     deviceName,
     status,
-    dataType
+    dataType,
+    data
 }: DataItemProps) => {
+    const dispatch = useDispatch();
     let color;
 
     switch (status) {
@@ -40,7 +50,20 @@ const DataItem = ({
     }
 
     const onPress = () => {
-
+        dispatch(openBottomModal({
+            isOpen: true,
+            isFailed: false,
+            title: name,
+            btnTitle: "Edit",
+            btnCancelTitle: "Close",
+            content: <DataDetail id={id} dataType={dataType} deviceName={deviceName} name={name} status={status} data={data as Template} />,
+            callback: () => {
+                navigate<EditDataScreenProps>('EditDataScreen', {
+                    data: data as Template,
+                    dataType: dataType,
+                })
+            }
+        }));
     }
 
     return (

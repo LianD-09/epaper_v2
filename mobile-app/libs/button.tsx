@@ -100,7 +100,7 @@ const Button = ({
 
 const styles = StyleSheet.create({
     wrap: {
-        flex: 1,
+        width: '100%',
     },
     container: {
         width: '100%',

@@ -12,25 +12,28 @@ type DividerProps = {
 const Divider = ({ bdWidth = 1.5, color, bdStyle, width = '100%' }: DividerProps) => {
 
     return (
-        <View style={[styles.container, bdWidth ? {
-            height: bdWidth,
-            width: width
-        } : undefined]}>
-            <View style={[styles.content,
-            color ? {
-                borderColor: color
-            } : null,
-            bdWidth ? {
-                borderWidth: bdWidth
-            } : null,
-            bdStyle === 'dotted' && {
-                borderStyle: 'dotted'
-            },
-            bdStyle === 'solid' && {
-                borderStyle: 'solid'
-            }
-            ]}></View>
+        <View style={{ width: width, flexDirection: 'row', justifyContent: "center", alignItems: 'center' }}>
+            <View style={[styles.container, bdWidth ? {
+                height: bdWidth,
+                width: '100%'
+            } : undefined]}>
+                <View style={[styles.content,
+                color ? {
+                    borderColor: color
+                } : null,
+                bdWidth ? {
+                    borderWidth: bdWidth
+                } : null,
+                bdStyle === 'dotted' && {
+                    borderStyle: 'dotted'
+                },
+                bdStyle === 'solid' && {
+                    borderStyle: 'solid'
+                }
+                ]}></View>
+            </View>
         </View>
+
     )
 }
 

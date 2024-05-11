@@ -22,6 +22,7 @@ export const Color = {
         900: '#554a37',
     },
     info: {
+        50: '#f0f6fb',
         100: '#e0edf7',
         200: '#c1dbef',
         300: '#a2c9e8',
