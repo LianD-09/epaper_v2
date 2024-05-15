@@ -16,12 +16,14 @@ import fontWeight from '../../themes/font-weight';
 import fontSize from '../../themes/font-size';
 import HomeCard, { TitleEnum } from '../../components/home/home-card';
 import FeaturesCard from '../../components/home/features-card';
+import { StatusBar } from 'expo-status-bar';
 
 
 const HomeScreen = ({ navigation }) => {
 
     return (
         <SafeAreaView style={styles.container}>
+            <StatusBar backgroundColor={Color.white[100]} />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.content}

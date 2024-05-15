@@ -15,6 +15,12 @@ import TextField from '../../../libs/text-field';
 import SwitchCustom from '../../../libs/switch-custom';
 import Typography from '../../../libs/typography';
 import Button from '../../../libs/button';
+import Select from '../../../libs/select';
+import { useDispatch } from 'react-redux';
+import { openDateTimePickerModal } from '../../../redux/slice/date-picker-slice';
+import DateTimeField from '../../../libs/date-time-field';
+import fontWeight from '../../../themes/font-weight';
+import fontSize from '../../../themes/font-size';
 
 const EditDataScreen = ({ navigation, route }) => {
     const { data, dataType } = route.params;
@@ -24,6 +30,7 @@ const EditDataScreen = ({ navigation, route }) => {
     const [input2, setInput2] = useState<string>('');
     const [input3, setInput3] = useState<string>('');
     const [input4, setInput4] = useState<string>('');
+    const [dateTime, setDateTime] = useState<Date>(new Date());
 
     useEffect(() => {
         let item: Template = data as Template;
@@ -263,6 +270,32 @@ const EditDataScreen = ({ navigation, route }) => {
                     <View style={{ gap: 16 }}>
                         {renderByType()}
                         <SwitchCustom isOn={active} onToggle={() => setActive(!active)} label={'Display on EPD?'} />
+                        {active && <View
+                            style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-between',
+                                alignItems: 'center'
+                            }}
+                        >
+                            <DateTimeField
+                                onSelect={(value) => {
+                                    setDateTime(value);
+                                }}
+                                value={dateTime}
+                                label={''}
+                                mode='date'
+                            />
+                            <Typography fontFamily={fontWeight.w700} fontSize={fontSize.Medium}>at</Typography>
+                            <DateTimeField
+                                onSelect={(value) => {
+                                    setDateTime(value);
+                                }}
+                                value={dateTime}
+                                label={''}
+                                mode='time'
+                            />
+                        </View>
+                        }
                     </View>
                     <Button >Continue</Button>
                 </Card>

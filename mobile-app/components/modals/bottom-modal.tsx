@@ -17,7 +17,7 @@ import Typography from "../../libs/typography";
 import { closeBottomModal } from "../../redux/slice/bottom-modal-slice";
 import { BMState, RootState } from "../../redux/store";
 
-export const modalConfig = {
+const modalConfig = {
     animationIn: "slideInUp",
     animationOut: "slideOutDown",
     opacity: 0.5,

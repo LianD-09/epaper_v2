@@ -16,6 +16,8 @@ import Dashboard from './screens/Dashboard/dashboard';
 import Color from './themes/color';
 import { navigationRef } from './navigation/root-navigation';
 import BottomModal from './components/modals/bottom-modal';
+import SelectModal from './components/modals/select-modal';
+import DateTimePickerModal from './components/modals/date-time-picker-modal';
 
 
 // LogBox.ignoreAllLogs();
@@ -110,6 +112,8 @@ export default function App() {
             </Stack.Navigator>
           </NavigationContainer>
           <BottomModal />
+          <SelectModal />
+          <DateTimePickerModal />
         </SafeAreaProvider>
       </Provider>
     </View>

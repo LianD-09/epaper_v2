@@ -49,7 +49,7 @@ const TextField = ({
     endIcon,
     error = false,
     helperText = '',
-    borderWidth = 1,
+    borderWidth = 2,
     bgColor = Color.white[100],
     borderRadius = 999,
     pt = 10,
