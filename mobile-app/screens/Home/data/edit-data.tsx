@@ -17,10 +17,12 @@ import Typography from '../../../libs/typography';
 import Button from '../../../libs/button';
 import Select from '../../../libs/select';
 import { useDispatch } from 'react-redux';
-import { openDateTimePickerModal } from '../../../redux/slice/date-picker-slice';
+import { openDateTimePickerModal, resetDateTimePickerData } from '../../../redux/slice/date-picker-slice';
 import DateTimeField from '../../../libs/date-time-field';
 import fontWeight from '../../../themes/font-weight';
 import fontSize from '../../../themes/font-size';
+import { navigate } from '../../../navigation/root-navigation';
+import { SubmitEditDataScreenProps } from '../../../navigation/param-types';
 
 const EditDataScreen = ({ navigation, route }) => {
     const { data, dataType } = route.params;
@@ -31,6 +33,7 @@ const EditDataScreen = ({ navigation, route }) => {
     const [input3, setInput3] = useState<string>('');
     const [input4, setInput4] = useState<string>('');
     const [dateTime, setDateTime] = useState<Date>(new Date());
+    const dispath = useDispatch();
 
     useEffect(() => {
         let item: Template = data as Template;
@@ -243,6 +246,29 @@ const EditDataScreen = ({ navigation, route }) => {
         }
     }
 
+    const handlePress = () => {
+        if (active) {
+            navigate<SubmitEditDataScreenProps>('SubmitEditDataScreen', {
+                data: {
+                    ...data,
+                    name,
+                    email,
+                    input2,
+                    input3,
+                    input4,
+                },
+                dataType: dataType
+            })
+        }
+        else {
+            // call api
+        }
+    }
+
+    useEffect(() => {
+        dispath(resetDateTimePickerData());
+    }, [])
+
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor={Color.white[100]} />
@@ -297,7 +323,7 @@ const EditDataScreen = ({ navigation, route }) => {
                         </View>
                         }
                     </View>
-                    <Button >Continue</Button>
+                    <Button onPress={handlePress}>{active ? 'Continue' : 'Submit'}</Button>
                 </Card>
             </ScrollView>
         </View>

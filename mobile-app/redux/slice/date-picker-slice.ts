@@ -37,9 +37,12 @@ export const datePickerSlice = createSlice({
                 selectedDate: action.payload,
             }
         },
+        resetDateTimePickerData: () => {
+            return initialState;
+        }
     }
 })
 // Action creators are generated for each case reducer function
-export const { closeDateTimePickerModal, openDateTimePickerModal, getSelectedDate } = datePickerSlice.actions
+export const { closeDateTimePickerModal, openDateTimePickerModal, getSelectedDate, resetDateTimePickerData } = datePickerSlice.actions
 
 export default datePickerSlice.reducer

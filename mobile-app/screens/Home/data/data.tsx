@@ -30,7 +30,7 @@ const mockdata = [
             deviceName: 'EPD 01',
             deviceID: 1,
             activeTimestamp: [],
-            fontStyle: 'opensans',
+            fontStyle: 'Monospace 12pt',
             designSchema: 'Theme 1',
             createdBy: 1,
         }
@@ -52,7 +52,7 @@ const mockdata = [
             deviceName: 'EPD 01',
             deviceID: 1,
             activeTimestamp: [],
-            fontStyle: 'opensans',
+            fontStyle: 'Monospace 12pt',
             designSchema: 'Theme 1',
             createdBy: 1,
         }
@@ -74,7 +74,7 @@ const mockdata = [
             deviceName: 'EPD 01',
             deviceID: 1,
             activeTimestamp: [],
-            fontStyle: 'opensans',
+            fontStyle: 'Monospace 12pt',
             designSchema: 'Theme 1',
             createdBy: 1,
         }
@@ -95,7 +95,7 @@ const mockdata = [
             deviceName: 'EPD 01',
             deviceID: 1,
             activeTimestamp: [],
-            fontStyle: 'opensans',
+            fontStyle: 'Monospace 12pt',
             designSchema: 'Theme 1',
             createdBy: 1,
         }
@@ -118,7 +118,7 @@ const mockdata = [
             deviceName: 'EPD 01',
             deviceID: 1,
             activeTimestamp: [],
-            fontStyle: 'opensans',
+            fontStyle: 'Monospace 12pt',
             designSchema: 'Theme 1',
             createdBy: 1,
         }
@@ -183,4 +183,3 @@ const styles = StyleSheet.create({
 });
 
 export default DataScreen;
-;

@@ -82,7 +82,7 @@ const Select = ({
     setErrorField(error);
     if (select.selectedItem && label === select.label) {
       onSelect(select.selectedItem?.value);
-      // dispatch(resetSelectedItem());
+      dispatch(resetSelectedItem());
     }
     if (!select.isOpen) {
       setFocus(false);

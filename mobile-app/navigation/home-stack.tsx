@@ -5,6 +5,7 @@ import DataScreen from "../screens/Home/data/data";
 import DevicesScreen from "../screens/Home/devices/devices";
 import EditDataScreen from "../screens/Home/data/edit-data";
 import { RootStackHomeParamList } from "./param-types";
+import SubmitEditDataScreen from "../screens/Home/data/submit-edit-data";
 
 const Stack = createNativeStackNavigator<RootStackHomeParamList>();
 
@@ -35,6 +36,11 @@ function HomeStack(props) {
             <Stack.Screen
                 name="EditDataScreen"
                 component={EditDataScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <Stack.Screen
+                name="SubmitEditDataScreen"
+                component={SubmitEditDataScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
         </Stack.Navigator>
