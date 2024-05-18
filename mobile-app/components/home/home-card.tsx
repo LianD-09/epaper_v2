@@ -104,7 +104,7 @@ const HomeCard = forwardRef<View, HomeCardProps>(({
                     :
                     <Image source={require('assets/icons/devices-48px.png')} style={{ width: 24, height: 24 }} tintColor={Color.primary[700]} />
                 }
-                <Typography fontSize={fontSize.VeryBig} fontFamily={fontWeight.w700} >
+                <Typography fontSize={fontSize.Big} fontFamily={fontWeight.w700} >
                     {title === TitleEnum.data ? 'Data dashboard' : 'Devices dashboard'}
                 </Typography>
                 <Image source={require('assets/icons/next-48px.png')} style={{ width: 24, height: 24 }} tintColor={Color.primary[700]} />

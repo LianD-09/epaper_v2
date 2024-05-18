@@ -13,8 +13,15 @@ import Constants from 'expo-constants';
 import Color from '../../themes/color';
 import Home from '../Home/home';
 import HomeStack from '../../navigation/home-stack';
+import NewStack from '../../navigation/new-stack';
 
-const Tab = createBottomTabNavigator();
+export type RootTab = {
+    Home: undefined,
+    New: undefined,
+    Notification: undefined
+}
+
+const Tab = createBottomTabNavigator<RootTab>();
 
 const Dashbhoard = ({ navigation }) => {
 
@@ -23,6 +30,7 @@ const Dashbhoard = ({ navigation }) => {
             sceneContainerStyle={styles.container}
             initialRouteName='Home'
             screenOptions={{
+                unmountOnBlur: true,
                 headerShown: false,
                 tabBarStyle: {
                     backgroundColor: Color.primary[900],
@@ -67,8 +75,8 @@ const Dashbhoard = ({ navigation }) => {
                 }}
             />
             <Tab.Screen
-                name='Home1'
-                component={Home}
+                name='New'
+                component={NewStack}
                 options={{
                     tabBarButton: (props) => <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                         <View style={styles.bgMiddleIcon} >
@@ -86,7 +94,7 @@ const Dashbhoard = ({ navigation }) => {
                 }}
             />
             < Tab.Screen
-                name='Home2'
+                name='Notification'
                 component={Home}
                 options={{
                     tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.8}>{props.children}</TouchableOpacity>,

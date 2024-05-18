@@ -19,7 +19,7 @@ const HomeItem = ({
 }: HomeItemProps) => {
     return (
         <Card style={styles.container} bgColor={color} pt={30} pb={30}>
-            <Typography fontSize={fontSize.Big} fontFamily={fontWeight.w600} color={Color.white[100]}>
+            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600} color={Color.white[100]}>
                 {label}
             </Typography>
             <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w300} color={Color.white[100]}>

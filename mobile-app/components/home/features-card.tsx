@@ -5,13 +5,16 @@ import Typography from "../../libs/typography";
 import fontSize from "../../themes/font-size";
 import fontWeight from "../../themes/font-weight";
 import Card from "../../libs/card";
+import { navigate, navigateThroughStack } from "../../navigation/root-navigation";
 
 type FeaturesCardProps = {}
 
 type FeatureItemType = {
     iconSrc?: ImageSourcePropType,
     color?: string,
-    label?: string
+    label?: string,
+    screen: string,
+    params?: object,
 }
 
 const FeaturesItem = memo((props: FeatureItemType) => {
@@ -21,7 +24,7 @@ const FeaturesItem = memo((props: FeatureItemType) => {
                 <View style={{ justifyContent: 'center', alignItems: 'center', borderRadius: 999, height: 48, width: 48, backgroundColor: props.color }}>
                     <Image source={props.iconSrc} style={{ width: 24, height: 24 }} tintColor={Color.white[100]} />
                 </View>
-                <Typography fontSize={fontSize.Tiny} fontFamily={fontWeight.w500}>{props.label}</Typography>
+                <Typography fontSize={fontSize.SuperTiny} fontFamily={fontWeight.w500}>{props.label}</Typography>
             </View>
         </View>
     );
@@ -32,21 +35,28 @@ const listFeatures: Array<FeatureItemType> = [
         color: Color.primary[400],
         label: 'Scan device',
         iconSrc: require("assets/icons/qr-scan-48px.png"),
+        screen: 'NewDeviceScreen',
     },
     {
         color: Color.secondary[600],
         label: 'New data',
         iconSrc: require("assets/icons/add-data-24px.png"),
+        screen: 'NewDataScreen'
     },
     {
         color: Color.info[600],
         label: 'Bluetooth connect',
         iconSrc: require("assets/icons/bluetooth-48px.png"),
+        screen: 'NewDeviceScreen',
+        params: {
+            mode: 'bluetooth'
+        }
     },
     {
         color: Color.success[600],
         label: 'Wifi devices connect',
         iconSrc: require("assets/icons/wifi-epd-48px.png"),
+        screen: 'NewDeviceScreen'
     },
 ]
 
@@ -56,7 +66,12 @@ const FeaturesCard = (props: FeaturesCardProps) => {
         <View style={styles.container}>
             <ScrollView scrollEnabled={false} style={{ flex: 1 }} contentContainerStyle={styles.listContainer} showsHorizontalScrollIndicator={false}>
                 {listFeatures.map((e, index) => (
-                    <TouchableOpacity style={{ flexDirection: 'row', gap: 5, flex: 1 }} activeOpacity={0.5} key={index}>
+                    <TouchableOpacity
+                        style={{ flexDirection: 'row', gap: 5, flex: 1 }}
+                        activeOpacity={0.5}
+                        key={index}
+                        onPress={() => navigateThroughStack('New', e.screen, e?.params)}
+                    >
                         <FeaturesItem {...e} />
                     </TouchableOpacity>
                 ))}

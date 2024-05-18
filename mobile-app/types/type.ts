@@ -106,25 +106,26 @@ export type Room = {
 export type Template = Product | Student | Room | Client | Employee;
 
 export type DataRaw = {
+    id: string | number,
     type: string,
     name: string,
     // Client
     // Student
     // Employee
-    email: string,
+    email?: string | null,
     // Client:   Address
     // Student:  Student ID
     // Product:  Category
     // Employee: Employee ID
     // Room:     Purpose
-    input2: string,
+    input2?: string | null,
     // Student:  Class
     // Product:  Price
     // Employee: Department
     // Room:     Manager
-    input3: string,
+    input3?: string | null,
     // Room:     Status
-    input4: string,
+    input4?: string | null,
     active: boolean,
     activeStartTime: number,
     deviceID: string | number,

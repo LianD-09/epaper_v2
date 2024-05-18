@@ -10,27 +10,31 @@ import { DataType, Status, Template } from "../../../types/type";
 import { capitalize } from "../../../utils/utils";
 import { useDispatch } from "react-redux";
 import { openBottomModal } from "../../../redux/slice/bottom-modal-slice";
-import DataDetail from "./data-detail";
 import { navigate } from "../../../navigation/root-navigation";
-import { EditDataScreenProps, RootStackHomeParamList } from "../../../navigation/param-types";
+import { EditDataScreenProps, EditDevicesScreenProps, RootStackHomeParamList } from "../../../navigation/param-types";
+import DevicesDetail from "./devices-detail";
 
-export type DataItemProps = {
+export type DevicesItemProps = {
     id: string | number,
-    name: string;
-    deviceName: string;
-    status: Status;
-    dataType: DataType;
-    data: any
+    name: string,
+    status: Status,
+    dataType: DataType,
+    dataId: string | number,
+    dataName: string,
+    ssid: string,
+    pass: string,
+    createdBy: string | number,
 }
 
-const DataItem = ({
+const DevicesItem = ({
     id,
     name,
-    deviceName,
     status,
+    dataName,
+    ssid,
     dataType,
-    data
-}: DataItemProps) => {
+    ...detailData
+}: DevicesItemProps) => {
     const dispatch = useDispatch();
     let color;
 
@@ -56,11 +60,18 @@ const DataItem = ({
             title: name,
             btnTitle: "Edit",
             btnCancelTitle: "Close",
-            content: <DataDetail id={id} dataType={dataType} deviceName={deviceName} name={name} status={status} data={data as Template} />,
+            content: <DevicesDetail id={id} dataType={dataType} dataName={dataName} name={name} status={status} ssid={ssid} {...detailData} />,
             callback: () => {
-                navigate<EditDataScreenProps, RootStackHomeParamList>('EditDataScreen', {
-                    data: data as Template,
-                    dataType: dataType,
+                navigate<EditDevicesScreenProps, RootStackHomeParamList>('EditDevicesScreen', {
+                    data: {
+                        id,
+                        name,
+                        dataName,
+                        ssid,
+                        dataID: detailData.dataId,
+                        active: status === Status.ACTIVE,
+                        ...detailData
+                    },
                 })
             }
         }));
@@ -69,13 +80,13 @@ const DataItem = ({
     return (
         <Card style={styles.mainContainer} onPress={onPress} pressOpacity={0.5}>
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{deviceName}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{name}</Typography>
                 <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} color={color}>{capitalize(Status[status])}</Typography>
             </View>
             <Divider />
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{name}</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{capitalize(DataType[dataType])}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{dataName}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{ssid}</Typography>
             </View>
         </Card>
     )
@@ -97,4 +108,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default DataItem;
+export default DevicesItem;

@@ -15,7 +15,7 @@ import Button from '../../../libs/button';
 import Select from '../../../libs/select';
 import { fonts, themes } from '../../../utils/constants';
 import { SelectItem } from '../../../redux/types';
-import { navigate } from '../../../navigation/root-navigation';
+import { replace } from '../../../navigation/root-navigation';
 
 const fontList: Array<SelectItem> = fonts.map(e => {
     return {
@@ -66,7 +66,7 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
 
     const handleSubmit = async () => {
         // call api
-        navigate('DataScreen');
+        replace('DataScreen');
     }
 
     return (

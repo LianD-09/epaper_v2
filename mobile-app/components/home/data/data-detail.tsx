@@ -9,7 +9,7 @@ import { Client, DataType, Employee, Product, Room, Status, Student, Template } 
 import { capitalize } from "../../../utils/utils";
 import Divider from "../../../libs/divider";
 
-export type DataItemProps = {
+export type DataDetailProps = {
     id: string | number,
     name: string;
     deviceName: string;
@@ -25,7 +25,7 @@ const DataDetail = ({
     status,
     dataType,
     data
-}: DataItemProps) => {
+}: DataDetailProps) => {
     let color;
 
     switch (status) {
@@ -51,12 +51,12 @@ const DataDetail = ({
                 return (
                     <>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Category:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.category}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Category:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.category}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Price:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.price}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Price:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.price}</Typography>
                         </View>
                     </>
                 );
@@ -65,12 +65,12 @@ const DataDetail = ({
                 return (
                     <>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Email:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.email}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Email:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.email}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Address:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.address}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Address:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.address}</Typography>
                         </View>
                     </>
                 );
@@ -79,16 +79,16 @@ const DataDetail = ({
                 return (
                     <>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Email:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.email}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Email:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.email}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Employee ID:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.employeeId}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Employee ID:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.employeeId}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Department:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.department}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Department:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.department}</Typography>
                         </View>
                     </>
                 );
@@ -97,20 +97,20 @@ const DataDetail = ({
                 return (
                     <>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Email:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.email}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Email:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.email}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Purpose:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.purpose}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Purpose:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.purpose}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Manager:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.manager}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Manager:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.manager}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Status:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.roomStatus}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Status:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.roomStatus}</Typography>
                         </View>
                     </>
                 );
@@ -119,15 +119,15 @@ const DataDetail = ({
                 return (
                     <>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Email:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.email}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Email:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.email}</Typography>
                         </View>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Student ID:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.studentId}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Student ID:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.studentId}</Typography>
                         </View><View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Class:</Typography>
-                            <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{item.class}</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Class:</Typography>
+                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.class}</Typography>
                         </View>
                     </>
                 );
@@ -139,20 +139,20 @@ const DataDetail = ({
     return (
         <Card style={styles.mainContainer} bgColor={Color.info[50]}>
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>ID:</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{id}</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>ID:</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{id}</Typography>
             </View>
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Device:</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{deviceName}</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Device:</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{deviceName}</Typography>
             </View>
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Type:</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{capitalize(DataType[dataType])}</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Type:</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{capitalize(DataType[dataType])}</Typography>
             </View>
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>Status:</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} color={color}>{capitalize(Status[status])}</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Status:</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800} color={color}>{capitalize(Status[status])}</Typography>
             </View>
             <Divider />
             {renderByType()}

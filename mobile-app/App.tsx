@@ -18,6 +18,7 @@ import { navigationRef } from './navigation/root-navigation';
 import BottomModal from './components/modals/bottom-modal';
 import SelectModal from './components/modals/select-modal';
 import DateTimePickerModal from './components/modals/date-time-picker-modal';
+import { requestBluetoothPermission } from './services/ble-services';
 
 
 // LogBox.ignoreAllLogs();
@@ -34,6 +35,7 @@ SplashScreen.preventAutoHideAsync();
 // });
 
 const Stack = createNativeStackNavigator();
+requestBluetoothPermission();
 
 export default function App() {
   const [appIsReady] = Font.useFonts({

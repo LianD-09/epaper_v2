@@ -1,5 +1,7 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Client, DataRaw, DataType, Employee, Product, Room, Student } from '../types/type';
+import { Client, DataRaw, DataType, Device, Employee, Product, Room, Student } from '../types/type';
+
+export type RootStack = {}
 
 export type EditDataScreenProps = {
     data?: Product | Student | Employee | Room | Client;
@@ -10,10 +12,29 @@ export type SubmitEditDataScreenProps = {
     dataType?: DataType;
 }
 
-export type RootStackHomeParamList = {
+export type EditDevicesScreenProps = {
+    data?: Device;
+}
+
+export type RootStackHomeParamList = RootStack & {
     EditDataScreen: EditDataScreenProps;
     HomeScreen: undefined;
     DataScreen: undefined;
     DevicesScreen: undefined;
     SubmitEditDataScreen: SubmitEditDataScreenProps;
+    EditDevicesScreen: SubmitEditDataScreenProps;
+};
+
+export type NewDeviceScreenProps = {
+    mode: 'bluetooth' | 'adhoc';
+}
+
+export type NewDataScreenProps = {
+    dataType: DataType;
+}
+
+export type RootStackNewParamList = RootStack & {
+    NewMainScreen: undefined;
+    NewDeviceScreen: NewDeviceScreenProps;
+    NewDataScreen: NewDeviceScreenProps;
 };

@@ -22,7 +22,7 @@ import DateTimeField from '../../../libs/date-time-field';
 import fontWeight from '../../../themes/font-weight';
 import fontSize from '../../../themes/font-size';
 import { navigate } from '../../../navigation/root-navigation';
-import { SubmitEditDataScreenProps } from '../../../navigation/param-types';
+import { RootStackHomeParamList, SubmitEditDataScreenProps } from '../../../navigation/param-types';
 
 const EditDataScreen = ({ navigation, route }) => {
     const { data, dataType } = route.params;
@@ -248,7 +248,7 @@ const EditDataScreen = ({ navigation, route }) => {
 
     const handlePress = () => {
         if (active) {
-            navigate<SubmitEditDataScreenProps>('SubmitEditDataScreen', {
+            navigate<SubmitEditDataScreenProps, RootStackHomeParamList>('SubmitEditDataScreen', {
                 data: {
                     ...data,
                     name,

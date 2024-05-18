@@ -33,7 +33,8 @@ type TextFieldProps = {
     onBlur?: (...args: any) => any,
     onFocus?: (...args: any) => any,
     autoCapitalize?: "none" | "sentences" | "words" | "characters" | undefined,
-    startElement?: React.ReactNode
+    startElement?: React.ReactNode,
+    labelIcon?: React.ReactNode,
 }
 
 const TextField = ({
@@ -63,7 +64,8 @@ const TextField = ({
     onBlur,
     onFocus,
     autoCapitalize = "sentences",
-    startElement
+    startElement,
+    labelIcon
 }: TextFieldProps) => {
     const [focus, setFocus] = useState(false);
     const [errorText, setErrorText] = useState(false);
@@ -85,9 +87,16 @@ const TextField = ({
 
     return (
         <View style={styles.contain}>
-            {label != '' && (
-                <Text style={styles.label}>{label}</Text>
-            )}
+            <View style={{ gap: 8, flexDirection: 'row', paddingHorizontal: 16 }}>
+                {label != '' && (
+                    <Text style={styles.label}>{label}</Text>
+                )}
+                {labelIcon && (
+                    <View style={styles.labelIcon}>
+                        {labelIcon}
+                    </View>
+                )}
+            </View>
             <Card
                 borderWidth={borderWidth}
                 pl={pl} pt={pt} pr={pr} pb={pb} gap={gap}
@@ -102,7 +111,7 @@ const TextField = ({
                 ]}
             >
                 <View style={endIcon ? styles.inputIcon : undefined}>
-                    <View style={endIcon ? { width: '90%' } : undefined}>
+                    <View style={endIcon ? { width: '80%' } : undefined}>
                         <View
                             style={!multiline ? [
                                 startElement ? {
@@ -183,7 +192,6 @@ const styles = StyleSheet.create({
         gap: 4,
     },
     label: {
-        paddingHorizontal: 16,
         fontSize: FontSize.Tiny,
         fontFamily: FontWeight.w700,
         color: Color.primary[400],
@@ -195,6 +203,10 @@ const styles = StyleSheet.create({
     },
     endIcon: {
         width: '10%',
+        justifyContent: 'center',
+        alignItems: 'flex-end'
+    },
+    labelIcon: {
         justifyContent: 'center',
         alignItems: 'flex-end'
     },
