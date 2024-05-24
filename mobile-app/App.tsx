@@ -19,6 +19,9 @@ import BottomModal from './components/modals/bottom-modal';
 import SelectModal from './components/modals/select-modal';
 import DateTimePickerModal from './components/modals/date-time-picker-modal';
 import { requestBluetoothPermission } from './services/ble-services';
+import { BleManager } from 'react-native-ble-plx';
+import { BLEProvider } from './components/ble/ble-provider';
+import CenterModal from './components/modals/center-modal';
 
 
 // LogBox.ignoreAllLogs();
@@ -35,6 +38,9 @@ SplashScreen.preventAutoHideAsync();
 // });
 
 const Stack = createNativeStackNavigator();
+
+const bleManager = new BleManager();
+
 requestBluetoothPermission();
 
 export default function App() {
@@ -78,45 +84,48 @@ export default function App() {
     <View style={styles.container} onLayout={onLayoutRootView}>
       <StatusBar style='auto' />
       <Provider store={store}>
-        <SafeAreaProvider>
-          <NavigationContainer ref={navigationRef}>
-            <Stack.Navigator
-              initialRouteName="Sign-in"
-              screenOptions={{
-                headerShown: false,
-                contentStyle: styles.container
-              }}
-            >
-              <Stack.Screen
-                name="Sign-in"
-                component={Login}
-                options={{
-                  title: 'Sign in',
+        <BLEProvider bleManager={bleManager} >
+          <SafeAreaProvider>
+            <NavigationContainer ref={navigationRef}>
+              <Stack.Navigator
+                initialRouteName="Sign-in"
+                screenOptions={{
                   headerShown: false,
+                  contentStyle: styles.container
                 }}
-              />
-              <Stack.Screen
-                name="Sign-up"
-                component={Signup}
-                options={{
-                  title: 'Sign up',
-                  headerShown: false,
-                }}
-              />
-              <Stack.Screen
-                name="Dashboard"
-                component={Dashboard}
-                options={{
-                  title: 'Dashboard',
-                  headerShown: false,
-                }}
-              />
-            </Stack.Navigator>
-          </NavigationContainer>
-          <BottomModal />
-          <SelectModal />
-          <DateTimePickerModal />
-        </SafeAreaProvider>
+              >
+                <Stack.Screen
+                  name="Sign-in"
+                  component={Login}
+                  options={{
+                    title: 'Sign in',
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="Sign-up"
+                  component={Signup}
+                  options={{
+                    title: 'Sign up',
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="Dashboard"
+                  component={Dashboard}
+                  options={{
+                    title: 'Dashboard',
+                    headerShown: false,
+                  }}
+                />
+              </Stack.Navigator>
+            </NavigationContainer>
+            <BottomModal />
+            <CenterModal />
+            <SelectModal />
+            <DateTimePickerModal />
+          </SafeAreaProvider>
+        </BLEProvider>
       </Provider>
     </View>
   );

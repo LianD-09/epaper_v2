@@ -19,14 +19,14 @@ import { replace } from '../../../navigation/root-navigation';
 
 const fontList: Array<SelectItem> = fonts.map(e => {
     return {
-        label: e,
-        value: e,
+        label: e.db,
+        value: e.db,
     }
 })
 const themeList: Array<SelectItem> = themes.map(e => {
     return {
-        label: e,
-        value: e,
+        label: e.db,
+        value: e.db,
     }
 })
 
@@ -65,6 +65,8 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
     }, []);
 
     const handleSubmit = async () => {
+        let fontESP = fonts.find((value) => font === value.db);
+        let themeESP = themes.find((value) => theme === value.db);
         // call api
         replace('DataScreen');
     }

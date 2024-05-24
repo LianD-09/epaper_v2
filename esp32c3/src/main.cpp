@@ -7,6 +7,7 @@
 #include <ota.h>
 #include <stdlib.h>
 #include "NimBLEDevice.h"
+#include <BLE.h>
 using namespace std;
 
 #define ENABLE_BLUETOOTH 1
@@ -16,7 +17,6 @@ UBYTE *BlackImage;
 UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
 uint64_t chipid = ESP.getEfuseMac();
 
-NimBLEServer *pServer;
 void setup()
 {
     Serial.println("epd say hi");
@@ -54,18 +54,22 @@ void setup()
 
 #if 0
     Paint_Clear(0xff);
-    const char *Welcome = "Pi's Epaper Project";
+    const char *Welcome = "Epaper Project";
+    UWORD x;
 
-    Paint_DrawString_segment(60, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
+    x = alignSegoe(Welcome, &Segoe16Bold, 50);
+    Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
     EPD_2IN9_V2_Display(BlackImage);
 
     Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-    Paint_DrawString_segment(110, 70, "Initializing", &Segoe11, BLACK, WHITE);
+    x = alignSegoe("Initializing", &Segoe11Bold, 50);
+    Paint_DrawString_segment(x, 70, "Initializing", &Segoe11, BLACK, WHITE);
     EPD_2IN9_V2_Display_Partial(BlackImage);
     DEV_Delay_ms(3000);
 
+    x = alignSegoe("Getting local data", &Segoe11Bold, 50);
     Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-    Paint_DrawString_segment(85, 70, "Getting local data", &Segoe11, BLACK, WHITE);
+    Paint_DrawString_segment(x, 70, "Getting local data", &Segoe11, BLACK, WHITE);
     EPD_2IN9_V2_Display_Partial(BlackImage);
 
     // Get Preferences local data
@@ -128,54 +132,14 @@ void setup()
 #endif
 
 #if defined(ENABLE_BLUETOOTH)
-    Serial.println("Starting NimBLE Server");
-    string bleSName = "EPD-" + to_string(chipid);
-    NimBLEDevice::init(bleSName);
-#ifdef ESP_PLATFORM
-    NimBLEDevice::setPower(ESP_PWR_LVL_P9); /** +9db */
-#else
-    NimBLEDevice::setPower(9); /** +9db */
-#endif
-
-    NimBLEDevice::setSecurityAuth(true, true, true);
-    NimBLEDevice::setSecurityPasskey(123456);
-    NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY);
-    pServer = NimBLEDevice::createServer();
-    NimBLEService *pService = pServer->createService("ABCD");
-    NimBLECharacteristic *pNonSecureCharacteristic = pService->createCharacteristic("1234", NIMBLE_PROPERTY::READ);
-    NimBLECharacteristic *pSecureCharacteristic = pService->createCharacteristic(
-        "1235",
-        NIMBLE_PROPERTY::READ |
-            NIMBLE_PROPERTY::READ_ENC |
-            NIMBLE_PROPERTY::READ_AUTHEN |
-            NIMBLE_PROPERTY::WRITE |
-            NIMBLE_PROPERTY::WRITE_ENC |
-            NIMBLE_PROPERTY::WRITE_AUTHEN);
-    pService->start();
-    pNonSecureCharacteristic->setValue("Hello Non Secure BLE");
-    pSecureCharacteristic->setValue("Hello Secure BLE");
-
-    NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
-    pAdvertising->addServiceUUID("ABCD");
-    Serial.println("Starting...");
-    pAdvertising->start();
+    string deviceName = "EPD-" + to_string(chipid);
+    BLE_Init(deviceName);
 #endif
 }
 
 void loop()
 {
-    if (pServer->getConnectedCount())
-    {
-        NimBLEService *pSvc = pServer->getServiceByUUID("ABCD");
-        if (pSvc)
-        {
-            NimBLECharacteristic *pChr = pSvc->getCharacteristic("1235");
-            if (pChr)
-            {
-                pChr->notify(true);
-            }
-        }
-    }
+    BLE_Loop(BlackImage);
 #if 0
     if (digitalRead(9) == LOW)
     {                                      // Check if the button is pressed

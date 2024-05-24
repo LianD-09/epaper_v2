@@ -9,13 +9,13 @@
 
 // Replace the next variables with your SSID/Password combination
 
-#define SSID "Pi's Network"
-#define PASS "3.14159265358979"
-#define MQTT_BROKER "sinno.soict.ai"
+#define SSID "Do Ngoc"
+#define PASS "12346789"
+#define MQTT_BROKER "epaper.toolhub.app"
 #define MQTT_PORT 1883
 #define MQTT_USERNAME "linhda"
 #define MQTT_PASSWORD "20194314"
-#define CA "-----BEGIN CERTIFICATE----- \
+/* #define CA "-----BEGIN CERTIFICATE----- \
 MIIFSzCCAzOgAwIBAgIUIf99ZMGmgxa1e6paqCDZ5R3O0KswDQYJKoZIhvcNAQEL\
 BQAwLTEZMBcGA1UECgwQQXJ0c2FraCBWZW50dXJlczEQMA4GA1UEAwwHUm9vdCBD\
 QTAeFw0yNDAxMDcxNjUyMzZaFw00NDAxMDIxNjUyMzZaMC0xGTAXBgNVBAoMEEFy\
@@ -162,6 +162,7 @@ g9jG2TmGkyEJ29w71uDCHOrK02QMVHHdovEq+Q2YxaWF4EMdDdyZjqbLbZwC2H0M\
 eUOCTrNrpRvQJj1xhQTAumdkRlqgCdMs12uyURvDGaZSprTCK6SinNtgYBMSbX2E\
 okmLeKAnXwjgNexvZVJFx75B76GDHg==\
 -----END PRIVATE KEY-----"
+*/
 // extern Preferences preferences;
 
 void MQTT_Client_Init(const char *ssid, const char *password, const char *id, UBYTE *Image);

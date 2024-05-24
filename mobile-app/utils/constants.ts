@@ -1,15 +1,76 @@
+// db -> data syntax in DB
+// sign -> data syntax to compare in ESP
+
 export const fonts = [
-    "Monospace 12pt",
-    "Monospace 16pt",
-    "Monospace 20pt",
-    "Segoe UI Light, 11pt",
-    "Segoe UI Bold, 11pt",
-    "Segoe UI Light, 16pt",
-    "Segoe UI Bold, 16pt",
-    "Segoe UI Light, 20pt",
+    {
+        db: "Monospace 12pt",
+        sign: 'F12'
+    },
+    {
+        db: "Monospace 16pt",
+        sign: "F16"
+    },
+    {
+        db: "Monospace 20pt",
+        sign: "F20"
+    },
+    {
+        db: "Segoe UI Light, 11pt",
+        sign: "s11"
+    },
+    {
+        db: "Segoe UI Bold, 11pt",
+        sign: "S11"
+    },
+    {
+        db: "Segoe UI Light, 16pt",
+        sign: "s16"
+    },
+    {
+        db: "Segoe UI Bold, 16pt",
+        sign: "S16"
+    },
+    {
+        db: "Segoe UI Light, 20pt",
+        sign: "s20"
+    },
 ];
 
 export const themes = [
-    "Theme 1",
-    "Theme 2"
+    {
+        db: "Theme 1", sign: "1"
+    },
+    {
+        db: "Theme 2", sign: "2"
+    }
 ]
+
+export const wifiServiceAndCharacteristic =
+{
+    name: "wifi",
+    uuid: "00001a10-0000-1000-8000-00805f9b34fb",
+    characteristics: {
+        ssid: "00001a11-0000-1000-8000-00805f9b34fb",
+        password: "00001a12-0000-1000-8000-00805f9b34fb",
+        restart: "00001a1f-0000-1000-8000-00805f9b34fb",
+    }
+};
+export const dataServiceAndCharacteristic = {
+    name: "data",
+    uuid: "00001a20-0000-1000-8000-00805f9b34fb",
+    characteristics: {
+        type: "00001a2f-0000-1000-8000-00805f9b34fb",
+        name: "00001a21-0000-1000-8000-00805f9b34fb",
+        input2: "00001a22-0000-1000-8000-00805f9b34fb",
+        input3: "00001a23-0000-1000-8000-00805f9b34fb",
+        input4: "00001a24-0000-1000-8000-00805f9b34fb",
+        input5: "00001a25-0000-1000-8000-00805f9b34fb",
+    }
+};
+export const imageServiceAndCharacteristic = {
+    name: "image",
+    uuid: "",
+    characteristics: {}
+}
+
+export const MAX_CHARACTERISTIC_VALUE_LENGTH = 512;

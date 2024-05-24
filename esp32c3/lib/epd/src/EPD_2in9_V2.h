@@ -34,8 +34,8 @@
 #include <DEV_Config.h>
 
 // Display resolution
-#define EPD_2IN9_V2_WIDTH       128
-#define EPD_2IN9_V2_HEIGHT      296
+#define EPD_2IN9_V2_WIDTH 128
+#define EPD_2IN9_V2_HEIGHT 296
 
 void EPD_2IN9_V2_Init(void);
 void EPD_2IN9_V2_Gray4_Init(void);

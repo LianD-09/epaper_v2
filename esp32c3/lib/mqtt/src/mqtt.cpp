@@ -11,15 +11,15 @@
 WiFiClient espClient;
 MqttClient client(espClient);
 uint8_t update; // 0 - no update
-               // 1 - write1 update
-               // 2 - write2 update
-               // 3 - write3 update
-               // 4 - write4 update
-               // 5 - write5 update
-               // 6 - ping update
-               // 7 - device update
-               // 8 - remove update
-               // 9 - ota upgrade
+                // 1 - write1 update
+                // 2 - write2 update
+                // 3 - write3 update
+                // 4 - write4 update
+                // 5 - write5 update
+                // 6 - ping update
+                // 7 - device update
+                // 8 - remove update
+                // 9 - ota upgrade
 const int connectTimeout = 20000;
 
 void onMessage(int messageSize);
@@ -118,14 +118,14 @@ void handleMessage(char *message)
     char *chr = message;
     uint8_t count = 0;
     uint8_t type = 0; // 0 - not defined
-                  // 1 - write1
-                  // 2 - write2
-                  // 3 - write3
-                  // 4 - write4
-                  // 5 - write5
-                  // 6 - ping
-                  // 7 - update
-                  // 8 - ota
+                      // 1 - write1
+                      // 2 - write2
+                      // 3 - write3
+                      // 4 - write4
+                      // 5 - write5
+                      // 6 - ping
+                      // 7 - update
+                      // 8 - ota
     while (*chr != '\0')
     {
         if (*chr == '|')
@@ -448,16 +448,26 @@ void MQTT_Loop(const char *topic, UBYTE *BlackImage)
         MQTT_Client_Init(ssid.c_str(), password.c_str(), topic, BlackImage);
         MQTT_Connect(topic, BlackImage);
 
-        if (!dataID.isEmpty()) {
-            if (dataType == 1) {
+        if (!dataID.isEmpty())
+        {
+            if (dataType == 1)
+            {
                 displayWrite1(BlackImage);
-            } else if (dataType == 2) {
+            }
+            else if (dataType == 2)
+            {
                 displayWrite2(BlackImage);
-            } else if (dataType == 3) {
+            }
+            else if (dataType == 3)
+            {
                 displayWrite3(BlackImage);
-            } else if (dataType == 4) {
+            }
+            else if (dataType == 4)
+            {
                 displayWrite4(BlackImage);
-            } else if (dataType == 5) {
+            }
+            else if (dataType == 5)
+            {
                 displayWrite5(BlackImage);
             }
         }
@@ -491,10 +501,12 @@ void MQTT_Loop(const char *topic, UBYTE *BlackImage)
         client.print(removeOK.c_str());
         client.endMessage();
         update = 0;
-    } 
-    else if (update == 9) {
+    }
+    else if (update == 9)
+    {
         String firmware = preferences.getString("firmware", "");
-        if (!firmware.isEmpty()) {
+        if (!firmware.isEmpty())
+        {
             String url = "http://65.108.79.164:3007/api/devices/upgrade?version=";
             url += firmware;
             performOTAUpdate(url.c_str());

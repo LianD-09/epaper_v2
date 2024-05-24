@@ -17,7 +17,9 @@ import NewStack from '../../navigation/new-stack';
 
 export type RootTab = {
     Home: undefined,
-    New: undefined,
+    New: {
+        screen: string
+    },
     Notification: undefined
 }
 

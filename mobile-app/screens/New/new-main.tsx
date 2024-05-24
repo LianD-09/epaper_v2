@@ -17,7 +17,7 @@ import fontSize from '../../themes/font-size';
 import { StatusBar } from 'expo-status-bar';
 import Card from '../../libs/card';
 import NewItem from '../../components/new/new-item';
-import { navigate } from '../../navigation/root-navigation';
+import { navigate, navigationRef } from '../../navigation/root-navigation';
 import { NewDataScreenProps, NewDeviceScreenProps, RootStackNewParamList } from '../../navigation/param-types';
 
 const deviceModes = [
@@ -63,8 +63,7 @@ const dataModes = [
     }
 ]
 
-const NewMainScreen = ({ navigation }) => {
-
+const NewMainScreen = ({ navigation, route }) => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={Color.white[100]} />

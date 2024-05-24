@@ -97,10 +97,6 @@ const DataDetail = ({
                 return (
                     <>
                         <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Email:</Typography>
-                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.email}</Typography>
-                        </View>
-                        <View style={styles.itemRow}>
                             <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Purpose:</Typography>
                             <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{item.purpose}</Typography>
                         </View>

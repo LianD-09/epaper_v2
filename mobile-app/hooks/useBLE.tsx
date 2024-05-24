@@ -1,45 +1,82 @@
 /* eslint-disable no-bitwise */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
     BleError,
     BleManager,
     Characteristic,
     Device,
+    Service,
+    State,
 } from 'react-native-ble-plx';
-import { decodeValue } from '../utils/utils';
-
-const bleManager = new BleManager();
+import { decodeValue, encodeValue } from '../utils/utils';
+import { BLEContext } from '../components/ble/ble-provider';
+import { useDispatch } from 'react-redux';
+import { openCenterModal } from '../redux/slice/center-modal-slice';
+import Typography from '../libs/typography';
+import * as Location from 'expo-location';
+import { dataServiceAndCharacteristic, imageServiceAndCharacteristic, wifiServiceAndCharacteristic } from '../utils/constants';
 
 interface BluetoothLowEnergyApi {
-    scanForPeripherals(): void;
+    scanForPeripherals(reScan?: boolean): void;
     connectToDevice: (deviceId: Device) => Promise<void>;
     disconnectFromDevice: () => void;
     connectedDevice: Device | null;
     allDevices: Device[];
+    isScanning: boolean,
+    characteristics: Characteristic[];
+    services: Service[];
+    changeCharacteristicsValue: (serviceUUID: string, characteristicUUID: string, value: string, withResponse?: boolean) => Promise<boolean>;
 }
 
 function useBLE(): BluetoothLowEnergyApi {
-    const [allDevices, setAllDevices] = useState<Device[]>([]);
-    const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+    const {
+        bleManager,
+        allDevices,
+        setAllDevices,
+        connectedDevice,
+        setConnectedDevice,
+        isScanning,
+        setIsScanning,
+        characteristics,
+        setServices,
+        services,
+        setCharacteristics,
+    } = useContext(BLEContext);
 
+    const dispatch = useDispatch();
     const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
         devices.findIndex(device => nextDevice.id === device.id) > -1;
 
-    const scanForPeripherals = async () => {
-        bleManager.startDeviceScan(null, null, (error, device) => {
-            if (error) {
-                console.log(error);
-            }
+    const scanForPeripherals = async (reScan: boolean = false) => {
+        if (await isEnabledBLELocation() === false) {
+            return;
+        }
 
-            if (!!device && device.name !== null) {
-                setAllDevices((prevState: Device[]) => {
-                    if (!isDuplicteDevice(prevState, device)) {
-                        return [...prevState, device];
-                    }
-                    return prevState;
-                });
-            }
-        });
+        if (reScan) {
+            setAllDevices([]);
+        }
+        setIsScanning(true);
+
+        if (await bleManager.state() === State.PoweredOn) {
+            bleManager.startDeviceScan(null, null, (error, device) => {
+                if (error) {
+                    console.log(error);
+                }
+
+                if (!!device && device.name !== null) {
+                    setAllDevices((prevState: Device[]) => {
+                        if (!isDuplicteDevice(prevState, device)) {
+                            return [...prevState, device];
+                        }
+                        return prevState;
+                    });
+                }
+            });
+        }
+        setTimeout(() => {
+            bleManager.stopDeviceScan();
+            setIsScanning(false);
+        }, 30 * 1000);
     }
 
     const connectToDevice = async (device: Device) => {
@@ -47,11 +84,34 @@ function useBLE(): BluetoothLowEnergyApi {
             const deviceConnection = await bleManager.connectToDevice(device.id);
             setConnectedDevice(deviceConnection);
             await deviceConnection.discoverAllServicesAndCharacteristics();
-            bleManager.stopDeviceScan();
+            stopScanDevices();
             console.log('Connected');
-            await deviceConnection.services();
-            console.log(await deviceConnection.characteristicsForService('0000abcd-0000-1000-8000-00805f9b1234'));
-            const val = await deviceConnection.readCharacteristicForService('0000abcd-0000-1000-8000-00805f9b1234', '00001235-0000-1000-8000-00805f9b34fb');
+            let servicesList = await deviceConnection.services();
+            setServices(servicesList);
+            let characteristicList: Characteristic[] = [];
+
+            for (let i = 0; i < servicesList.length; i++) {
+                let arr = [
+                    wifiServiceAndCharacteristic,
+                    dataServiceAndCharacteristic,
+                    imageServiceAndCharacteristic
+                ].find((value, index) => {
+                    return value.uuid === servicesList[i].uuid;
+                });
+
+                if (arr != undefined) {
+                    let items = await deviceConnection.characteristicsForService(servicesList[i].uuid);
+                    characteristicList = [...characteristicList, ...items];
+                }
+            }
+
+            setCharacteristics(characteristicList);
+
+            // Read wifi ssid to perform requesting key
+            const val = await deviceConnection.readCharacteristicForService(
+                '00001a10-0000-1000-8000-00805f9b34fb',
+                '00001a11-0000-1000-8000-00805f9b34fb'
+            );
             console.log(decodeValue(val.value ?? ''))
 
         } catch (e) {
@@ -74,22 +134,115 @@ function useBLE(): BluetoothLowEnergyApi {
         }
     }, [connectedDevice]);
 
-    const isEnabledBLELocation = () => {
+    const stopScanDevices = () => {
+        bleManager.stopDeviceScan();
+        setIsScanning(false);
+    }
 
+    const isEnabledBLELocation = async () => {
+        const isEnabled = await Location.hasServicesEnabledAsync();
+
+        if (!isEnabled) {
+            dispatch(openCenterModal({
+                title: 'Enable Location',
+                isOpen: true,
+                isFailed: true,
+                btnTitle: 'Close',
+                btnCancelTitle: '',
+                content: "You have to enable Location services to continue"
+            }))
+        }
+
+        return isEnabled;
     };
 
-    useEffect(() => {
-        return () => {
-            disconnectFromDevice();
+    const changeCharacteristicsValue = async (serviceUUID: string, characteristicUUID: string, value: string, withResponse: boolean = true) => {
+        let result = false;
+        try {
+            if (connectedDevice) {
+                if (withResponse) {
+                    await bleManager.writeCharacteristicWithResponseForDevice(
+                        connectedDevice.id,
+                        serviceUUID,
+                        characteristicUUID,
+                        encodeValue(value)
+                    );
+                }
+                else {
+                    await bleManager.writeCharacteristicWithoutResponseForDevice(
+                        connectedDevice.id,
+                        serviceUUID,
+                        characteristicUUID,
+                        encodeValue(value)
+                    );
+                }
+                result = true;
+            }
         }
-    }, [disconnectFromDevice]);
+        catch (e) {
+            console.log(e);
+            alert(e);
+            result = false
+        }
+        return result;
+    }
+
+    const changeCharacteristicsValueForImage = async (serviceUUID: string, characteristicUUID: string, dataValue: string) => {
+        let result = false;
+
+        try {
+            if (connectedDevice) {
+                await bleManager.writeCharacteristicWithoutResponseForDevice(
+                    connectedDevice.id,
+                    serviceUUID,
+                    characteristicUUID,
+                    dataValue
+                );
+                result = true;
+            }
+        }
+        catch (e) {
+            console.log(e);
+            alert(e);
+            result = false
+        }
+        return result;
+    }
+
+    useEffect(() => {
+        const subscription = bleManager.onStateChange((state) => {  // check if device bluetooth is powered on, if not alert to enable it!
+            if (state === 'PoweredOff') {
+                dispatch(openCenterModal({
+                    title: 'Enable Bluetooth',
+                    isOpen: true,
+                    isFailed: true,
+                    btnTitle: 'Turn on',
+                    callback: () => {
+                        bleManager.enable();
+                    },
+                    btnCancelTitle: 'Cancel',
+                    content: "You have to enable Bluetooth and Location to continue"
+                }))
+            }
+        }, true);
+
+        return () => {
+            subscription.remove();
+            stopScanDevices();
+            setAllDevices([]);
+        }
+    }, []);
 
     return {
+        isScanning,
         scanForPeripherals,
         connectToDevice,
         allDevices,
         connectedDevice,
+        characteristics,
+        services,
         disconnectFromDevice,
+        changeCharacteristicsValue,
     };
 }
 

@@ -35,3 +35,14 @@ export type DatePickerState = {
     selected?: Date | null,
     mode: 'date' | 'time'
 }
+
+export type CMState = {
+    isOpen: boolean,
+    isFailed: boolean,
+    title: string,
+    icon?: ImageSourcePropType | undefined,
+    content?: React.ReactNode,
+    btnTitle: string,
+    btnCancelTitle: string,
+    callback?: ((...args: any) => any) | null | undefined,
+}

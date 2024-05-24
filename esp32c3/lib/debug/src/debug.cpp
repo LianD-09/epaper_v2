@@ -9,14 +9,15 @@ void softwareReset()
     ESP.restart();
 }
 
-void enterDebugMode(UBYTE * BlackImage)
+void enterDebugMode(UBYTE *BlackImage)
 {
     // START
-    const char *Welcome = "Pi's Epaper Project";
+    const char *Welcome = "Epaper Project";
     const char *text = "Debug Mode";
     EPD_2IN9_V2_Clear();
     Paint_SelectImage(BlackImage);
     Paint_Clear(0xff);
+    UWORD x = alignSegoe(Welcome, &Segoe16Bold, 50);
     Paint_DrawString_segment(60, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
     EPD_2IN9_V2_Display(BlackImage);
 
@@ -54,8 +55,7 @@ void enterDebugMode(UBYTE * BlackImage)
     EPD_2IN9_V2_Display(BlackImage);
     DEV_Delay_ms(10000);
 
-
-    //DRAW SHAPE
+    // DRAW SHAPE
     Paint_SelectImage(BlackImage);
     Paint_Clear(0xff);
 
@@ -83,7 +83,7 @@ void enterDebugMode(UBYTE * BlackImage)
     EPD_2IN9_V2_Display_Base(BlackImage);
     DEV_Delay_ms(5000);
 
-    //Draw text
+    // Draw text
 
     Paint_SelectImage(BlackImage);
     Paint_Clear(0xff);
@@ -103,7 +103,7 @@ void enterDebugMode(UBYTE * BlackImage)
     Paint_DrawString_segment(10, 87, "Đây là Segoe UI Light 20pt", &Segoe20, BLACK, WHITE);
     EPD_2IN9_V2_Display(BlackImage);
     DEV_Delay_ms(10000);
-    
+
     EPD_2IN9_V2_Init();
     EPD_2IN9_V2_Clear();
     Paint_SelectImage(BlackImage);

@@ -89,7 +89,6 @@ export type Client = {
 export type Room = {
     id: string | number,
     name: string,
-    email: string,
     purpose: string,
     manager: string,
     roomStatus: string,
@@ -109,21 +108,20 @@ export type DataRaw = {
     id: string | number,
     type: string,
     name: string,
-    // Client
-    // Student
-    // Employee
-    email?: string | null,
-    // Client:   Address
-    // Student:  Student ID
+    // Client: Email
+    // Student: Email
+    // Employee: Email
     // Product:  Category
-    // Employee: Employee ID
     // Room:     Purpose
     input2?: string | null,
-    // Student:  Class
+    // Client:   Address
+    // Student:  Student ID
+    // Employee: Employee ID
     // Product:  Price
-    // Employee: Department
     // Room:     Manager
     input3?: string | null,
+    // Student:  Class
+    // Employee: Department
     // Room:     Status
     input4?: string | null,
     active: boolean,

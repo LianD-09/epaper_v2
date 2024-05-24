@@ -28,7 +28,6 @@ const EditDataScreen = ({ navigation, route }) => {
     const { data, dataType } = route.params;
     const [active, setActive] = useState<boolean>(false);
     const [name, setName] = useState<string>('');
-    const [email, setEmail] = useState<string>('');
     const [input2, setInput2] = useState<string>('');
     const [input3, setInput3] = useState<string>('');
     const [input4, setInput4] = useState<string>('');
@@ -48,27 +47,26 @@ const EditDataScreen = ({ navigation, route }) => {
                 break;
             case DataType.CLIENT:
                 item = data as Client;
-                setEmail(item.email);
-                setInput2(item.address);
+                setInput2(item.email);
+                setInput3(item.address);
                 break;
             case DataType.EMPLOYEE:
                 item = data as Employee;
-                setEmail(item.email);
-                setInput2(item.employeeId);
-                setInput3(item.department);
+                setInput2(item.email);
+                setInput3(item.employeeId);
+                setInput4(item.department);
                 break;
             case DataType.ROOM:
                 item = data as Room;
-                setEmail(item.email);
                 setInput2(item.purpose);
                 setInput3(item.manager);
                 setInput4(item.roomStatus);
                 break;
             case DataType.STUDENT:
                 item = data as Student;
-                setEmail(item.email);
-                setInput2(item.studentId);
-                setInput3(item.class);
+                setInput2(item.email);
+                setInput3(item.studentId);
+                setInput4(item.class);
                 break;
         }
     }, []);
@@ -115,18 +113,18 @@ const EditDataScreen = ({ navigation, route }) => {
                             disable={false}
                         />
                         <TextField
-                            value={email}
+                            value={input2}
                             keyboardType='email-address'
                             placeholder={'Email'}
                             label={'Email'}
-                            onChange={setEmail}
+                            onChange={setInput2}
                             disable={false}
                         />
                         <TextField
-                            value={input2}
+                            value={input3}
                             placeholder={'Address'}
                             label={'Address'}
-                            onChange={setInput2}
+                            onChange={setInput3}
                             disable={false}
                         />
                     </>
@@ -143,18 +141,18 @@ const EditDataScreen = ({ navigation, route }) => {
                             disable={false}
                         />
                         <TextField
-                            value={email}
+                            value={input2}
                             keyboardType='email-address'
                             placeholder={'Email'}
                             label={'Email'}
-                            onChange={setEmail}
+                            onChange={setInput2}
                             disable={false}
                         />
                         <TextField
-                            value={input2}
+                            value={input3}
                             placeholder={'Employee ID'}
                             label={'Employee ID'}
-                            onChange={setInput2}
+                            onChange={setInput3}
                             disable={false}
                         />
                         <TextField
@@ -175,14 +173,6 @@ const EditDataScreen = ({ navigation, route }) => {
                             placeholder={'Name'}
                             label={'Name'}
                             onChange={setName}
-                            disable={false}
-                        />
-                        <TextField
-                            value={email}
-                            keyboardType='email-address'
-                            placeholder={'Email'}
-                            label={'Email'}
-                            onChange={setEmail}
                             disable={false}
                         />
                         <TextField
@@ -220,25 +210,25 @@ const EditDataScreen = ({ navigation, route }) => {
                             disable={false}
                         />
                         <TextField
-                            value={email}
+                            value={input2}
                             keyboardType='email-address'
                             placeholder={'Email'}
                             label={'Email'}
-                            onChange={setEmail}
-                            disable={false}
-                        />
-                        <TextField
-                            value={input2}
-                            placeholder={'Student ID'}
-                            label={'Student ID'}
                             onChange={setInput2}
                             disable={false}
                         />
                         <TextField
                             value={input3}
+                            placeholder={'Student ID'}
+                            label={'Student ID'}
+                            onChange={setInput3}
+                            disable={false}
+                        />
+                        <TextField
+                            value={input4}
                             placeholder={'Class'}
                             label={'Class'}
-                            onChange={setInput3}
+                            onChange={setInput4}
                             disable={false}
                         />
                     </>
@@ -252,7 +242,6 @@ const EditDataScreen = ({ navigation, route }) => {
                 data: {
                     ...data,
                     name,
-                    email,
                     input2,
                     input3,
                     input4,

@@ -56,7 +56,6 @@ const DevicesDetail = ({
             id,
             type: 'Employee',
             name: 'Thịt gà',
-            email: 'linh@gmail.com',
             input2: 'Thực phẩm',
             input3: '10000',
             input4: 'Available',
@@ -86,8 +85,8 @@ const DevicesDetail = ({
                 let item: Client;
                 item = {
                     ...data,
-                    email: data.email ?? '',
-                    address: data.input2 ?? '',
+                    email: data.input2 ?? '',
+                    address: data.input3 ?? '',
                 }
                 newData = item;
                 setDataDetail(newData);
@@ -97,9 +96,9 @@ const DevicesDetail = ({
                 let item: Employee;
                 item = {
                     ...data,
-                    email: data.email ?? '',
-                    employeeId: data.input2 ?? '',
-                    department: data.input3 ?? '',
+                    email: data.input2 ?? '',
+                    employeeId: data.input3 ?? '',
+                    department: data.input4 ?? '',
                 }
                 newData = item;
                 setDataDetail(newData);
@@ -109,7 +108,6 @@ const DevicesDetail = ({
                 let item: Room;
                 item = {
                     ...data,
-                    email: data.email ?? '',
                     purpose: data.input2 ?? '',
                     manager: data.input3 ?? '',
                     roomStatus: data.input4 ?? '',
@@ -122,9 +120,9 @@ const DevicesDetail = ({
                 let item: Student;
                 item = {
                     ...data,
-                    email: data.email ?? '',
-                    studentId: data.input2 ?? '',
-                    class: data.input3 ?? ''
+                    email: data.input2 ?? '',
+                    studentId: data.input3 ?? '',
+                    class: data.input4 ?? ''
                 }
                 newData = item;
                 setDataDetail(newData);
@@ -183,10 +181,6 @@ const DevicesDetail = ({
             case DataType.ROOM:
                 return (
                     <>
-                        <View style={styles.itemRow}>
-                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Email:</Typography>
-                            <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{(dataDetail as Room)?.email}</Typography>
-                        </View>
                         <View style={styles.itemRow}>
                             <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Purpose:</Typography>
                             <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{(dataDetail as Room)?.purpose}</Typography>
