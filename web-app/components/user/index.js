@@ -42,7 +42,7 @@ const User = ({ cookies, setToken }) => {
                 </div>
             )}
 
-            <div className="stats w-full" style={{margin: "20px 0px"}}>
+            <div className="stats w-full" style={{ margin: "20px 0px" }}>
                 {console.log(user)}
                 <p>Your ID: {user?.id}</p>
                 <p>Your Name: {user?.name}</p>

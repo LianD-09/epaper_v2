@@ -96,7 +96,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 label="Email"
                                 required
                                 type="email"
-                                onChange={(e) => handleChange("email", e)}
+                                onChange={(e) => handleChange("input2", e)}
                             />
 
                             <Input
@@ -104,7 +104,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 label="Address"
                                 required
                                 type="text"
-                                onChange={(e) => handleChange("input2", e)}
+                                onChange={(e) => handleChange("input3", e)}
                             />
                         </>
                     ) : dataCreated.type === "Student" ? (
@@ -114,7 +114,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 required
                                 label="Email"
                                 type="email"
-                                onChange={(e) => handleChange("email", e)}
+                                onChange={(e) => handleChange("input2", e)}
                             />
 
                             <Input
@@ -122,7 +122,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 label="Student ID"
                                 required
                                 type="text"
-                                onChange={(e) => handleChange("input2", e)}
+                                onChange={(e) => handleChange("input3", e)}
                             />
 
                             <Input
@@ -130,7 +130,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 label="Class"
                                 required
                                 type="text"
-                                onChange={(e) => handleChange("input3", e)}
+                                onChange={(e) => handleChange("input4", e)}
                             />
                         </>
                     ) : dataCreated.type === "Product" ? (
@@ -158,7 +158,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 label="Email"
                                 required
                                 type="email"
-                                onChange={(e) => handleChange("email", e)}
+                                onChange={(e) => handleChange("input2", e)}
                             />
 
                             <Input
@@ -166,7 +166,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 label="Employee ID"
                                 required
                                 type="text"
-                                onChange={(e) => handleChange("input2", e)}
+                                onChange={(e) => handleChange("input3", e)}
                             />
 
                             <Input
@@ -174,7 +174,7 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
                                 label="Department"
                                 required
                                 type="text"
-                                onChange={(e) => handleChange("input3", e)}
+                                onChange={(e) => handleChange("input4", e)}
                             />
                         </>
                     ) : (
@@ -294,8 +294,8 @@ const CreateData = ({ dataCreated, setDataCreated, stage, setStage, handleStage,
         ) : (
             <div className="content text-light-text dark:text-dark-text">
                 <h1>Your data is submitted successfully!</h1>
-                <p style={{marginTop: "10px"}}> Your data is saved in the database, but you chose not to display on an EPD device yet.</p>
-                <button style={{marginTop:"15px"}} className="ok" onClick={() => {
+                <p style={{ marginTop: "10px" }}> Your data is saved in the database, but you chose not to display on an EPD device yet.</p>
+                <button style={{ marginTop: "15px" }} className="ok" onClick={() => {
                     setStage(-1);
                     handleReset();
                 }}>

@@ -131,22 +131,22 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
                 ctx.font = style.font;
                 ctx.fillStyle = style.color;
                 ctx.fillText(`Name: ${dataCreated.name}`, 10, 30);
-                ctx.fillText(`Email: ${dataCreated.email}`, 10, 60);
+                ctx.fillText(`Email: ${dataCreated.iniput2}`, 10, 60);
             } else if (dataCreated.type === "Student") {
                 ctx.font = style.font;
                 ctx.fillStyle = style.color;
                 ctx.fillText(`Name: ${dataCreated.name}`, 10, 30);
-                ctx.fillText(`Email: ${dataCreated.email}`, 10, 60);
+                ctx.fillText(`Email: ${dataCreated.input2}`, 10, 60);
             } else if (dataCreated.type === "Employee") {
                 ctx.font = style.font;
                 ctx.fillStyle = style.color;
                 ctx.fillText(`Name: ${dataCreated.name}`, 10, 30);
-                ctx.fillText(`Email: ${dataCreated.email}`, 10, 60);
+                ctx.fillText(`Email: ${dataCreated.input2}`, 10, 60);
             } else if (dataCreated.type === "Room") {
                 ctx.font = style.font;
                 ctx.fillStyle = style.color;
                 ctx.fillText(`Name: ${dataCreated.name}`, 10, 30);
-                ctx.fillText(`Email: ${dataCreated.email}`, 10, 60);
+                ctx.fillText(`Email: ${dataCreated.input2}`, 10, 60);
             }
         }
     }, [style, dataCreated, stage])
@@ -285,15 +285,6 @@ const ChooseDevice = ({ dataCreated, setDataCreated, stage, setStage, handleRese
                             })}
                         </Dropdown.Menu>
                     </Dropdown>
-
-
-                    {console.log(`Name: `, dataCreated.name)}
-                    {console.log(`Email: `, dataCreated.email)}
-                    {console.log(`Address: `, dataCreated.address)}
-                    {console.log(`Write on EPD?: `, dataCreated.active)}
-                    {console.log(`Device: `, dataCreated.deviceID)}
-                    {console.log(`Font: `, dataCreated.fontStyle)}
-                    {console.log(`Theme: `, dataCreated.designSchema)}
 
                     <button type="submit">Submit</button>
                     <button onClick={() => {

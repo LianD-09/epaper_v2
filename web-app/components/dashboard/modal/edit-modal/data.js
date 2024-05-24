@@ -175,22 +175,22 @@ const Data = ({ dataUpdated, handleSubmit, handleChange }) => {
         ctx.font = style.font;
         ctx.fillStyle = style.color;
         ctx.fillText(`Name: ${dataUpdated.name}`, 10, 30);
-        ctx.fillText(`Email: ${dataUpdated.email}`, 10, 60);
+        ctx.fillText(`Email: ${dataUpdated.input2}`, 10, 60);
       } else if (dataUpdated.type === "Student") {
         ctx.font = style.font;
         ctx.fillStyle = style.color;
         ctx.fillText(`Name: ${dataUpdated.name}`, 10, 30);
-        ctx.fillText(`Email: ${dataUpdated.email}`, 10, 60);
+        ctx.fillText(`Email: ${dataUpdated.input2}`, 10, 60);
       } else if (dataUpdated.type === "Employee") {
         ctx.font = style.font;
         ctx.fillStyle = style.color;
         ctx.fillText(`Name: ${dataUpdated.name}`, 10, 30);
-        ctx.fillText(`Email: ${dataUpdated.email}`, 10, 60);
+        ctx.fillText(`Email: ${dataUpdated.input2}`, 10, 60);
       } else if (dataUpdated.type === "Room") {
         ctx.font = style.font;
         ctx.fillStyle = style.color;
         ctx.fillText(`Name: ${dataUpdated.name}`, 10, 30);
-        ctx.fillText(`Email: ${dataUpdated.email}`, 10, 60);
+        // ctx.fillText(`Email: ${dataUpdated.email}`, 10, 60);
       }
     }
   }, [style, dataUpdated, dataStage])
@@ -325,15 +325,6 @@ const Data = ({ dataUpdated, handleSubmit, handleChange }) => {
             </Dropdown.Menu>
           </Dropdown>
 
-
-          {console.log(`Name: `, dataUpdated.name)}
-          {console.log(`Email: `, dataUpdated.email)}
-          {console.log(`Address: `, dataUpdated.address)}
-          {console.log(`Write on EPD?: `, dataUpdated.active)}
-          {console.log(`Device: `, dataUpdated.deviceID)}
-          {console.log(`Font: `, dataUpdated.fontStyle)}
-          {console.log(`Theme: `, dataUpdated.designSchema)}
-
           <button type="submit">Submit</button>
           <button onClick={() => setDataStage(0)}>Back</button>
         </form>
@@ -354,18 +345,18 @@ const Data = ({ dataUpdated, handleSubmit, handleChange }) => {
               className="input"
               label="Email"
               required
-              initialValue={dataUpdated.email}
+              initialValue={dataUpdated.input2}
               type="email"
-              onChange={(e) => handleChange("email", e.target.value)}
+              onChange={(e) => handleChange("input2", e.target.value)}
             />
 
             <Input
               className="input"
               label="Address"
               required
-              initialValue={dataUpdated.input2}
+              initialValue={dataUpdated.input3}
               type="text"
-              onChange={(e) => handleChange("input2", e.target.value)}
+              onChange={(e) => handleChange("input3", e.target.value)}
             />
           </>
         ) : dataUpdated.type === "Student" ? (
@@ -375,8 +366,8 @@ const Data = ({ dataUpdated, handleSubmit, handleChange }) => {
               required
               label="Email"
               type="email"
-              initialValue={dataUpdated.email}
-              onChange={(e) => handleChange("email", e.target.value)}
+              initialValue={dataUpdated.input2}
+              onChange={(e) => handleChange("input2", e.target.value)}
             />
 
             <Input
@@ -384,8 +375,8 @@ const Data = ({ dataUpdated, handleSubmit, handleChange }) => {
               label="Student ID"
               required
               type="text"
-              initialValue={dataUpdated.input2}
-              onChange={(e) => handleChange("input2", e.target.value)}
+              initialValue={dataUpdated.input3}
+              onChange={(e) => handleChange("input3", e.target.value)}
             />
 
             <Input
@@ -393,8 +384,8 @@ const Data = ({ dataUpdated, handleSubmit, handleChange }) => {
               label="Class"
               required
               type="text"
-              initialValue={dataUpdated.input3}
-              onChange={(e) => handleChange("input3", e.target.value)}
+              initialValue={dataUpdated.input4}
+              onChange={(e) => handleChange("input4", e.target.value)}
             />
           </>
         ) : dataUpdated.type === "Product" ? (
@@ -424,8 +415,8 @@ const Data = ({ dataUpdated, handleSubmit, handleChange }) => {
               label="Email"
               required
               type="email"
-              initialValue={dataUpdated.email}
-              onChange={(e) => handleChange("email", e.target.value)}
+              initialValue={dataUpdated.input2}
+              onChange={(e) => handleChange("input2", e.target.value)}
             />
 
             <Input

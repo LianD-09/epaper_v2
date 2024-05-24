@@ -85,22 +85,22 @@ const DebugModal = ({ data, onClose }) => {
                             {data1.type === "Client" ? (
                                 <>
                                     <p>
-                                        - Email: <strong>{data1.email}</strong>
+                                        - Email: <strong>{data1.input2}</strong>
                                     </p>
                                     <p>
-                                        - Address: <strong>{data1.input2}</strong>
+                                        - Address: <strong>{data1.input3}</strong>
                                     </p>
                                 </>
                             ) : data1.type === "Student" ? (
                                 <>
                                     <p>
-                                        - Email: <strong>{data1.email}</strong>
+                                        - Email: <strong>{data1.input2}</strong>
                                     </p>
                                     <p>
-                                        - Student ID: <strong>{data1.input2}</strong>
+                                        - Student ID: <strong>{data1.input3}</strong>
                                     </p>
                                     <p>
-                                        - Class: <strong>{data1.input3}</strong>
+                                        - Class: <strong>{data1.input4}</strong>
                                     </p>
                                 </>
                             ) : data1.type === "Product" ? (
@@ -115,13 +115,13 @@ const DebugModal = ({ data, onClose }) => {
                             ) : data1.type === "Employee" ? (
                                 <>
                                     <p>
-                                        - Email: <strong></strong>{data1.email}
+                                        - Email: <strong></strong>{data1.input2}
                                     </p>
                                     <p>
-                                        - Employee ID: <strong>{data1.input2}</strong>
+                                        - Employee ID: <strong>{data1.input3}</strong>
                                     </p>
                                     <p>
-                                        - Department: <strong>{data1.input3}</strong>
+                                        - Department: <strong>{data1.input4}</strong>
                                     </p>
                                 </>
                             ) : (

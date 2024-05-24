@@ -76,7 +76,7 @@ const BatchUpdate = () => {
             const worksheet = workbook.Sheets[sheetName];
 
             const headers = XLSX.utils.sheet_to_json(worksheet, { header: 1 })[0];
-            const validKeys = ['_id', 'type', 'name', 'email', 'input2', 'input3', 'input4', 'active', 'deviceID', 'fontStyle', 'designSchema'];
+            const validKeys = ['_id', 'type', 'name', 'input2', 'input3', 'input4', 'active', 'deviceID', 'fontStyle', 'designSchema'];
             const isValid = headers.every((header) => validKeys.includes(header));
 
             if (isValid) {
@@ -268,7 +268,6 @@ const BatchUpdate = () => {
                                             <h4>This item will be created:</h4>
                                             <p>Type: {item.type}</p>
                                             <p>Name: {item.name}</p>
-                                            <p>Email: {item?.email}</p>
                                             <p>Input2: {item?.input2}</p>
                                             <p>Input3: {item?.input3}</p>
                                             <p>Input4: {item?.input4}</p>
@@ -300,7 +299,6 @@ const BatchUpdate = () => {
                                 ]))
                             } else {
                                 const diffName = diffChars(oldData.name, item.name);
-                                const diffEmail = item.email ? diffChars(oldData.email, item.email) : "";
                                 const diffInput2 = diffChars(oldData.input2, item.input2);
                                 const diffInput3 = item.input3 ? diffChars(oldData.input3, item.input3) : "";
                                 const diffInput4 = item.input4 ? diffChars(oldData.input4, item.input4) : "";
@@ -321,15 +319,6 @@ const BatchUpdate = () => {
                                                 </p>
 
                                                 <p>{item.type}</p>
-
-                                                {item.email ? (
-                                                    <p>
-                                                        {diffEmail.map((part) => {
-                                                            const color = part.added ? 'green' : part.removed ? 'red' : 'transparent';
-                                                            return <span key={""} style={{ backgroundColor: color }}>{part.value}</span>
-                                                        })}
-                                                    </p>
-                                                ) : (<></>)}
 
                                                 <p>
                                                     {diffInput2.map((part) => {
@@ -449,7 +438,7 @@ const BatchUpdate = () => {
                             <Button className="ok edit-button" onClick={batchUpdate} disabled={isUpdating}>
                                 {buttonLabel}
                             </Button>
-                            <Button className="ok edit-button" onClick={() => {setFileReady(0);setButtonLabel("Accept all and Update"); setFinal([])}} disabled={isUpdating}>
+                            <Button className="ok edit-button" onClick={() => { setFileReady(0); setButtonLabel("Accept all and Update"); setFinal([]) }} disabled={isUpdating}>
                                 Back
                             </Button>
                         </div>
