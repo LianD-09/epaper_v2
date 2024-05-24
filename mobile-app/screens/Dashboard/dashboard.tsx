@@ -14,6 +14,7 @@ import Color from '../../themes/color';
 import Home from '../Home/home';
 import HomeStack from '../../navigation/home-stack';
 import NewStack from '../../navigation/new-stack';
+import { navigationRef } from '../../navigation/root-navigation';
 
 export type RootTab = {
     Home: undefined,
@@ -68,7 +69,21 @@ const Dashbhoard = ({ navigation }) => {
                 name='Home'
                 component={HomeStack}
                 options={{
-                    tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.8}>{props.children}</TouchableOpacity>,
+                    tabBarButton: (props) => <TouchableOpacity
+                        {...props}
+                        activeOpacity={0.8}
+                        onPress={() => navigationRef.reset({
+                            index: 0,
+                            routes: [{
+                                name: 'Home',
+                                params: {
+                                    screen: 'HomeScreen'
+                                }
+                            }]
+                        })}
+                    >
+                        {props.children}
+                    </TouchableOpacity>,
                     tabBarIcon: (props) => props.focused ?
                         <Image source={require('../../assets/icons/home-solid-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
                         :
@@ -82,7 +97,19 @@ const Dashbhoard = ({ navigation }) => {
                 options={{
                     tabBarButton: (props) => <View style={{ justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                         <View style={styles.bgMiddleIcon} >
-                            <TouchableOpacity {...props} activeOpacity={0.8}>
+                            <TouchableOpacity
+                                {...props}
+                                activeOpacity={0.8}
+                                onPress={() => navigationRef.reset({
+                                    index: 0,
+                                    routes: [{
+                                        name: 'New',
+                                        params: {
+                                            screen: 'NewMainScreen'
+                                        }
+                                    }]
+                                })}
+                            >
                                 <View style={[styles.middleIcon, { backgroundColor: Color.secondary[300] }]} >
                                     {props.children}
                                 </View>
