@@ -11,30 +11,25 @@ const dataSchema = new Schema({
         required: true,
         default: "Nguyễn Văn A"
     },
-    email: {
-        // Client
-        // Student
-        // Employee
-        type: String,
-        trim: true,
-        lowercase: true
-    },
-    input2: { 
-        // Client:   Address
-        // Student:  Student ID
+    input2: {
+        // Client: Email
+        // Student: Email
+        // Employee: Email
         // Product:  Category
-        // Employee: Employee ID
         // Room:     Purpose
         type: String,
     },
     input3: {
-        // Student:  Class
+        // Client:   Address
+        // Student:  Student ID
         // Product:  Price
-        // Employee: Department
+        // Employee: Employee ID
         // Room:     Manager
         type: String,
     },
     input4: {
+        // Student:  Class
+        // Employee: Department
         // Room:     Status
         type: String,
     },
