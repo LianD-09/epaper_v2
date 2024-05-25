@@ -24,6 +24,8 @@ import iconShow from 'assets/icons/show.png';
 import useBLE from '../../../hooks/useBLE';
 import { wifiServiceAndCharacteristic } from '../../../utils/constants';
 import { RootStackHomeParamList } from '../../../navigation/param-types';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
+import Typography from '../../../libs/typography';
 
 const NewDeviceFillScreen = ({ navigation, route }) => {
     const [name, setName] = useState<string>('');
@@ -31,36 +33,38 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
     const [pass, setPass] = useState<string>('');
     const [hide, setHide] = useState<boolean>(true);
     const dispath = useDispatch();
-    const { changeCharacteristicsValue, connectedDevice } = useBLE();
+    const { changeCharacteristicsValue, changeWifiConfiguration, connectedDevice } = useBLE();
 
     const handlePress = async () => {
         try {
             // call api
-            await changeCharacteristicsValue(
-                wifiServiceAndCharacteristic.uuid,
-                wifiServiceAndCharacteristic.characteristics.ssid,
-                ssid
-            );
-            await changeCharacteristicsValue(
-                wifiServiceAndCharacteristic.uuid,
-                wifiServiceAndCharacteristic.characteristics.password,
-                pass
-            );
-            await changeCharacteristicsValue(
-                wifiServiceAndCharacteristic.uuid,
-                wifiServiceAndCharacteristic.characteristics.restart,
-                "1",
-                false
-            );
-            navigationRef.reset({
-                index: 0,
-                routes: [{
-                    name: 'Home',
-                    params: {
-                        screen: "HomeScreen"
-                    }
-                }]
-            })
+            await changeWifiConfiguration(ssid, pass);
+            dispath(openCenterModal({
+                isOpen: true,
+                isFailed: false,
+                title: 'Update device successfully',
+                btnTitle: 'Add data',
+                btnCancelTitle: 'Reset device',
+                icon: require('assets/icons/success-color.png'),
+                content: `Device has been updated. Do you want to create or update data?`,
+                callbackCancel: async () => {
+                    await changeCharacteristicsValue(
+                        wifiServiceAndCharacteristic.uuid,
+                        wifiServiceAndCharacteristic.characteristics.restart,
+                        "1",
+                        false
+                    );
+                    navigationRef.reset({
+                        index: 0,
+                        routes: [{
+                            name: 'Home',
+                            params: {
+                                screen: "HomeScreen"
+                            }
+                        }]
+                    })
+                }
+            }))
         }
         catch (e) {
             console.log(e);

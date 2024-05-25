@@ -98,8 +98,8 @@ const NewDeviceScreen = ({ navigation, route }) => {
             >
                 <View style={styles.main}>
                     <View style={{ gap: 5 }}>
-                        <Typography fontSize={fontSize.Gigantic} fontFamily={fontWeight.w700}>
-                            New device
+                        <Typography fontSize={fontSize.Gigantic} fontFamily={fontWeight.w700} textAlign='left' style={{ width: '50%' }}>
+                            New Device
                         </Typography>
                         <Typography fontSize={fontSize.SuperTiny} fontFamily={fontWeight.w400} textAlign='left'>
                             Make sure the ESP device is powered on and its Bluetooth is enabled. If cannot scan, turn off and turn on your Bluetooth.

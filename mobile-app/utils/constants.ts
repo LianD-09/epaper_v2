@@ -65,6 +65,9 @@ export const dataServiceAndCharacteristic = {
         input3: "00001a23-0000-1000-8000-00805f9b34fb",
         input4: "00001a24-0000-1000-8000-00805f9b34fb",
         input5: "00001a25-0000-1000-8000-00805f9b34fb",
+        dataId: "00001a2c-0000-1000-8000-00805f9b34fb",
+        font: "00001a2d-0000-1000-8000-00805f9b34fb",
+        schema: "00001a2e-0000-1000-8000-00805f9b34fb",
     }
 };
 export const imageServiceAndCharacteristic = {

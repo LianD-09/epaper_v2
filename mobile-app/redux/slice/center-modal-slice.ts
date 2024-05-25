@@ -10,6 +10,7 @@ const initialState: CMState = {
     btnTitle: "",
     btnCancelTitle: "",
     callback: null,
+    callbackCancel: null,
 };
 
 export const centerModalSlice = createSlice({

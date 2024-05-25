@@ -30,6 +30,12 @@ export const selectSlice = createSlice({
                 items: [],
             }
         },
+        streamingItems: (state, action: PayloadAction<SelectState['items']>) => {
+            return {
+                ...state,
+                items: action.payload,
+            }
+        },
         getSelectedItem: (state, action: PayloadAction<SelectItem | null>) => {
             return {
                 ...state,
@@ -45,6 +51,6 @@ export const selectSlice = createSlice({
     }
 })
 // Action creators are generated for each case reducer function
-export const { openSelect, closeSelect, getSelectedItem, resetSelectedItem } = selectSlice.actions
+export const { openSelect, closeSelect, getSelectedItem, resetSelectedItem, streamingItems } = selectSlice.actions
 
 export default selectSlice.reducer

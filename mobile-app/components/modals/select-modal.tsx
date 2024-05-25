@@ -233,12 +233,12 @@ function SelectModal() {
                       >
                         <View style={[styles.parentItem, item?.value === select.selected?.value && { backgroundColor: Color.disable[100] }]}>
                           <View style={styles.actionItem}>
+                            <Typography style={{ paddingHorizontal: 5 }} fontSize={FontSize.Small} lineHeight={22} fontFamily={FontWeight.w600} color={Color.disable[700]}>{item.label}</Typography>
                             {(item?.image != undefined) && (
                               <View style={{ borderRadius: 100, overflow: 'hidden', borderWidth: 0.1, borderColor: '#ccc' }}>
                                 <Image style={styles.buttonCustomIcon} source={item.image} />
                               </View>
                             )}
-                            <Typography style={{ paddingHorizontal: 5 }} fontSize={FontSize.Small} lineHeight={22} fontFamily={FontWeight.w600} color={Color.disable[700]}>{item.label}</Typography>
                           </View>
                         </View>
                       </TouchableOpacity>
@@ -305,16 +305,18 @@ const styles = StyleSheet.create({
     borderRadius: 20
   },
   actionItem: {
+    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     padding: 5,
     gap: 20,
     borderRadius: 20,
     paddingHorizontal: 5
   },
   buttonCustomIcon: {
-    height: 35,
-    width: 35
+    height: 24,
+    width: 24
   }
 })
 

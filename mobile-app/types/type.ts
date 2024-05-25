@@ -6,11 +6,12 @@ export enum Status {
 }
 
 export enum DataType {
-    PRODUCT,
-    STUDENT,
-    EMPLOYEE,
-    CLIENT,
-    ROOM,
+    CLIENT = "client",
+    STUDENT = "student",
+    EMPLOYEE = "employee",
+    PRODUCT = "product",
+    ROOM = "room",
+    IMAGE = "image",
 }
 
 export type Device = {

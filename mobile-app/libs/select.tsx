@@ -13,7 +13,7 @@ import {
   TextStyle
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { resetSelectedItem, openSelect } from "../redux/slice/select-slice";
+import { resetSelectedItem, openSelect, streamingItems } from "../redux/slice/select-slice";
 import Card from "./card";
 import Color from "../themes/color";
 import FontSize from "../themes/font-size";
@@ -92,6 +92,20 @@ const Select = ({
   useEffect(() => {
     setSelectedItem(items.filter((x) => x?.value === value)[0]);
   }, [value]);
+
+  useEffect(() => {
+    if (focus && onFocus != undefined) {
+      onFocus();
+    }
+    else if (!focus && onBlur != undefined) {
+      onBlur();
+      setErrorField(error);
+    }
+  }, [focus]);
+
+  useEffect(() => {
+    dispatch(streamingItems(items));
+  }, [items])
 
   return (
     <View style={{ gap: 4 }}>
@@ -238,8 +252,8 @@ const styles = StyleSheet.create({
     paddingTop: 5,
   },
   buttonCustomIcon: {
-    height: 35,
-    width: 35
+    height: 24,
+    width: 24
   }
 });
 

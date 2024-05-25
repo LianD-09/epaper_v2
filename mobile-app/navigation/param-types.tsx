@@ -31,10 +31,24 @@ export type NewDeviceScreenProps = {
 }
 
 export type NewDataScreenProps = {
-    dataType: DataType;
 }
 
 export type NewDeviceFillScreenProps = {
+}
+
+export type NewDataFillScreenProps = {
+    dataType: DataType
+}
+
+export type SubmitNewDataScreenProps = {
+    data: {
+        name: string,
+        input2?: string | undefined,
+        input3?: string | undefined,
+        input4?: string | undefined,
+        input5?: string | undefined,
+    };
+    dataType: DataType;
 }
 
 export type RootStackNewParamList = RootStack & {
@@ -42,4 +56,6 @@ export type RootStackNewParamList = RootStack & {
     NewDeviceScreen: NewDeviceScreenProps;
     NewDeviceFillScreen: NewDeviceFillScreenProps;
     NewDataScreen: NewDeviceScreenProps;
+    NewDataFillScreen: NewDataFillScreenProps;
+    SubmitNewDataScreen: SubmitNewDataScreenProps;
 };

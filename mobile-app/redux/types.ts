@@ -14,7 +14,8 @@ export type BMState = {
 export type SelectItem = {
     label: string,
     value: string | number | boolean,
-    image?: ImageSourcePropType
+    image?: ImageSourcePropType,
+    iconBg?: string,
 }
 
 export type SelectState = {
@@ -45,4 +46,5 @@ export type CMState = {
     btnTitle: string,
     btnCancelTitle: string,
     callback?: ((...args: any) => any) | null | undefined,
+    callbackCancel?: ((...args: any) => any) | null | undefined,
 }

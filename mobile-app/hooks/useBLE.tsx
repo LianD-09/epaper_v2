@@ -15,20 +15,36 @@ import { openCenterModal } from '../redux/slice/center-modal-slice';
 import Typography from '../libs/typography';
 import * as Location from 'expo-location';
 import { dataServiceAndCharacteristic, imageServiceAndCharacteristic, wifiServiceAndCharacteristic } from '../utils/constants';
+import { DataType } from '../types/type';
 
 interface BluetoothLowEnergyApi {
     scanForPeripherals(reScan?: boolean): void;
     connectToDevice: (deviceId: Device) => Promise<void>;
     disconnectFromDevice: () => void;
+    stopScanDevices: () => void;
     connectedDevice: Device | null;
     allDevices: Device[];
     isScanning: boolean,
     characteristics: Characteristic[];
     services: Service[];
     changeCharacteristicsValue: (serviceUUID: string, characteristicUUID: string, value: string, withResponse?: boolean) => Promise<boolean>;
+    changeWifiConfiguration: (ssid: string, pass: string) => void;
+    changeData: (
+        dataType: DataType,
+        data: {
+            name: string,
+            input2?: string,
+            input3?: string,
+            input4?: string,
+            input5?: string,
+            font: string,
+            schema: string,
+            dataId?: string,
+        }
+    ) => void;
 }
 
-function useBLE(): BluetoothLowEnergyApi {
+function useBLE(required = true): BluetoothLowEnergyApi {
     const {
         bleManager,
         allDevices,
@@ -42,6 +58,7 @@ function useBLE(): BluetoothLowEnergyApi {
         services,
         setCharacteristics,
     } = useContext(BLEContext);
+    bleManager
 
     const dispatch = useDispatch();
     const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
@@ -107,6 +124,7 @@ function useBLE(): BluetoothLowEnergyApi {
 
             setCharacteristics(characteristicList);
 
+
             // Read wifi ssid to perform requesting key
             const val = await deviceConnection.readCharacteristicForService(
                 '00001a10-0000-1000-8000-00805f9b34fb',
@@ -116,6 +134,15 @@ function useBLE(): BluetoothLowEnergyApi {
 
         } catch (e) {
             console.log('FAILED TO CONNECT', e);
+            disconnectFromDevice();
+            dispatch(openCenterModal({
+                isOpen: false,
+                isFailed: true,
+                title: 'Something was wrong',
+                content: 'Please, check your device state and choose correctly or retry again.',
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }));
         }
     };
 
@@ -210,6 +237,12 @@ function useBLE(): BluetoothLowEnergyApi {
     }
 
     useEffect(() => {
+        if (!required) {
+            return () => {
+                setAllDevices([]);
+            }
+        }
+
         const subscription = bleManager.onStateChange((state) => {  // check if device bluetooth is powered on, if not alert to enable it!
             if (state === 'PoweredOff') {
                 dispatch(openCenterModal({
@@ -233,6 +266,101 @@ function useBLE(): BluetoothLowEnergyApi {
         }
     }, []);
 
+    // Start service BLE
+    const changeWifiConfiguration = async (ssid: string, pass: string) => {
+        try {
+            await changeCharacteristicsValue(
+                wifiServiceAndCharacteristic.uuid,
+                wifiServiceAndCharacteristic.characteristics.ssid,
+                ssid
+            );
+            await changeCharacteristicsValue(
+                wifiServiceAndCharacteristic.uuid,
+                wifiServiceAndCharacteristic.characteristics.password,
+                pass
+            );
+        }
+        catch (e) {
+            console.log(e);
+            alert(e);
+        }
+    }
+
+    const changeData = async (
+        dataType: DataType,
+        data: {
+            name: string,
+            input2?: string,
+            input3?: string,
+            input4?: string,
+            input5?: string,
+            font: string,
+            schema: string,
+            dataId?: string,
+        }) => {
+        try {
+            await changeCharacteristicsValue(
+                dataServiceAndCharacteristic.uuid,
+                dataServiceAndCharacteristic.characteristics.name,
+                data.name
+            );
+            if (!!data.input2) {
+                await changeCharacteristicsValue(
+                    dataServiceAndCharacteristic.uuid,
+                    dataServiceAndCharacteristic.characteristics.input2,
+                    data.input2 ?? ''
+                );
+            }
+            if (!!data.input3) {
+                await changeCharacteristicsValue(
+                    dataServiceAndCharacteristic.uuid,
+                    dataServiceAndCharacteristic.characteristics.input3,
+                    data.input3 ?? ''
+                );
+            }
+            if (!!data.input4) {
+                await changeCharacteristicsValue(
+                    dataServiceAndCharacteristic.uuid,
+                    dataServiceAndCharacteristic.characteristics.input4,
+                    data.input4 ?? ''
+                );
+            }
+            if (!!data.input5) {
+                await changeCharacteristicsValue(
+                    dataServiceAndCharacteristic.uuid,
+                    dataServiceAndCharacteristic.characteristics.input5,
+                    data.input5 ?? ''
+                );
+            }
+            await changeCharacteristicsValue(
+                dataServiceAndCharacteristic.uuid,
+                dataServiceAndCharacteristic.characteristics.font,
+                data.font
+            );
+            await changeCharacteristicsValue(
+                dataServiceAndCharacteristic.uuid,
+                dataServiceAndCharacteristic.characteristics.schema,
+                data.schema
+            );
+            if (!!data.dataId) {
+                await changeCharacteristicsValue(
+                    dataServiceAndCharacteristic.uuid,
+                    dataServiceAndCharacteristic.characteristics.dataId,
+                    data.dataId
+                );
+            }
+            await changeCharacteristicsValue(
+                dataServiceAndCharacteristic.uuid,
+                dataServiceAndCharacteristic.characteristics.type,
+                dataType
+            );
+        }
+        catch (e) {
+            console.log(e);
+            alert(e);
+        }
+    }
+
     return {
         isScanning,
         scanForPeripherals,
@@ -243,6 +371,9 @@ function useBLE(): BluetoothLowEnergyApi {
         services,
         disconnectFromDevice,
         changeCharacteristicsValue,
+        changeWifiConfiguration,
+        changeData,
+        stopScanDevices,
     };
 }
 

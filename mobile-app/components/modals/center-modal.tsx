@@ -41,6 +41,9 @@ const CenterModal = () => {
     }, [modalNoti?.isOpen])
 
     const handleClose = () => {
+        if (typeof modalNoti?.callbackCancel === 'function') {
+            modalNoti?.callbackCancel();
+        }
         setShow(false);
     };
 

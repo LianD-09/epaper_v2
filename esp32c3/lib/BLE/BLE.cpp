@@ -17,6 +17,7 @@ const int connectTimeout = 20000;
 
 void display_on_message(UBYTE *BlackImage)
 {
+    Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
     if (update == 1)
     {
         String oldData = preferences.getString("oldData", "");
@@ -170,20 +171,6 @@ void ServerCallbacks::onAuthenticationComplete(ble_gap_conn_desc *desc)
 // Characteristic callback
 void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
 {
-    UBYTE *BlackImage;
-    UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
-    // Create a new image cache
-    /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
-    if ((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL)
-    {
-        printf("Failed to apply for black memory...\r\n");
-        while (1)
-            ;
-    }
-
-    printf("Paint_NewImage\r\n");
-    Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
-
     std::string chrVal = pCharacteristic->getValue();
     std::string chrUUID = pCharacteristic->getUUID();
     Serial.print("Characteristic witten value:");
@@ -450,7 +437,6 @@ void BLE_Init(const std::string &deviceName)
     pDataInput4->setValue(input4);
     pDataInput4->setCallbacks(new CharacteristicCallbacks());
     pDataInput4->notify(true);
-    pServiceData->start();
     // Input5
     NimBLECharacteristic *pDataInput5 = pServiceData->createCharacteristic(
         NimBLEUUID(DATA_CHR_INPUT5_UUID),
@@ -499,11 +485,12 @@ void BLE_Init(const std::string &deviceName)
     pDataID->setValue(dataID);
     pDataID->setCallbacks(new CharacteristicCallbacks());
     pDataID->notify(true);
+
     pServiceData->start();
 
     NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
-    pAdvertising->addServiceUUID(NimBLEUUID("00001A10-0000-1000-8000-00805f9b34fb"));
-    pAdvertising->addServiceUUID(NimBLEUUID("00001A20-0000-1000-8000-00805f9b34fb"));
+    pAdvertising->addServiceUUID(NimBLEUUID(WIFI_SRV_UUID));
+    pAdvertising->addServiceUUID(NimBLEUUID(DATA_SRV_UUID));
     Serial.println("Starting...");
     pAdvertising->start();
 }
