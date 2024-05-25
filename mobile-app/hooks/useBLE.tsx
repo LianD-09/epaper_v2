@@ -19,7 +19,7 @@ import { DataType } from '../types/type';
 
 interface BluetoothLowEnergyApi {
     scanForPeripherals(reScan?: boolean): void;
-    connectToDevice: (deviceId: Device) => Promise<void>;
+    connectToDevice: (deviceId: Device) => Promise<boolean>;
     disconnectFromDevice: () => void;
     stopScanDevices: () => void;
     connectedDevice: Device | null;
@@ -58,7 +58,6 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         services,
         setCharacteristics,
     } = useContext(BLEContext);
-    bleManager
 
     const dispatch = useDispatch();
     const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
@@ -97,12 +96,12 @@ function useBLE(required = true): BluetoothLowEnergyApi {
     }
 
     const connectToDevice = async (device: Device) => {
+        let result = false;
         try {
             const deviceConnection = await bleManager.connectToDevice(device.id);
             setConnectedDevice(deviceConnection);
             await deviceConnection.discoverAllServicesAndCharacteristics();
             stopScanDevices();
-            console.log('Connected');
             let servicesList = await deviceConnection.services();
             setServices(servicesList);
             let characteristicList: Characteristic[] = [];
@@ -130,8 +129,8 @@ function useBLE(required = true): BluetoothLowEnergyApi {
                 '00001a10-0000-1000-8000-00805f9b34fb',
                 '00001a11-0000-1000-8000-00805f9b34fb'
             );
-            console.log(decodeValue(val.value ?? ''))
 
+            result = true;
         } catch (e) {
             console.log('FAILED TO CONNECT', e);
             disconnectFromDevice();
@@ -144,13 +143,12 @@ function useBLE(required = true): BluetoothLowEnergyApi {
                 btnCancelTitle: ''
             }));
         }
+        return result;
     };
 
     const disconnectFromDevice = useCallback(async () => {
         try {
             if (connectedDevice !== null) {
-                console.log('Disconnected');
-
                 await bleManager.cancelDeviceConnection(connectedDevice.id);
                 setConnectedDevice(null);
             }

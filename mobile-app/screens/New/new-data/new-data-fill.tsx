@@ -115,10 +115,10 @@ const NewDataFillScreen = ({ navigation, route }) => {
                             disable={false}
                         />
                         <TextField
-                            value={input3}
+                            value={input4}
                             placeholder={'Department'}
                             label={'Department'}
-                            onChange={setInput3}
+                            onChange={setInput4}
                             disable={false}
                         />
                     </>

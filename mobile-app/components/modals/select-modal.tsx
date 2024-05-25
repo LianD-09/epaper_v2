@@ -236,7 +236,7 @@ function SelectModal() {
                             <Typography style={{ paddingHorizontal: 5 }} fontSize={FontSize.Small} lineHeight={22} fontFamily={FontWeight.w600} color={Color.disable[700]}>{item.label}</Typography>
                             {(item?.image != undefined) && (
                               <View style={{ borderRadius: 100, overflow: 'hidden', borderWidth: 0.1, borderColor: '#ccc' }}>
-                                <Image style={styles.buttonCustomIcon} source={item.image} />
+                                <Image style={styles.buttonCustomIcon} source={item.image} tintColor={Color.primary[700]} />
                               </View>
                             )}
                           </View>

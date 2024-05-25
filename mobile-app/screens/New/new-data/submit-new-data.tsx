@@ -44,10 +44,31 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
     const [device, setDevice] = useState<string | number | null>(null);
     const [font, setFont] = useState<string>('');
     const [theme, setTheme] = useState<string>('');
-    const { scanForPeripherals, connectToDevice, allDevices, stopScanDevices, changeData } = useBLE(false);
+    const {
+        scanForPeripherals,
+        connectToDevice,
+        allDevices,
+        connectedDevice,
+        stopScanDevices,
+        changeData
+    } = useBLE(false);
 
     const deviceList: SelectItem[] = useMemo(() => {
-        return [
+        return !!connectedDevice ? [
+            ...deviceMock,
+            {
+                label: connectedDevice?.name,
+                value: connectedDevice?.id,
+                image: require('assets/icons/bluetooth-48px.png')
+            } as SelectItem,
+            ...allDevices.map(e => {
+                return {
+                    label: e.name,
+                    value: e.id,
+                    image: require('assets/icons/bluetooth-48px.png')
+                } as SelectItem
+            })
+        ] : [
             ...deviceMock,
             ...allDevices.map(e => {
                 return {
@@ -57,7 +78,7 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
                 } as SelectItem
             })
         ]
-    }, [allDevices]);
+    }, [allDevices, connectedDevice]);
 
     useEffect(() => {
         switch (dataType) {

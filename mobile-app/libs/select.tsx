@@ -173,7 +173,7 @@ const Select = ({
             }}
           >
             {selectedItem?.image &&
-              <Image style={styles.buttonCustomIcon} source={selectedItem.image} />
+              <Image style={styles.buttonCustomIcon} source={selectedItem.image} tintColor={Color.primary[700]} />
             }
             {isLoading ? (
               <ActivityIndicator animating={true} size="small" />

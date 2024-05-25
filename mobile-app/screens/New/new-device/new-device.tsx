@@ -73,8 +73,10 @@ const NewDeviceScreen = ({ navigation, route }) => {
 
     const handleConnect = async (e: Device) => {
         try {
-            await connectToDevice(e);
-            navigate<NewDeviceFillScreenProps, RootStackNewParamList>('NewDeviceFillScreen', {})
+            const connected = await connectToDevice(e);
+            if (connected) {
+                navigate<NewDeviceFillScreenProps, RootStackNewParamList>('NewDeviceFillScreen', {});
+            }
         }
         catch (e) {
             console.log(e);
