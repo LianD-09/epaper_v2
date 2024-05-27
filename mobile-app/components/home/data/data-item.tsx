@@ -75,7 +75,7 @@ const DataItem = ({
             <Divider />
             <View style={styles.itemRow}>
                 <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{name}</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{capitalize(DataType[dataType])}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{capitalize(dataType)}</Typography>
             </View>
         </Card>
     )

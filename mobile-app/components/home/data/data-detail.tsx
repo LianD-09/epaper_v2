@@ -144,7 +144,7 @@ const DataDetail = ({
             </View>
             <View style={styles.itemRow}>
                 <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Type:</Typography>
-                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{capitalize(DataType[dataType])}</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{capitalize(dataType)}</Typography>
             </View>
             <View style={styles.itemRow}>
                 <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Status:</Typography>

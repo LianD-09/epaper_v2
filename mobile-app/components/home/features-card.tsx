@@ -35,7 +35,7 @@ const listFeatures: Array<FeatureItemType> = [
         color: Color.primary[400],
         label: 'Scan device',
         iconSrc: require("assets/icons/qr-scan-48px.png"),
-        screen: 'NewDeviceScreen',
+        screen: '',
     },
     {
         color: Color.secondary[600],
@@ -56,7 +56,7 @@ const listFeatures: Array<FeatureItemType> = [
         color: Color.success[600],
         label: 'Wifi devices connect',
         iconSrc: require("assets/icons/wifi-epd-48px.png"),
-        screen: 'NewDeviceScreen'
+        screen: ''
     },
 ]
 

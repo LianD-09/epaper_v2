@@ -14,6 +14,15 @@ export enum DataType {
     IMAGE = "image",
 }
 
+export type User = {
+    id: string | number,
+    email: string,
+    name: string,
+    gender: number,
+    createdAt?: string,
+    updatedAt?: string,
+}
+
 export type Device = {
     active: boolean,
     createdBy: string | number,

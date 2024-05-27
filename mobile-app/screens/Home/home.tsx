@@ -17,6 +17,7 @@ import fontSize from '../../themes/font-size';
 import HomeCard, { TitleEnum } from '../../components/home/home-card';
 import FeaturesCard from '../../components/home/features-card';
 import { StatusBar } from 'expo-status-bar';
+import { navigate } from '../../navigation/root-navigation';
 
 
 const HomeScreen = ({ navigation }) => {
@@ -35,6 +36,7 @@ const HomeScreen = ({ navigation }) => {
                     iconRight={
                         <Image source={require('assets/icons/profile-48px.png')} style={{ width: 32, height: 32 }} tintColor={Color.primary[700]} />
                     }
+                    onPressRight={() => navigate('ProfileScreen')}
                 />
                 <View style={{ paddingHorizontal: 25, gap: 24, }}>
                     <View style={styles.main}>

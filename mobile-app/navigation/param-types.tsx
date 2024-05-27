@@ -24,6 +24,7 @@ export type RootStackHomeParamList = RootStack & {
     DevicesScreen: undefined;
     SubmitEditDataScreen: SubmitEditDataScreenProps;
     EditDevicesScreen: SubmitEditDataScreenProps;
+    ProfileScreen: undefined;
 };
 
 export type NewDeviceScreenProps = {

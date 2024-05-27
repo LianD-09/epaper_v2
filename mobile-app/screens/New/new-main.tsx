@@ -6,6 +6,7 @@ import {
     SafeAreaView,
     ScrollView,
     StyleSheet,
+    TouchableOpacity,
     View,
 } from 'react-native';
 import Button from '../../libs/button';
@@ -20,90 +21,90 @@ import NewItem from '../../components/new/new-item';
 import { navigate, navigationRef } from '../../navigation/root-navigation';
 import { NewDataScreenProps, NewDeviceScreenProps, RootStackNewParamList } from '../../navigation/param-types';
 
-const deviceModes = [
-    {
-        color: Color.info[600],
-        label: 'Bluetooth connect',
-        icon: <Image source={require('assets/icons/bluetooth-48px.png')} style={{ width: 24, height: 24 }} tintColor={Color.white[100]} />,
-        onPress: () => navigate<NewDeviceScreenProps, RootStackNewParamList>('NewDeviceScreen', { mode: 'bluetooth' }),
-    },
-    {
-        color: Color.success[600],
-        label: 'Wifi devices connect',
-        icon: <Image source={require('assets/icons/wifi-epd-48px.png')} style={{ width: 24, height: 24 }} tintColor={Color.white[100]} />,
-        onPress: () => navigate<NewDeviceScreenProps, RootStackNewParamList>('NewDeviceScreen', { mode: 'adhoc' }),
-    }
-]
-
-const dataModes = [
-    {
-        color: Color.purple[600],
-        label: 'Product',
-        onPress: () => null,
-    },
-    {
-        color: Color.orange[700],
-        label: 'Student',
-        onPress: () => null,
-    },
-    {
-        color: Color.success[500],
-        label: 'Employee',
-        onPress: () => null,
-    },
-    {
-        color: Color.primary[600],
-        label: 'Client',
-        onPress: () => null,
-    },
-    {
-        color: Color.info[500],
-        label: 'Room',
-        onPress: () => null,
-    }
-]
 
 const NewMainScreen = ({ navigation, route }) => {
+    const [select, setSelect] = useState<number>(1);
+
+    const handleNext = () => {
+        if (select == 1) {
+            navigate<NewDeviceScreenProps, RootStackNewParamList>('NewDeviceScreen', {
+                mode: 'bluetooth'
+            })
+        }
+        if (select == 2) {
+            navigate<NewDataScreenProps, RootStackNewParamList>('NewDataScreen')
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor={Color.white[100]} />
             <Header
-                headerTitle='New device and data'
+            // headerTitle='New device and data'
             />
             <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.content}
             >
                 <View style={styles.main}>
-                    <Card bgColor={Color.primary[700]} gap={16}>
-                        <Typography fontSize={fontSize.Big} fontFamily={fontWeight.w700} color={Color.white[100]}>
-                            Device
+                    <View style={{ gap: 5 }}>
+                        <Typography fontSize={fontSize.Gigantic} fontFamily={fontWeight.w700} textAlign='left' style={{ width: '50%' }}>
+                            New
                         </Typography>
-                        <View style={{
-                            width: '100%',
-                            flexDirection: 'column',
-                            gap: 5,
-                        }}>
-                            {deviceModes.map((e, index) => {
-                                return <NewItem {...e} key={index} />
-                            })}
-                        </View>
-                    </Card>
-                    <Card bgColor={Color.secondary[300]} gap={16}>
-                        <Typography fontSize={fontSize.Big} fontFamily={fontWeight.w700} >
-                            Data
+                        <Typography fontSize={fontSize.SuperTiny} fontFamily={fontWeight.w400} textAlign='left'>
+                            Which one will you want to continue?
                         </Typography>
-                        <View
-                            style={{
-                                width: '100%',
-                                flexDirection: 'column',
-                                gap: 5,
-                            }}>
-                            {dataModes.map((e, index) => {
-                                return <NewItem {...e} key={index} />
-                            })}
+                    </View>
+                    <View style={{ flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-around', width: '100%' }}>
+                            <TouchableOpacity activeOpacity={0.7} style={{ gap: 12, alignItems: 'center' }} onPress={() => setSelect(1)}>
+                                <View style={{
+                                    borderRadius: 999,
+                                    borderWidth: 2,
+                                    padding: 20,
+                                    borderColor: select == 1 ? Color.primary[600] : Color.primary[200],
+                                    aspectRatio: '1/1',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Image
+                                        source={require('assets/icons/ble-device-color.png')}
+                                        style={{
+                                            width: 76,
+                                            height: 76
+                                        }}
+                                    />
+                                </View>
+                                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} color={select == 1 ? Color.primary[800] : Color.disable[400]}>
+                                    New device
+                                </Typography>
+                            </TouchableOpacity>
+                            <TouchableOpacity activeOpacity={0.7} style={{ gap: 12, alignItems: 'center' }} onPress={() => setSelect(2)}>
+                                <View style={{
+                                    borderRadius: 999,
+                                    borderWidth: 2,
+                                    padding: 20,
+                                    borderColor: select == 2 ? Color.primary[600] : Color.primary[200],
+                                    aspectRatio: '1/1',
+                                    justifyContent: 'center',
+                                    alignItems: 'center'
+                                }}>
+                                    <Image
+                                        source={require('assets/icons/data-color.jpg')}
+                                        style={{
+                                            width: 53,
+                                            height: 76,
+                                        }}
+                                        resizeMode='cover'
+                                    />
+                                </View>
+                                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} color={select == 2 ? Color.primary[800] : Color.disable[400]}>
+                                    New device
+                                </Typography>
+                            </TouchableOpacity>
                         </View>
-                    </Card>
+                    </View>
+                    <Button onPress={handleNext}>Next</Button>
                 </View>
             </ScrollView>
         </SafeAreaView>
@@ -128,6 +129,7 @@ const styles = StyleSheet.create({
         borderRadius: 20
     },
     main: {
+        flex: 1,
         paddingHorizontal: 25,
         gap: 16,
         width: '100%'

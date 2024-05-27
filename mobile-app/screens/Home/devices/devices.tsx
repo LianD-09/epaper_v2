@@ -1,7 +1,8 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
+    Image,
     ScrollView,
     StyleSheet,
     View,
@@ -12,6 +13,11 @@ import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
 import { DataType, Status, Template } from '../../../types/type';
 import DevicesItem from '../../../components/home/devices/devices-item';
+import Typography from '../../../libs/typography';
+import fontSize from '../../../themes/font-size';
+import fontWeight from '../../../themes/font-weight';
+import { navigateThroughStack } from '../../../navigation/root-navigation';
+import { NewDeviceScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
 
 const mockdata = [
     {
@@ -72,18 +78,80 @@ const mockdata = [
 ]
 
 const DevicesScreen = ({ navigation }) => {
+    const { active, inactive } = useMemo(() => {
+        return {
+            active: mockdata.filter((e, index) => e.status === Status.ACTIVE),
+            inactive: mockdata.filter((e, index) => e.status === Status.INACTIVE)
+        }
+    }, [mockdata])
 
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor={Color.white[100]} />
             <Header
                 headerTitle='Devices dashboard'
+                iconRight={<Image
+                    source={require('assets/icons/add-nocircle-64px.png')}
+                    style={{ width: 32, height: 32 }}
+                    tintColor={Color.primary[700]}
+                />}
+                onPressRight={() => navigateThroughStack<NewDeviceScreenProps, RootStackNewParamList>('New', 'NewDeviceScreen', { mode: 'bluetooth' })}
             />
             <ScrollView
                 style={{ flex: 1 }}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.content}
             >
+                <Card style={{
+                    width: '100%',
+                    marginTop: 5,
+                    paddingBottom: 10,
+                    flexDirection: 'row'
+                }}
+                    pb={16}
+                    pt={16}
+                    bgColor={'transparent'}
+                >
+                    <Card
+                        style={{ flex: 1, gap: 16 }}
+                        bgColor={Color.success[500]}
+                    >
+                        <Typography
+                            fontSize={fontSize.SuperTiny}
+                            fontFamily={fontWeight.w700}
+                            color={Color.white[100]}
+                        >
+                            Active devices
+                        </Typography>
+                        <Typography
+                            fontSize={fontSize.Gigantic}
+                            fontFamily={fontWeight.w700}
+                            color={Color.white[100]}
+                        >
+                            {active.length < 10 ? `0${active.length}` : active.length}
+                        </Typography>
+                    </Card>
+                    <Card
+                        style={{ flex: 1, gap: 16 }}
+                        bgColor={Color.error[700]}
+                    >
+                        <Typography
+                            fontSize={fontSize.SuperTiny}
+                            fontFamily={fontWeight.w700}
+                            color={Color.white[100]}
+                        >
+                            Inactive devices
+                        </Typography>
+
+                        <Typography
+                            fontSize={fontSize.Gigantic}
+                            fontFamily={fontWeight.w700}
+                            color={Color.white[100]}
+                        >
+                            {inactive.length < 10 ? `0${inactive.length}` : inactive.length}
+                        </Typography>
+                    </Card>
+                </Card>
                 <Card style={{
                     width: '100%',
                     flex: 1,
@@ -94,6 +162,7 @@ const DevicesScreen = ({ navigation }) => {
                     pt={16}
                     bgColor={Color.white[100]}
                 >
+                    <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w700} style={{ marginBottom: 8 }}>All devices:</Typography>
                     {mockdata.map((e, index) => <DevicesItem key={index} {...e}></DevicesItem>)}
                 </Card>
             </ScrollView>
