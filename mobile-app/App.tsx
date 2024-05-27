@@ -22,6 +22,8 @@ import { requestBluetoothPermission } from './services/ble-services';
 import { BleManager } from 'react-native-ble-plx';
 import { BLEProvider } from './components/ble/ble-provider';
 import CenterModal from './components/modals/center-modal';
+import ScanScreen from './screens/Home/scan/scan';
+import LoadingModal from './components/modals/loading-modal';
 
 
 // LogBox.ignoreAllLogs();
@@ -118,12 +120,21 @@ export default function App() {
                     headerShown: false,
                   }}
                 />
+                <Stack.Screen
+                  name="ScanScreen"
+                  component={ScanScreen}
+                  options={{
+                    title: 'Scan',
+                    headerShown: false,
+                  }}
+                />
               </Stack.Navigator>
             </NavigationContainer>
             <BottomModal />
             <CenterModal />
             <SelectModal />
             <DateTimePickerModal />
+            <LoadingModal />
           </SafeAreaProvider>
         </BLEProvider>
       </Provider>

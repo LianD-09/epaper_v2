@@ -32,7 +32,6 @@ export function navigateThroughStack<T extends object | undefined, R extends Roo
             name: nameTab,
             params: {
                 screen: nameScreen,
-                initial: false,
                 params: params
             }
         }));

@@ -35,7 +35,7 @@ const listFeatures: Array<FeatureItemType> = [
         color: Color.primary[400],
         label: 'Scan device',
         iconSrc: require("assets/icons/qr-scan-48px.png"),
-        screen: '',
+        screen: 'ScanScreen',
     },
     {
         color: Color.secondary[600],
@@ -70,7 +70,14 @@ const FeaturesCard = (props: FeaturesCardProps) => {
                         style={{ flexDirection: 'row', gap: 5, flex: 1 }}
                         activeOpacity={0.5}
                         key={index}
-                        onPress={() => navigateThroughStack('New', e.screen, e?.params)}
+                        onPress={() => {
+                            if (e.screen !== 'ScanScreen') {
+                                navigateThroughStack('New', e.screen, e?.params)
+                            }
+                            else {
+                                navigate('ScanScreen')
+                            }
+                        }}
                     >
                         <FeaturesItem {...e} />
                     </TouchableOpacity>

@@ -43,7 +43,7 @@ const ProfileScreen = ({ navigation, route }) => {
             index: 0,
             routes: [
                 {
-                    name: 'Sign-up'
+                    name: 'Sign-in'
                 },
             ]
         });

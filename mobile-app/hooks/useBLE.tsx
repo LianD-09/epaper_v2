@@ -18,15 +18,18 @@ import { dataServiceAndCharacteristic, imageServiceAndCharacteristic, wifiServic
 import { DataType } from '../types/type';
 
 interface BluetoothLowEnergyApi {
-    scanForPeripherals(reScan?: boolean): void;
+    scanForPeripherals(reScan?: boolean): Promise<void>;
     connectToDevice: (deviceId: Device) => Promise<boolean>;
     disconnectFromDevice: () => void;
     stopScanDevices: () => void;
+    requireEnableBLE: () => void;
+    isEnabledBLELocation: () => Promise<boolean>;
     connectedDevice: Device | null;
     allDevices: Device[];
     isScanning: boolean,
     characteristics: Characteristic[];
     services: Service[];
+    bleManager: BleManager;
     changeCharacteristicsValue: (serviceUUID: string, characteristicUUID: string, value: string, withResponse?: boolean) => Promise<boolean>;
     changeWifiConfiguration: (ssid: string, pass: string) => void;
     changeData: (
@@ -234,6 +237,20 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         return result;
     }
 
+    const requireEnableBLE = () => {
+        dispatch(openCenterModal({
+            title: 'Enable Bluetooth',
+            isOpen: true,
+            isFailed: true,
+            btnTitle: 'Turn on',
+            callback: () => {
+                bleManager.enable();
+            },
+            btnCancelTitle: 'Cancel',
+            content: "You have to enable Bluetooth and Location to continue"
+        }))
+    }
+
     useEffect(() => {
         if (!required) {
             return () => {
@@ -243,17 +260,7 @@ function useBLE(required = true): BluetoothLowEnergyApi {
 
         const subscription = bleManager.onStateChange((state) => {  // check if device bluetooth is powered on, if not alert to enable it!
             if (state === 'PoweredOff') {
-                dispatch(openCenterModal({
-                    title: 'Enable Bluetooth',
-                    isOpen: true,
-                    isFailed: true,
-                    btnTitle: 'Turn on',
-                    callback: () => {
-                        bleManager.enable();
-                    },
-                    btnCancelTitle: 'Cancel',
-                    content: "You have to enable Bluetooth and Location to continue"
-                }))
+                requireEnableBLE();
             }
         }, true);
 
@@ -361,12 +368,15 @@ function useBLE(required = true): BluetoothLowEnergyApi {
 
     return {
         isScanning,
+        isEnabledBLELocation,
         scanForPeripherals,
         connectToDevice,
+        requireEnableBLE,
         allDevices,
         connectedDevice,
         characteristics,
         services,
+        bleManager,
         disconnectFromDevice,
         changeCharacteristicsValue,
         changeWifiConfiguration,
