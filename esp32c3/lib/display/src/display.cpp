@@ -156,7 +156,7 @@ const unsigned char *textToQR(const char *data)
 
     // Initialize QR code
     QRCode qrcode;
-    qrcode_initText(&qrcode, qrcodeData, qrVersion, 0, data);
+    qrcode_initText(&qrcode, qrcodeData, qrVersion, ECC_LOW, data);
 
     // Calculate the size of the EPD array
     int size = ((qrcode.size + 7) / 8) * qrcode.size;
@@ -173,19 +173,68 @@ const unsigned char *textToQR(const char *data)
 
     for (int y = 0; y < qrcode.size; y++)
     {
-        for (int x = 0; x < qrcode.size; x++)
+        for (int x = 0; x < qrcode.size + 1; x++)
         {
             int byteIndex = (y * (qrcode.size + 8 - (qrcode.size % 8)) + x) / 8;
             int bitIndex = x % 8;
             if (qrcode_getModule(&qrcode, x, y))
+            {
+                epdArray[byteIndex] |= (unsigned char)(0 << (7 - bitIndex));
+            }
+            else
             {
                 epdArray[byteIndex] |= (unsigned char)(1 << (7 - bitIndex));
             }
         }
         Serial.print("\n");
     }
-    Serial.print("\n");
-    Serial.print("\n");
+
+    // // Calculate the size of the EPD array
+    // int expandedSize = qrcode.size * 2; // Each bit is expanded to 2 bits
+    // int epdArraySize = ((expandedSize + 7) / 8) * expandedSize;
+
+    // // Dynamically allocate memory for the EPD array
+    // unsigned char *epdArray = new unsigned char[epdArraySize];
+    // if (!epdArray)
+    // {
+    //     Serial.println("Failed to allocate memory for EPD array");
+    //     return nullptr;
+    // }
+
+    // memset(epdArray, 0, epdArraySize);
+
+    // /*
+    //     Expand 1 bit = 2 bit
+    //     Expand by width and height
+    //  */
+    // for (int y = 0; y < qrcode.size; y++)
+    // {
+    //     for (int x = 0; x < qrcode.size + 1; x++)
+    //     {
+    //         bool isDark = qrcode_getModule(&qrcode, x, y);
+
+    //         for (int dy = 0; dy < 2; dy++) // Expand vertically
+    //         {
+    //             for (int dx = 0; dx < 2; dx++) // Expand horizontally
+    //             {
+    //                 int expandedX = x * 2 + dx;
+    //                 int expandedY = y * 2 + dy;
+    //                 int byteIndex = (expandedY * ((expandedSize + 7) / 8)) + (expandedX / 8);
+    //                 int bitIndex = expandedX % 8;
+
+    //                 if (!isDark)
+    //                 {
+    //                     epdArray[byteIndex] |= (1 << (7 - bitIndex));
+    //                 }
+    //                 else
+    //                 {
+    //                     epdArray[byteIndex] &= ~(1 << (7 - bitIndex));
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
+    // Serial.print("\n");
     return (const unsigned char *)epdArray;
 }
 
@@ -779,6 +828,33 @@ void displayEmpty(UBYTE *BlackImage)
     Paint_DrawImage(qrCodeArray, 35, 16, 61, 61);
     Paint_DrawLine(82, 25, 82, 102, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
     Paint_DrawString_segment(87, 35, "No data to display", &Segoe16Bold, BLACK, WHITE);
+    Paint_DrawString_segment(87, 65, "Scan QR to get started", &Segoe11, BLACK, WHITE);
+    EPD_2IN9_V2_Display(BlackImage);
+    delete[] qrCodeArray;
+}
+
+void displayQRText(UBYTE *BlackImage, const char *text, int mode)
+{
+    const unsigned char *qrCodeArray = textToQR(text);
+    std::string modeText;
+    if (mode == 1)
+    {
+        modeText = "Wifi mode";
+    }
+    if (mode = 2)
+    {
+        modeText = "Wifi AP mode";
+    }
+    if (mode = 3)
+    {
+        modeText = "Bluetooth mode";
+    }
+
+    EPD_2IN9_V2_Init();
+    Paint_Clear(0xff);
+    Paint_DrawImage(qrCodeArray, 35, 16, 61, 61);
+    Paint_DrawLine(82, 25, 82, 102, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
+    Paint_DrawString_segment(87, 35, modeText.c_str(), &Segoe16Bold, BLACK, WHITE);
     Paint_DrawString_segment(87, 65, "Scan QR to get started", &Segoe11, BLACK, WHITE);
     EPD_2IN9_V2_Display(BlackImage);
     delete[] qrCodeArray;

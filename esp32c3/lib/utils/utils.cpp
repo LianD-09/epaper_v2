@@ -1,5 +1,6 @@
 #include <Utils.h>
 
+base64 base64Instance;
 // Convert uint8_t array to hex string
 std::string uint8_to_hex_string(const uint8_t *v, const size_t s)
 {
@@ -30,4 +31,43 @@ uint8_t *hex_string_to_uint8(const std::string hex)
     }
 
     return bytes;
+}
+
+// Json string from vector
+std::string create_json_string(std::vector<std::pair<std::string, std::string>> vector)
+{
+    std::string res;
+    int length = vector.size();
+
+    res += '{';
+
+    for (int i = 0; i < length; i++)
+    {
+        // key
+        res += '\"';
+        res += vector[i].first;
+        res += '\"';
+        // :
+        res += ':';
+        // value
+        res += '\"';
+        res += vector[i].second;
+        res += '\"';
+
+        // add ',' if not last element
+        if (i < length - 1)
+        {
+            res += ',';
+        }
+    }
+
+    res += '}';
+    return res;
+}
+
+std::string base64_encode(const std::string &data)
+{
+    String str_data = String(data.c_str());
+    String encoded_data = base64Instance.encode(str_data);
+    return encoded_data.c_str();
 }

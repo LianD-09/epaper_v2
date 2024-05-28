@@ -78,7 +78,7 @@ export default function ScanScreen() {
         // console.log(result.data);
         ref.current?.pausePreview();
         try {
-            const dataRaw = decodeValue(result.data);
+            const dataRaw = decodeValue(result.raw);
             const { type, ...data } = JSON.parse(dataRaw);
 
             if (!type) {

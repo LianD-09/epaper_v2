@@ -16,6 +16,7 @@ Preferences preferences;
 UBYTE *BlackImage;
 UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
 uint64_t chipid = ESP.getEfuseMac();
+int mode = 1;
 
 void setup()
 {
@@ -139,7 +140,11 @@ void setup()
 
 void loop()
 {
+    // if (mode == 3)
+    // {
+    BLE_Advertise(BlackImage);
     BLE_Loop(BlackImage);
+    // }
 #if 0
     if (digitalRead(9) == LOW)
     {                                      // Check if the button is pressed

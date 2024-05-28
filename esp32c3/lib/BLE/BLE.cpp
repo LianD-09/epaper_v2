@@ -2,6 +2,9 @@
 using namespace std;
 
 NimBLEServer *pServer;
+string serverName;
+
+vector<json_pattern> jType;
 
 uint8_t update; // 0 - no update
                 // 1 - write1 update
@@ -324,6 +327,7 @@ void BLE_Init(const std::string &deviceName)
 
     Serial.println("Starting NimBLE Server");
     NimBLEDevice::init(deviceName);
+    serverName = deviceName;
 #ifdef ESP_PLATFORM
     NimBLEDevice::setPower(ESP_PWR_LVL_P9); /** +9db */
 #else
@@ -488,11 +492,28 @@ void BLE_Init(const std::string &deviceName)
 
     pServiceData->start();
 
+    // create QR string
+    jType.push_back(make_pair("name", serverName));
+    jType.push_back(make_pair("type", "bluetooth"));
+}
+
+void BLE_Advertise(UBYTE *BlackImage)
+{
     NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
+
+    if (pAdvertising->isAdvertising() || pServer->getConnectedCount() > 0)
+    {
+        return;
+    }
+
     pAdvertising->addServiceUUID(NimBLEUUID(WIFI_SRV_UUID));
     pAdvertising->addServiceUUID(NimBLEUUID(DATA_SRV_UUID));
-    Serial.println("Starting...");
+    Serial.println("Starting to advertise...");
     pAdvertising->start();
+
+    string text = create_json_string(jType);
+    string encodeText = base64_encode(text).c_str();
+    displayQRText(BlackImage, encodeText.c_str(), 3);
 }
 
 void BLE_Loop(UBYTE *BlackImage)

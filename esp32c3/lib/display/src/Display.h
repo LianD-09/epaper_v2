@@ -21,6 +21,7 @@ void displayWrite3(UBYTE *BlackImage);
 void displayWrite4(UBYTE *BlackImage);
 void displayWrite5(UBYTE *BlackImage);
 void displayEmpty(UBYTE *BlackImage);
+void displayQRText(UBYTE *BlackImage, const char *text, int mode);
 UWORD alignMono(const char *text, const mFONT *font, uint8_t percentage, bool horizontal = true);
 UWORD alignSegoe(const char *text, const sFONT *font, uint8_t percentage, bool horizontal = true);
 

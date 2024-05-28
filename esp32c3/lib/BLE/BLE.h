@@ -54,6 +54,8 @@ class DescriptorCallbacks : public NimBLEDescriptorCallbacks
 
 void BLE_Init(const std::string &deviceName);
 
+void BLE_Advertise(UBYTE *BlackImage);
+
 void BLE_Loop(UBYTE *BlackImage);
 
 #endif
