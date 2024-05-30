@@ -5,6 +5,7 @@
 #include <Wire.h>
 #include <Arduino.h>
 #include <DEV_Config.h>
+#include <siot_core_lib.h>
 // #include <Preferences.h>
 
 // Replace the next variables with your SSID/Password combination

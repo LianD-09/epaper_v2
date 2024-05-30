@@ -6,22 +6,22 @@ string serverName;
 
 vector<json_pattern> jType;
 
-uint8_t update; // 0 - no update
-                // 1 - write1 update
-                // 2 - write2 update
-                // 3 - write3 update
-                // 4 - write4 update
-                // 5 - write5 update
-                // 6 - ping update
-                // 7 - device update
-                // 8 - remove update
-                // 9 - restart
+uint8_t _update; // 0 - no update
+                 // 1 - write1 update
+                 // 2 - write2 update
+                 // 3 - write3 update
+                 // 4 - write4 update
+                 // 5 - write5 update
+                 // 6 - ping update
+                 // 7 - device update
+                 // 8 - remove update
+                 // 9 - restart
 const int connectTimeout = 20000;
 
 void display_on_message(UBYTE *BlackImage)
 {
     Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
-    if (update == 1)
+    if (_update == 1)
     {
         String oldData = preferences.getString("oldData", "");
         displayWrite1(BlackImage);
@@ -30,9 +30,9 @@ void display_on_message(UBYTE *BlackImage)
         writeOK += oldData;
         Serial.println(writeOK.c_str());
 
-        update = 0;
+        _update = 0;
     }
-    else if (update == 2)
+    else if (_update == 2)
     {
         String oldData = preferences.getString("oldData", "");
         displayWrite2(BlackImage);
@@ -41,9 +41,9 @@ void display_on_message(UBYTE *BlackImage)
         writeOK += oldData;
         Serial.println(writeOK.c_str());
 
-        update = 0;
+        _update = 0;
     }
-    else if (update == 3)
+    else if (_update == 3)
     {
         String oldData = preferences.getString("oldData", "");
         displayWrite3(BlackImage);
@@ -52,9 +52,9 @@ void display_on_message(UBYTE *BlackImage)
         writeOK += oldData;
         Serial.println(writeOK.c_str());
 
-        update = 0;
+        _update = 0;
     }
-    else if (update == 4)
+    else if (_update == 4)
     {
         String oldData = preferences.getString("oldData", "");
         displayWrite4(BlackImage);
@@ -63,9 +63,9 @@ void display_on_message(UBYTE *BlackImage)
         writeOK += oldData;
         Serial.println(writeOK.c_str());
 
-        update = 0;
+        _update = 0;
     }
-    else if (update == 5)
+    else if (_update == 5)
     {
         String oldData = preferences.getString("oldData", "");
         displayWrite5(BlackImage);
@@ -74,17 +74,17 @@ void display_on_message(UBYTE *BlackImage)
         writeOK += oldData;
         Serial.println(writeOK.c_str());
 
-        update = 0;
+        _update = 0;
     }
-    else if (update == 6)
+    else if (_update == 6)
     {
         String dataID = preferences.getString("dataID", "");
         String writeOK = "pingOK|";
         writeOK += dataID;
         Serial.println(writeOK.c_str());
-        update = 0;
+        _update = 0;
     }
-    else if (update == 7)
+    else if (_update == 7)
     {
         String ssid = preferences.getString("ssid", "");
         String password = preferences.getString("pass", "");
@@ -94,9 +94,9 @@ void display_on_message(UBYTE *BlackImage)
         EPD_2IN9_V2_Init();
         String updateOK = "updateOK|";
         Serial.println(updateOK.c_str());
-        update = 0;
+        _update = 0;
     }
-    else if (update == 8)
+    else if (_update == 8)
     {
         preferences.putString("font", "");
         preferences.putString("schema", "");
@@ -111,9 +111,9 @@ void display_on_message(UBYTE *BlackImage)
         preferences.putString("dataID", "");
         preferences.putInt("dataType", 0);
         displayEmpty(BlackImage);
-        update = 0;
+        _update = 0;
     }
-    else if (update == 9)
+    else if (_update == 9)
     {
         Serial.println("Restarting...");
         DEV_Delay_ms(1000);
@@ -192,7 +192,7 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
     {
         if (chrVal.compare("1") == 0)
         {
-            update = 9;
+            _update = 9;
         }
     }
     // Data write
@@ -267,27 +267,27 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
         if (compareStrings(chrVal.c_str(), "client"))
         {
             preferences.putInt("dataType", 1);
-            update = 1;
+            _update = 1;
         }
         else if (compareStrings(chrVal.c_str(), "student"))
         {
             preferences.putInt("dataType", 2);
-            update = 2;
+            _update = 2;
         }
         else if (compareStrings(chrVal.c_str(), "employee"))
         {
             preferences.putInt("dataType", 3);
-            update = 3;
+            _update = 3;
         }
         else if (compareStrings(chrVal.c_str(), "product"))
         {
             preferences.putInt("dataType", 4);
-            update = 4;
+            _update = 4;
         }
         else if (compareStrings(chrVal.c_str(), "room"))
         {
             preferences.putInt("dataType", 5);
-            update = 5;
+            _update = 5;
         }
     }
 };

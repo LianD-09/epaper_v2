@@ -35,6 +35,7 @@ void setup_wifi(const char *ssid, const char *password, UBYTE *BlackImage)
     EPD_2IN9_V2_Display_Partial(BlackImage);
 
     unsigned long startAttemptTime = millis();
+    WiFi.mode(WIFI_STA);
     WiFi.begin(ssid, password);
 
     while (WiFi.status() != WL_CONNECTED)
@@ -55,7 +56,7 @@ void setup_wifi(const char *ssid, const char *password, UBYTE *BlackImage)
     {
         // espClient.setCACert(CA);
         // espClient.setCertificate(CERT); // for client verification
-        // espClient.setPrivateKey(KEY);	// for client verification
+        // espClient.setPrivateKey(KEY);   // for client verification
         // client = MqttClient(espClient);
 
         Serial.println("");
@@ -99,6 +100,8 @@ void MQTT_Connect(const char *id, UBYTE *BlackImage)
                 client.onMessage(onMessage);
                 Serial.println(id);
                 client.subscribe(id);
+                Serial.println(client.connected());
+                break;
             }
             else
             {

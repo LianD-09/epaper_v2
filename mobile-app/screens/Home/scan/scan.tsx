@@ -84,6 +84,7 @@ export default function ScanScreen() {
             if (!type) {
                 throw Error('Invalid QR code');
             }
+            dispatch(openLoading());
 
             dispatch(openCenterModal({
                 isOpen: true,
@@ -92,14 +93,21 @@ export default function ScanScreen() {
                 content: 'Do you want to connect to this device?',
                 btnTitle: 'Continue',
                 callback: async () => {
-                    dispatch(openLoading());
                     try {
                         if (type === 'wifi') {
                             // Check ssid, pass is correct?
                             if (!data.ssid || !data.pass) {
                                 throw Error('Invalid QR code');
                             }
-                            const res = await WifiManager.connectToProtectedWifiSSID({ ssid: data.ssid, password: data.pass }).then(
+                            console.log(data);
+
+
+                            if (await WifiManager.getCurrentWifiSSID() === data.ssid) {
+                                dispatch(closeLoading());
+                                return;
+                            }
+
+                            const res = await WifiManager.connectToProtectedWifiSSID({ ssid: data.ssid, password: data.pass, timeout: 120 }).then(
                                 () => {
                                     dispatch(closeLoading());
                                     console.log("Connected successfully!");
@@ -129,7 +137,10 @@ export default function ScanScreen() {
                                     title: 'Cannot connect to device',
                                     content: 'Please, try to reset your Blutooth and Location services then try again.',
                                     btnTitle: 'Close',
-                                    callback: () => ref.current?.resumePreview(),
+                                    callback: () => {
+                                        setStart(false);
+                                        ref.current?.resumePreview()
+                                    },
                                     btnCancelTitle: ''
                                 }));
                                 dispatch(closeLoading());
@@ -142,7 +153,10 @@ export default function ScanScreen() {
                                     title: 'Cannot connect to device',
                                     content: 'Please, try to reset your Blutooth and Location services then try again.',
                                     btnTitle: 'Close',
-                                    callback: () => ref.current?.resumePreview(),
+                                    callback: () => {
+                                        setStart(false);
+                                        ref.current?.resumePreview()
+                                    },
                                     btnCancelTitle: ''
                                 }));
                                 dispatch(closeLoading());
@@ -165,7 +179,10 @@ export default function ScanScreen() {
                                                 title: 'Successfully',
                                                 content: `Connected to ${data.name}`,
                                                 btnTitle: 'Close',
-                                                callback: () => ref.current?.resumePreview(),
+                                                callback: () => {
+                                                    setStart(false);
+                                                    ref.current?.resumePreview()
+                                                },
                                                 btnCancelTitle: ''
                                             }));
                                             dispatch(closeLoading());
@@ -179,7 +196,10 @@ export default function ScanScreen() {
                                                 title: 'Cannot connect to device',
                                                 content: 'Please, try to reset your Blutooth and Location services then try again.',
                                                 btnTitle: 'Close',
-                                                callback: () => ref.current?.resumePreview(),
+                                                callback: () => {
+                                                    setStart(false);
+                                                    ref.current?.resumePreview()
+                                                },
                                                 btnCancelTitle: ''
                                             }))
                                         }
@@ -198,14 +218,20 @@ export default function ScanScreen() {
                             title: 'Invalid QR code',
                             content: 'Please, make sure scanned QR code is correct.',
                             btnTitle: 'Close',
-                            callback: () => ref.current?.resumePreview(),
+                            callback: () => {
+                                setStart(false);
+                                ref.current?.resumePreview()
+                            },
                             btnCancelTitle: ''
                         }));
                         dispatch(closeLoading());
                     }
                 },
                 btnCancelTitle: 'Cancel',
-                callbackCancel: () => ref.current?.resumePreview(),
+                callbackCancel: () => {
+                    setStart(false);
+                    ref.current?.resumePreview()
+                },
             }))
         }
         catch (e) {
@@ -216,9 +242,15 @@ export default function ScanScreen() {
                 title: 'Invalid QR code',
                 content: 'Please, make sure scanned QR code is correct.',
                 btnTitle: 'Close',
-                callback: () => ref.current?.resumePreview(),
+                callback: () => {
+                    setStart(false);
+                    ref.current?.resumePreview()
+                },
                 btnCancelTitle: ''
             }))
+        }
+        finally {
+            dispatch(closeLoading());
         }
     }
 

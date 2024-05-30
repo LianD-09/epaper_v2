@@ -6,12 +6,14 @@
 #include <Display.h>
 #include <ota.h>
 #include <stdlib.h>
-#include "NimBLEDevice.h"
 #include <BLE.h>
+#include <siot_core_lib.h>
 using namespace std;
 
 #define ENABLE_BLUETOOTH 1
 
+WiFiSelfEnroll MyWiFi;
+String wifiName;
 Preferences preferences;
 UBYTE *BlackImage;
 UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
@@ -20,11 +22,11 @@ int mode = 1;
 
 void setup()
 {
+    Serial.begin(115200);
     Serial.println("epd say hi");
     pinMode(2, OUTPUT); // Initialize the built-in LED pin as an output
     digitalWrite(2, LOW);
     DEV_Delay_ms(1000);
-    Serial.begin(115200);
     pinMode(9, INPUT_PULLUP);
     DEV_Module_Init();
 
@@ -53,7 +55,7 @@ void setup()
         ESP.restart();
     }
 
-#if 0
+#if 1
     Paint_Clear(0xff);
     const char *Welcome = "Epaper Project";
     UWORD x;
@@ -87,6 +89,10 @@ void setup()
     Serial.println(active);
     Serial.println(dataID);
     Serial.println(dataType);
+
+    // Check wifi connection first then turn on adhoc if cannot connect
+    wifiName = "AP-" + String(chipid);
+    MyWiFi.setup(BlackImage, wifiName.c_str(), "12345678");
 
     if (!ssid.isEmpty() && !password.isEmpty())
     {
@@ -140,12 +146,12 @@ void setup()
 
 void loop()
 {
-    // if (mode == 3)
-    // {
-    BLE_Advertise(BlackImage);
-    BLE_Loop(BlackImage);
-    // }
-#if 0
+    if (mode == 3)
+    {
+        BLE_Advertise(BlackImage);
+        BLE_Loop(BlackImage);
+    }
+#if 1
     if (digitalRead(9) == LOW)
     {                                      // Check if the button is pressed
         Serial.println("Button pressed!"); // Print a message to the serial monitor

@@ -130,11 +130,11 @@ export default function App() {
                 />
               </Stack.Navigator>
             </NavigationContainer>
+            <LoadingModal />
             <BottomModal />
             <CenterModal />
             <SelectModal />
             <DateTimePickerModal />
-            <LoadingModal />
           </SafeAreaProvider>
         </BLEProvider>
       </Provider>

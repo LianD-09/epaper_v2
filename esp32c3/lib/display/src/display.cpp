@@ -1,74 +1,77 @@
 #include <Display.h>
-// size_t length;
-//
-// char16_t *utf8ToUtf16(const char *utf8, size_t &outLength)
-// {
-//     size_t utf8_length = strlen(utf8);
-//     size_t maximum_utf16_length = utf8_length * 2;
-//     char16_t *utf16 = new char16_t[maximum_utf16_length];
-//     size_t utf16_index = 0;
-//
-//     while (*utf8)
-//     {
-//         unsigned char byte = *utf8++;
-//         uint32_t codepoint;
-//
-//         if (byte <= 0x7F)
-//         { // Single-byte UTF-8 character (ASCII)
-//             codepoint = byte;
-//         }
-//         else if (byte <= 0xBF)
-//         {
-//             // Continuation byte, handle error or skip
-//             continue;
-//         }
-//         else if (byte <= 0xDF)
-//         {
-//             codepoint = byte & 0x1F;
-//             codepoint <<= 6;
-//             codepoint |= (*utf8++ & 0x3F);
-//         }
-//         else if (byte <= 0xEF)
-//         {
-//             codepoint = byte & 0x0F;
-//             codepoint <<= 6;
-//             codepoint |= (*utf8++ & 0x3F);
-//             codepoint <<= 6;
-//             codepoint |= (*utf8++ & 0x3F);
-//         }
-//         else
-//         {
-//             codepoint = byte & 0x07;
-//             codepoint <<= 6;
-//             codepoint |= (*utf8++ & 0x3F);
-//             codepoint <<= 6;
-//             codepoint |= (*utf8++ & 0x3F);
-//             codepoint <<= 6;
-//             codepoint |= (*utf8++ & 0x3F);
-//         }
-//
-//         if (codepoint <= 0xFFFF)
-//         {
-//             utf16[utf16_index++] = static_cast<char16_t>(codepoint);
-//         }
-//         else
-//         {
-//             codepoint -= 0x10000;
-//             utf16[utf16_index++] = static_cast<char16_t>(0xD800 | (codepoint >> 10));
-//             utf16[utf16_index++] = static_cast<char16_t>(0xDC00 | (codepoint & 0x03FF));
-//         }
-//     }
-//
-//     // Allocate memory for the output
-//     outLength = utf16_index;
-//     char16_t *output = new char16_t[outLength + 1]; // +1 for null-terminator
-//     memcpy(output, utf16, outLength * sizeof(char16_t));
-//     // Copy data from vector to the new array
-//
-//     output[outLength] = 0; // Null-terminate the string
-//     delete[] utf16;
-//     return output;
-// }
+
+#if 0
+size_t length;
+
+char16_t *utf8ToUtf16(const char *utf8, size_t &outLength)
+{
+    size_t utf8_length = strlen(utf8);
+    size_t maximum_utf16_length = utf8_length * 2;
+    char16_t *utf16 = new char16_t[maximum_utf16_length];
+    size_t utf16_index = 0;
+
+    while (*utf8)
+    {
+        unsigned char byte = *utf8++;
+        uint32_t codepoint;
+
+        if (byte <= 0x7F)
+        { // Single-byte UTF-8 character (ASCII)
+            codepoint = byte;
+        }
+        else if (byte <= 0xBF)
+        {
+            // Continuation byte, handle error or skip
+            continue;
+        }
+        else if (byte <= 0xDF)
+        {
+            codepoint = byte & 0x1F;
+            codepoint <<= 6;
+            codepoint |= (*utf8++ & 0x3F);
+        }
+        else if (byte <= 0xEF)
+        {
+            codepoint = byte & 0x0F;
+            codepoint <<= 6;
+            codepoint |= (*utf8++ & 0x3F);
+            codepoint <<= 6;
+            codepoint |= (*utf8++ & 0x3F);
+        }
+        else
+        {
+            codepoint = byte & 0x07;
+            codepoint <<= 6;
+            codepoint |= (*utf8++ & 0x3F);
+            codepoint <<= 6;
+            codepoint |= (*utf8++ & 0x3F);
+            codepoint <<= 6;
+            codepoint |= (*utf8++ & 0x3F);
+        }
+
+        if (codepoint <= 0xFFFF)
+        {
+            utf16[utf16_index++] = static_cast<char16_t>(codepoint);
+        }
+        else
+        {
+            codepoint -= 0x10000;
+            utf16[utf16_index++] = static_cast<char16_t>(0xD800 | (codepoint >> 10));
+            utf16[utf16_index++] = static_cast<char16_t>(0xDC00 | (codepoint & 0x03FF));
+        }
+    }
+
+    // Allocate memory for the output
+    outLength = utf16_index;
+    char16_t *output = new char16_t[outLength + 1]; // +1 for null-terminator
+    memcpy(output, utf16, outLength * sizeof(char16_t));
+    // Copy data from vector to the new array
+
+    output[outLength] = 0; // Null-terminate the string
+    delete[] utf16;
+    return output;
+}
+#endif
 
 unsigned int utf8_strlen(const char *s, const sFONT *font)
 {
@@ -188,53 +191,54 @@ const unsigned char *textToQR(const char *data)
         }
         Serial.print("\n");
     }
+#if 0
+    // Calculate the size of the EPD array
+    int expandedSize = qrcode.size * 2; // Each bit is expanded to 2 bits
+    int epdArraySize = ((expandedSize + 7) / 8) * expandedSize;
 
-    // // Calculate the size of the EPD array
-    // int expandedSize = qrcode.size * 2; // Each bit is expanded to 2 bits
-    // int epdArraySize = ((expandedSize + 7) / 8) * expandedSize;
+    // Dynamically allocate memory for the EPD array
+    unsigned char *epdArray = new unsigned char[epdArraySize];
+    if (!epdArray)
+    {
+        Serial.println("Failed to allocate memory for EPD array");
+        return nullptr;
+    }
 
-    // // Dynamically allocate memory for the EPD array
-    // unsigned char *epdArray = new unsigned char[epdArraySize];
-    // if (!epdArray)
-    // {
-    //     Serial.println("Failed to allocate memory for EPD array");
-    //     return nullptr;
-    // }
+    memset(epdArray, 0, epdArraySize);
 
-    // memset(epdArray, 0, epdArraySize);
+    /*
+        Expand 1 bit = 2 bit
+        Expand by width and height
+     */
+    for (int y = 0; y < qrcode.size; y++)
+    {
+        for (int x = 0; x < qrcode.size + 1; x++)
+        {
+            bool isDark = qrcode_getModule(&qrcode, x, y);
 
-    // /*
-    //     Expand 1 bit = 2 bit
-    //     Expand by width and height
-    //  */
-    // for (int y = 0; y < qrcode.size; y++)
-    // {
-    //     for (int x = 0; x < qrcode.size + 1; x++)
-    //     {
-    //         bool isDark = qrcode_getModule(&qrcode, x, y);
+            for (int dy = 0; dy < 2; dy++) // Expand vertically
+            {
+                for (int dx = 0; dx < 2; dx++) // Expand horizontally
+                {
+                    int expandedX = x * 2 + dx;
+                    int expandedY = y * 2 + dy;
+                    int byteIndex = (expandedY * ((expandedSize + 7) / 8)) + (expandedX / 8);
+                    int bitIndex = expandedX % 8;
 
-    //         for (int dy = 0; dy < 2; dy++) // Expand vertically
-    //         {
-    //             for (int dx = 0; dx < 2; dx++) // Expand horizontally
-    //             {
-    //                 int expandedX = x * 2 + dx;
-    //                 int expandedY = y * 2 + dy;
-    //                 int byteIndex = (expandedY * ((expandedSize + 7) / 8)) + (expandedX / 8);
-    //                 int bitIndex = expandedX % 8;
-
-    //                 if (!isDark)
-    //                 {
-    //                     epdArray[byteIndex] |= (1 << (7 - bitIndex));
-    //                 }
-    //                 else
-    //                 {
-    //                     epdArray[byteIndex] &= ~(1 << (7 - bitIndex));
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // Serial.print("\n");
+                    if (!isDark)
+                    {
+                        epdArray[byteIndex] |= (1 << (7 - bitIndex));
+                    }
+                    else
+                    {
+                        epdArray[byteIndex] &= ~(1 << (7 - bitIndex));
+                    }
+                }
+            }
+        }
+    }
+    Serial.print("\n");
+#endif
     return (const unsigned char *)epdArray;
 }
 
@@ -821,7 +825,7 @@ void displayWrite5(UBYTE *BlackImage)
 
 void displayEmpty(UBYTE *BlackImage)
 {
-    const unsigned char *qrCodeArray = textToQR("https://epaper.artsakh.ventures/new-data");
+    const unsigned char *qrCodeArray = textToQR("https://epaper.toolhub.app/");
 
     EPD_2IN9_V2_Init();
     Paint_Clear(0xff);
@@ -841,11 +845,11 @@ void displayQRText(UBYTE *BlackImage, const char *text, int mode)
     {
         modeText = "Wifi mode";
     }
-    if (mode = 2)
+    if (mode == 2)
     {
         modeText = "Wifi AP mode";
     }
-    if (mode = 3)
+    if (mode == 3)
     {
         modeText = "Bluetooth mode";
     }
