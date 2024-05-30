@@ -22,8 +22,9 @@ import { requestBluetoothPermission } from './services/ble-services';
 import { BleManager } from 'react-native-ble-plx';
 import { BLEProvider } from './components/ble/ble-provider';
 import CenterModal from './components/modals/center-modal';
-import ScanScreen from './screens/Home/scan/scan';
+import ScanScreen from './screens/Scan/scan';
 import LoadingModal from './components/modals/loading-modal';
+import WifiApStack from './navigation/wifi-ap-stack';
 
 
 // LogBox.ignoreAllLogs();
@@ -125,6 +126,14 @@ export default function App() {
                   component={ScanScreen}
                   options={{
                     title: 'Scan',
+                    headerShown: false,
+                  }}
+                />
+                <Stack.Screen
+                  name="WifiAp"
+                  component={WifiApStack}
+                  options={{
+                    title: 'Wifi AP',
                     headerShown: false,
                   }}
                 />

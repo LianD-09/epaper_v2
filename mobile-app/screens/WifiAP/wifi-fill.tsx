@@ -8,72 +8,62 @@ import {
     StyleSheet,
     View,
 } from 'react-native';
-import Color from '../../../themes/color';
-import Header from '../../../libs/header';
-import Card from '../../../libs/card';
+import Color from '../../themes/color';
+import Header from '../../libs/header';
+import Card from '../../libs/card';
 import { StatusBar } from 'expo-status-bar';
-import { DataType, Device, } from '../../../types/type';
-import TextField from '../../../libs/text-field';
-import Button from '../../../libs/button';
+import TextField from '../../libs/text-field';
+import Button from '../../libs/button';
 import { useDispatch } from 'react-redux';
-import fontWeight from '../../../themes/font-weight';
-import fontSize from '../../../themes/font-size';
-import { navigate, navigateThroughStack, navigationRef, replace } from '../../../navigation/root-navigation';
+import { navigationRef } from '../../navigation/root-navigation';
 import iconHide from 'assets/icons/hide.png';
 import iconShow from 'assets/icons/show.png';
-import useBLE from '../../../hooks/useBLE';
-import { wifiServiceAndCharacteristic } from '../../../utils/constants';
-import { NewDataScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
-import { openCenterModal } from '../../../redux/slice/center-modal-slice';
-import Typography from '../../../libs/typography';
+import { openCenterModal } from '../../redux/slice/center-modal-slice';
+import { updateWifiInfo } from '../../services/wifi-ap-service';
+import { closeLoading, openLoading } from '../../redux/slice/loading-slice';
 
-const NewDeviceFillScreen = ({ navigation, route }) => {
-    const [name, setName] = useState<string>('');
+const WifiFillScreen = ({ navigation, route }) => {
+    const params = route.params;
     const [ssid, setSsid] = useState<string>('');
     const [pass, setPass] = useState<string>('');
     const [hide, setHide] = useState<boolean>(true);
     const dispath = useDispatch();
-    const { changeCharacteristicsValue, changeWifiConfiguration, connectedDevice } = useBLE();
 
     const handlePress = async () => {
         try {
             // call api
-            await changeWifiConfiguration(ssid, pass);
+            dispath(openLoading());
+            await updateWifiInfo({ ssid, pass });
+            navigationRef.goBack();
             dispath(openCenterModal({
                 isOpen: true,
                 isFailed: false,
                 title: 'Update device successfully',
-                btnTitle: 'Add data',
-                btnCancelTitle: 'Reset device',
+                btnTitle: 'Close',
+                btnCancelTitle: '',
                 icon: require('assets/icons/success-color.png'),
-                content: `Device has been updated. Do you want to create or update data?`,
-                callback: () => navigate<NewDataScreenProps, RootStackNewParamList>('NewDataScreen'),
-                callbackCancel: async () => {
-                    await changeCharacteristicsValue(
-                        wifiServiceAndCharacteristic.uuid,
-                        wifiServiceAndCharacteristic.characteristics.restart,
-                        "1",
-                        false
-                    );
-                    navigationRef.reset({
-                        index: 0,
-                        routes: [{
-                            name: 'Home',
-                            params: {
-                                screen: "HomeScreen"
-                            }
-                        }]
-                    })
-                }
-            }))
+                content: `Wifi information has been saved to device.`,
+            }));
         }
         catch (e) {
             console.log(e);
+            dispath(openCenterModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Error',
+                btnTitle: 'Close',
+                btnCancelTitle: '',
+                content: (e as Error).message,
+            }));
+        }
+        finally {
+            dispath(closeLoading());
         }
     }
 
     useEffect(() => {
-
+        setPass('');
+        setSsid(params.ssid);
     }, [])
 
     return (
@@ -102,18 +92,11 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                 >
                     <View style={{ gap: 16 }}>
                         <TextField
-                            value={name}
-                            placeholder={'Device name'}
-                            label={'Device name'}
-                            onChange={setName}
-                            disable={false}
-                        />
-                        <TextField
                             value={ssid}
                             placeholder={'Network SSID'}
                             label={'Network SSID'}
                             onChange={setSsid}
-                            disable={false}
+                            disable={true}
                         />
                         <TextField
                             value={pass}
@@ -174,4 +157,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default NewDeviceFillScreen;
+export default WifiFillScreen;

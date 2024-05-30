@@ -3,24 +3,24 @@ import { Camera, CameraType } from 'expo-camera';
 import { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import Color from '../../../themes/color';
-import Header from '../../../libs/header';
+import Color from '../../themes/color';
+import Header from '../../libs/header';
 import { StatusBar } from 'expo-status-bar';
-import Card from '../../../libs/card';
+import Card from '../../libs/card';
 import { useDispatch } from 'react-redux';
-import { openCenterModal } from '../../../redux/slice/center-modal-slice';
-import { decodeValue } from '../../../utils/utils';
-import Button from '../../../libs/button';
-import Typography from '../../../libs/typography';
-import fontSize from '../../../themes/font-size';
-import fontWeight from '../../../themes/font-weight';
+import { openCenterModal } from '../../redux/slice/center-modal-slice';
+import { decodeValue } from '../../utils/utils';
+import Button from '../../libs/button';
+import Typography from '../../libs/typography';
+import fontSize from '../../themes/font-size';
+import fontWeight from '../../themes/font-weight';
 import WifiManager from "react-native-wifi-reborn";
-import useBLE from '../../../hooks/useBLE';
-import { navigateThroughStack } from '../../../navigation/root-navigation';
-import { NewDeviceFillScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
-import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
+import useBLE from '../../hooks/useBLE';
+import { navigate, navigateThroughStack } from '../../navigation/root-navigation';
+import { NewDeviceFillScreenProps, RootStackNewParamList, RootStackWifiApParamList } from '../../navigation/param-types';
+import { openBottomModal } from '../../redux/slice/bottom-modal-slice';
 import { State } from 'react-native-ble-plx';
-import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
+import { closeLoading, openLoading } from '../../redux/slice/loading-slice';
 
 export default function ScanScreen() {
     const ref = useRef<Camera>(null);
@@ -99,21 +99,24 @@ export default function ScanScreen() {
                             if (!data.ssid || !data.pass) {
                                 throw Error('Invalid QR code');
                             }
-                            console.log(data);
 
 
                             if (await WifiManager.getCurrentWifiSSID() === data.ssid) {
                                 dispatch(closeLoading());
+                                navigate('WifiAp');
                                 return;
                             }
 
-                            const res = await WifiManager.connectToProtectedWifiSSID({ ssid: data.ssid, password: data.pass, timeout: 120 }).then(
+                            await WifiManager.connectToProtectedWifiSSID({ ssid: data.ssid, password: data.pass, timeout: 120 }).then(
                                 () => {
                                     dispatch(closeLoading());
+                                    setStart(false);
+                                    navigate('WifiAp');
                                     console.log("Connected successfully!");
                                 },
                                 () => {
                                     dispatch(closeLoading());
+                                    setStart(false);
                                     console.log("Connection failed!");
                                 }
                             );

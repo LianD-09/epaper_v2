@@ -27,6 +27,18 @@ export type RootStackHomeParamList = RootStack & {
     ProfileScreen: undefined;
 };
 
+export type RootStackWifiApParamList = RootStack & {
+    WifiApScreen: undefined;
+    WifiEnrollScreen: undefined;
+    WifiFillScreen: WifiFillScreenProps;
+};
+
+export type WifiFillScreenProps = {
+    ssid: string;
+    rssi: string;
+}
+
+
 export type NewDeviceScreenProps = {
     mode: 'bluetooth' | 'adhoc';
 }

@@ -1,5 +1,6 @@
 import { encode as base64Encode, decode as base64Decode } from 'base-64';
 import { encode as utf8Encode, decode as utf8Decode } from 'utf8';
+import { getToken } from '../services/storage-services';
 
 // Hàm mã hóa chuỗi tiếng Việt sang base64
 export const encodeValue = (input) => {
@@ -17,4 +18,15 @@ export const decodeValue = (input) => {
 
 export function capitalize(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+}
+
+export const validateToken = async () => {
+    const token = await getToken();
+
+    if (!!!token) return false;
+
+    const payload = token.split(".")[1];
+    const decodedToken = atob(payload);
+    const { exp } = JSON.parse(decodedToken);
+    return Date.now() <= exp * 1000;
 }

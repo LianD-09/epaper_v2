@@ -99,7 +99,7 @@ const NewMainScreen = ({ navigation, route }) => {
                                     />
                                 </View>
                                 <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} color={select == 2 ? Color.primary[800] : Color.disable[400]}>
-                                    New device
+                                    New data
                                 </Typography>
                             </TouchableOpacity>
                         </View>

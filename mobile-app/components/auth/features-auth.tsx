@@ -8,7 +8,7 @@ import Card from "../../libs/card";
 import { navigate, navigateThroughStack } from "../../navigation/root-navigation";
 import { RootTab } from "../../screens/Dashboard/dashboard";
 
-type FeaturesCardProps = {}
+type FeaturesAuthProps = {}
 
 type FeatureItemType = {
     iconSrc?: ImageSourcePropType,
@@ -40,23 +40,6 @@ const listFeatures: Array<FeatureItemType> = [
         screen: 'ScanScreen',
     },
     {
-        color: Color.secondary[600],
-        label: 'New data',
-        iconSrc: require("assets/icons/add-data-24px.png"),
-        screen: 'NewDataScreen',
-        stack: 'New'
-    },
-    {
-        color: Color.info[600],
-        label: 'Bluetooth connect',
-        iconSrc: require("assets/icons/bluetooth-48px.png"),
-        screen: 'NewDeviceScreen',
-        params: {
-            mode: 'bluetooth'
-        },
-        stack: 'New'
-    },
-    {
         color: Color.success[600],
         label: 'Wifi devices connect',
         iconSrc: require("assets/icons/wifi-epd-48px.png"),
@@ -65,14 +48,14 @@ const listFeatures: Array<FeatureItemType> = [
     },
 ]
 
-const FeaturesCard = (props: FeaturesCardProps) => {
+const FeaturesAuth = (props: FeaturesAuthProps) => {
 
     return (
         <View style={styles.container}>
             <ScrollView scrollEnabled={false} style={{ flex: 1 }} contentContainerStyle={styles.listContainer} showsHorizontalScrollIndicator={false}>
                 {listFeatures.map((e, index) => (
                     <TouchableOpacity
-                        style={{ flexDirection: 'row', gap: 5, flex: 1 }}
+                        style={{ flexDirection: 'row', gap: 5, flex: 1, justifyContent: 'center' }}
                         activeOpacity={0.5}
                         key={index}
                         onPress={() => {
@@ -94,7 +77,6 @@ const FeaturesCard = (props: FeaturesCardProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: '100%',
         flexDirection: 'row',
         gap: 15,
         marginBottom: 10
@@ -113,4 +95,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default memo(FeaturesCard);
+export default memo(FeaturesAuth);

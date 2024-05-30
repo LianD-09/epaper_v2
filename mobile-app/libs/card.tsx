@@ -30,7 +30,7 @@ const Card = forwardRef<TouchableOpacity, CardProps>(({
     disabled,
     borderWidth = 0,
     pt = 18,
-    pb = 20,
+    pb = 18,
     pl = 22,
     pr = 22,
     gap = 5,

@@ -22,6 +22,7 @@ import Color from '../../themes/color';
 import Typography from '../../libs/typography';
 import FontSize from '../../themes/font-size';
 import FontWeight from '../../themes/font-weight';
+import FeaturesAuth from '../../components/auth/features-auth';
 
 const Login = ({ navigation }) => {
   const [remember, setRemember] = useState(false);
@@ -148,6 +149,7 @@ const Login = ({ navigation }) => {
                 </TouchableOpacity>
               </View>
             </View>
+            <FeaturesAuth />
           </Card>
         </ImageBackground>
       }

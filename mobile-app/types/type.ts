@@ -23,6 +23,15 @@ export type User = {
     updatedAt?: string,
 }
 
+export type UserRaw = {
+    _id: string | number,
+    email: string,
+    name: string,
+    gender: number,
+    createdAt?: string,
+    updatedAt?: string,
+}
+
 export type Device = {
     active: boolean,
     createdBy: string | number,
@@ -115,7 +124,7 @@ export type Room = {
 export type Template = Product | Student | Room | Client | Employee;
 
 export type DataRaw = {
-    id: string | number,
+    _id: string | number,
     type: string,
     name: string,
     // Client: Email

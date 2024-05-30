@@ -53,7 +53,7 @@ const DevicesDetail = ({
     useEffect(() => {
         //call api
         let data: DataRaw = {
-            id,
+            _id: id,
             type: 'Employee',
             name: 'Thịt gà',
             input2: 'Thực phẩm',
@@ -74,6 +74,7 @@ const DevicesDetail = ({
                 let item: Product;
                 item = {
                     ...data,
+                    id: data._id,
                     category: data.input2 ?? '',
                     price: data.input3 ?? '',
                 }
@@ -85,6 +86,7 @@ const DevicesDetail = ({
                 let item: Client;
                 item = {
                     ...data,
+                    id: data._id,
                     email: data.input2 ?? '',
                     address: data.input3 ?? '',
                 }
@@ -96,6 +98,7 @@ const DevicesDetail = ({
                 let item: Employee;
                 item = {
                     ...data,
+                    id: data._id,
                     email: data.input2 ?? '',
                     employeeId: data.input3 ?? '',
                     department: data.input4 ?? '',
@@ -108,6 +111,7 @@ const DevicesDetail = ({
                 let item: Room;
                 item = {
                     ...data,
+                    id: data._id,
                     purpose: data.input2 ?? '',
                     manager: data.input3 ?? '',
                     roomStatus: data.input4 ?? '',
@@ -120,6 +124,7 @@ const DevicesDetail = ({
                 let item: Student;
                 item = {
                     ...data,
+                    id: data._id,
                     email: data.input2 ?? '',
                     studentId: data.input3 ?? '',
                     class: data.input4 ?? ''
