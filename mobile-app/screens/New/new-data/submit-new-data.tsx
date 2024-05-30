@@ -18,6 +18,8 @@ import { SelectItem } from '../../../redux/types';
 import { replace } from '../../../navigation/root-navigation';
 import { SubmitNewDataScreenProps } from '../../../navigation/param-types';
 import useBLE from '../../../hooks/useBLE';
+import { useDispatch } from 'react-redux';
+import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
 
 const fontList: Array<SelectItem> = fonts.map(e => {
     return {
@@ -40,6 +42,7 @@ const deviceMock: Array<SelectItem> = Array(5).fill(1).map((e, index) => {
 })
 
 const SubmitNewDataScreen = ({ navigation, route }) => {
+    const dispacth = useDispatch();
     const { data, dataType } = route.params as SubmitNewDataScreenProps;
     const [device, setDevice] = useState<string | number | null>(null);
     const [font, setFont] = useState<string>('');
@@ -98,13 +101,22 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
     const handleSubmit = async () => {
         let fontESP = fonts.find((value) => font === value.db);
         let themeESP = themes.find((value) => theme === value.db);
-        // call api
-        changeData(dataType, {
-            ...data,
-            font: fontESP?.sign ?? fonts[3].sign,
-            schema: themeESP?.sign ?? themes[0].sign,
-        })
-        // replace('DataScreen');
+        try {
+            // call api
+            dispacth(openLoading());
+            await changeData(dataType, {
+                ...data,
+                font: fontESP?.sign ?? fonts[3].sign,
+                schema: themeESP?.sign ?? themes[0].sign,
+            })
+            // replace('DataScreen');
+        }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            dispacth(closeLoading());
+        }
     }
 
     return (

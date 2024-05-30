@@ -122,13 +122,18 @@ export default function WifiApScreen() {
 
     useEffect(() => {
         getConnectingWifi();
-        getSettingsData();
     }, [])
 
     return (
         <View style={styles.container}>
             <StatusBar backgroundColor={Color.white[100]} />
             <Header
+                iconRight={
+                    <View style={{ paddingRight: 8 }}>
+                        <Image source={require('assets/icons/search-48px.png')} style={{ width: 24, height: 24 }} tintColor={Color.primary[700]} />
+                    </View>
+                }
+                onPressRight={getSettingsData}
             // headerTitle='Wifi AP'
             />
             <ScrollView

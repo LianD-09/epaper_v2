@@ -25,9 +25,13 @@ import { requestBluetoothPermission } from '../../../services/ble-services';
 import Divider from '../../../libs/divider';
 import { navigate, navigationRef } from '../../../navigation/root-navigation';
 import { NewDeviceFillScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
+import { useDispatch } from 'react-redux';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
+import { wifiServiceAndCharacteristic } from '../../../utils/constants';
 
 const NewDeviceScreen = ({ navigation, route }) => {
     const { mode } = route.params;
+    const dispacth = useDispatch();
     const animated = useMemo(() => new Animated.Value(0), []);
     const animated2 = useMemo(() => new Animated.Value(0), []);
     const opacity = useMemo(() => new Animated.Value(1), []);
@@ -66,7 +70,6 @@ const NewDeviceScreen = ({ navigation, route }) => {
         allDevices,
         scanForPeripherals,
         connectToDevice,
-        connectedDevice,
         changeCharacteristicsValue,
         isScanning,
     } = useBLE();
@@ -75,11 +78,35 @@ const NewDeviceScreen = ({ navigation, route }) => {
         try {
             const connected = await connectToDevice(e);
             if (connected) {
-                navigate<NewDeviceFillScreenProps, RootStackNewParamList>('NewDeviceFillScreen', {});
+                dispacth(openCenterModal({
+                    isOpen: true,
+                    isFailed: false,
+                    title: 'Successful',
+                    content: `Connected to ${e?.name}.`,
+                    btnTitle: 'Next',
+                    callback: () => navigate<NewDeviceFillScreenProps, RootStackNewParamList>('NewDeviceFillScreen', {}),
+                    btnCancelTitle: 'Reset device',
+                    callbackCancel: async () => {
+                        await changeCharacteristicsValue(
+                            wifiServiceAndCharacteristic.uuid,
+                            wifiServiceAndCharacteristic.characteristics.restart,
+                            "1",
+                            false
+                        );
+                    }
+                }))
             }
         }
-        catch (e) {
-            console.log(e);
+        catch (err) {
+            console.log(err);
+            dispacth(openCenterModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Error',
+                content: `Connect to ${e?.name} failed`,
+                btnTitle: 'Close',
+                btnCancelTitle: '',
+            }))
         }
     }
 

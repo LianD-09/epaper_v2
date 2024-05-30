@@ -160,7 +160,7 @@ void WiFiSelfEnroll::_APISave()
     /// Close the preferences to end the flash handler
     preferences.end();
     /// Response to the web client
-    server.send(200, "text/plain", "Done deal");
+    server.send(200, "text/plain", "Successful");
 }
 
 /*-------------------------------------------------------------------------*/

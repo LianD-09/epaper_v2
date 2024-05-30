@@ -67,15 +67,6 @@ const dataList = [
 
 const NewDataScreen = ({ navigation, route }) => {
 
-    const handleConnect = async (e: Device) => {
-        try {
-            navigate<NewDeviceFillScreenProps, RootStackNewParamList>('NewDeviceFillScreen', {})
-        }
-        catch (e) {
-            console.log(e);
-        }
-    }
-
     const renderCardGrid = (nodes: Array<React.ReactNode>) => {
         const length = nodes.length;
 

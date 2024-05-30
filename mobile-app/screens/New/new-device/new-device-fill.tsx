@@ -26,6 +26,7 @@ import { wifiServiceAndCharacteristic } from '../../../utils/constants';
 import { NewDataScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
 import { openCenterModal } from '../../../redux/slice/center-modal-slice';
 import Typography from '../../../libs/typography';
+import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
 
 const NewDeviceFillScreen = ({ navigation, route }) => {
     const [name, setName] = useState<string>('');
@@ -37,6 +38,7 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
 
     const handlePress = async () => {
         try {
+            dispath(openLoading());
             // call api
             await changeWifiConfiguration(ssid, pass);
             dispath(openCenterModal({
@@ -69,6 +71,9 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
         }
         catch (e) {
             console.log(e);
+        }
+        finally {
+            dispath(closeLoading());
         }
     }
 

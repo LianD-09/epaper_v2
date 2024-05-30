@@ -22,6 +22,7 @@ import fontWeight from '../../../themes/font-weight';
 import fontSize from '../../../themes/font-size';
 import { navigate } from '../../../navigation/root-navigation';
 import { RootStackNewParamList, SubmitNewDataScreenProps } from '../../../navigation/param-types';
+import { openLoading } from '../../../redux/slice/loading-slice';
 
 const NewDataFillScreen = ({ navigation, route }) => {
     const { dataType } = route.params;
@@ -208,6 +209,7 @@ const NewDataFillScreen = ({ navigation, route }) => {
         }
         else {
             // call api
+            // dispath(openLoading());
         }
     }
 

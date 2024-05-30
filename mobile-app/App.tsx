@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Login from './screens/Auth/login';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import * as SplashScreen from 'expo-splash-screen';
 import React from 'react';
 import Signup from './screens/Auth/signup';
@@ -25,6 +25,7 @@ import CenterModal from './components/modals/center-modal';
 import ScanScreen from './screens/Scan/scan';
 import LoadingModal from './components/modals/loading-modal';
 import WifiApStack from './navigation/wifi-ap-stack';
+import { validateToken } from './utils/utils';
 
 
 // LogBox.ignoreAllLogs();
@@ -59,6 +60,8 @@ export default function App() {
     'Urbanist-Black': require('./assets/fonts/Urbanist-Black.ttf'), //900
   });
 
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   // Load front
   // useEffect(() => {
   //   async function prepare() {
@@ -72,6 +75,13 @@ export default function App() {
   //   }
   //   prepare();
   // }, []);
+  const prepare = async () => {
+    setIsLoggedIn(await validateToken());
+  }
+
+  useEffect(() => {
+    prepare();
+  }, [])
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {
@@ -91,7 +101,7 @@ export default function App() {
           <SafeAreaProvider>
             <NavigationContainer ref={navigationRef}>
               <Stack.Navigator
-                initialRouteName="Sign-in"
+                initialRouteName={isLoggedIn ? "Dashboard" : "Sign-in"}
                 screenOptions={{
                   headerShown: false,
                   contentStyle: styles.container
