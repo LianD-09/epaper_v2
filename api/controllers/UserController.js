@@ -23,7 +23,7 @@ exports.register = async (req, res) => {
           res.status(500).json({ error: err.message });
         });
     } else {
-      res.status(409).json({ message: "Email has been used" });
+      res.status(409).json({ error: "Email has been used" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
           .compare(user.password, existUser.password)
           .then((passwordCheck) => {
             if (!passwordCheck) {
-              res.status(401).json({ message: "Email and password incorrect" });
+              res.status(401).json({ error: "Email and password incorrect" });
             } else {
               const token = jwt.sign(
                 {
@@ -63,7 +63,7 @@ exports.login = async (req, res) => {
           });
       })
       .catch(() => {
-        res.status(401).json({ message: "Email and password incorrect" });
+        res.status(401).json({ error: "Email and password incorrect" });
       });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -72,9 +72,9 @@ exports.login = async (req, res) => {
 
 exports.getUserById = async (req, res) => {
   try {
-    if (req.params.id === req.user.userID) {  
+    if (req.params.id === req.user.userID) {
       const user = await userService.getUserById(req.params.id);
-      const {password: password, ...returnData} = user._doc;
+      const { password: password, ...returnData } = user._doc;
       res.json({ data: returnData, status: "success" });
     } else {
       res.json({ data: null, status: "success" });
@@ -86,9 +86,9 @@ exports.getUserById = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
-    if (req.params.id === req.user.userID) {  
+    if (req.params.id === req.user.userID) {
       const user = await userService.updateUser(req.params.id, req.body);
-      const {password: password, ...returnData} = user._doc;
+      const { password: password, ...returnData } = user._doc;
       res.json({ data: returnData, status: "success" });
     } else {
       res.json({ data: null, status: "success" });
