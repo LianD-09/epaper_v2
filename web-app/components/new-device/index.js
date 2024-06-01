@@ -51,37 +51,71 @@ const NewDevice = () => {
         Notify.info("Submitting device", {
             className: "notiflix-info"
         });
-        await instanceCoreApi.post(`${API}/devices`, deviceCreated).then(async (response) => {
-            console.log(response.data);
-            Notify.success(`Device submitted successfully!`, {
+
+        if (port) {
+            Notify.info("Writing info to device via Serial Port", {
+                className: "notiflix-info"
+            });
+            const writer = port.writable.getWriter();
+            for (const [key, value] of Object.entries(response.data.data)) {
+                if (key !== "_v" && key !== "createdBy" && key !== "name" && key !== "active") {
+                    const keyValue = `${key}:${value}\n`;
+                    console.log(keyValue);
+                    const data = new TextEncoder().encode(keyValue);
+                    await writer.write(data);
+                }
+            }
+            writer.releaseLock();
+            Notify.success(`Write info to device successfully!`, {
                 className: "notiflix-success"
             });
-            if (port) {
-                Notify.info("Writing info to device via Serial Port", {
-                    className: "notiflix-info"
-                });
-                const writer = port.writable.getWriter();
-                for (const [key, value] of Object.entries(response.data.data)) {
-                    if (key !== "_v" && key !== "createdBy" && key !== "name" && key !== "active") {
-                        const keyValue = `${key}:${value}\n`;
-                        console.log(keyValue);
-                        const data = new TextEncoder().encode(keyValue);
-                        await writer.write(data);
+            // Read Device ID
+            const textDecoder = new TextDecoderStream();
+            port.readable.pipeTo(textDecoder.writable);
+            const reader = textDecoder.readable.getReader();
+
+            if (!reader) {
+                console.error('Reader is not initialized');
+                return;
+            }
+
+            try {
+                while (reader) {
+                    const { value, done } = await reader.read();
+                    const data = value.split(':');
+
+                    if (data[0] === 'uniqueId') {
+                        await instanceCoreApi.post(`${API}/devices`, {
+                            ...deviceCreated,
+                            uniqueId: data[1],
+                        }).then(async (response) => {
+                            console.log(response.data);
+                            Notify.success(`Device submitted successfully!`, {
+                                className: "notiflix-success"
+                            });
+                            setSubmitted(true);
+                        }).catch(error => {
+                            console.error(error);
+                            setSubmitted(false);
+                            Notify.failure(`Error updating new device info!\n${error}`, {
+                                className: "notiflix-failure"
+                            });
+                        })
+                        break;
+                    }
+                    if (done) {
+                        break;
                     }
                 }
-                writer.releaseLock();
-                Notify.success(`Write info to device successfully!`, {
-                    className: "notiflix-success"
-                });
+            } catch (err) {
+                Notify.warning('Error reading from serial port. Please refreshing the page.');
+            } finally {
+                if (reader) {
+                    reader.releaseLock();
+                }
             }
-            setSubmitted(true);
-        }).catch(error => {
-            console.error(error);
-            setSubmitted(false);
-            Notify.failure(`Error updating new device info!\n${error}`, {
-                className: "notiflix-failure"
-            });
-        })
+        }
+
     };
 
     const handleReset = () => {

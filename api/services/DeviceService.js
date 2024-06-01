@@ -17,8 +17,8 @@ exports.getAllDevices = async (filters = null) => {
     await mqttClient.getAllDevicesStatuses(deviceIds);
     console.log("get status done");
     if (filters && "active" in filters) {
-        query.active = filters.active === "true" ? true : false;
-      }
+      query.active = filters.active === "true" ? true : false;
+    }
     return await DeviceModel.find(query);
   } catch (error) {
     console.log(error);
@@ -31,6 +31,13 @@ exports.getDeviceById = async (id) => {
 
 exports.createDevice = async (device, userID = null) => {
   device.createdBy = userID;
+  const existDevice = await DeviceModel.find({
+    uniqueId: device.uniqueId
+  })
+  if (existDevice) {
+    throw Error('This device is existed!');
+  }
+
   const deviceCreated = await DeviceModel.create(device);
   mqttClient.subscribe(`${deviceCreated._id}`);
   return deviceCreated;
@@ -68,7 +75,7 @@ exports.deleteDevice = async (id, userID = null) => {
     data["activeStartTime"] = -1;
     await DataModel.findByIdAndUpdate(device.dataID, data);
   }
-  
+
   mqttClient.unsubscribe(`${device._id}`);
   return await DeviceModel.findByIdAndDelete(id);
 };
