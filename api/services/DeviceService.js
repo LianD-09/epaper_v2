@@ -31,9 +31,10 @@ exports.getDeviceById = async (id) => {
 
 exports.createDevice = async (device, userID = null) => {
   device.createdBy = userID;
-  const existDevice = await DeviceModel.find({
+  const existDevice = await DeviceModel.findOne({
     uniqueId: device.uniqueId
-  })
+  });
+
   if (existDevice) {
     throw Error('This device is existed!');
   }

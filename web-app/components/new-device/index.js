@@ -54,7 +54,7 @@ const NewDevice = () => {
 
         // Read Device ID
         const textDecoder = new TextDecoderStream();
-        port.readable.pipeTo(textDecoder.writable);
+        const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
         const reader = textDecoder.readable.getReader();
         let did = '';
 
@@ -79,11 +79,12 @@ const NewDevice = () => {
         } catch (err) {
             Notify.warning('Error reading from serial port. Please refreshing the page.');
         } finally {
-            if (reader) {
-                reader.releaseLock();
-            }
+            await reader.cancel();
+            reader.releaseLock();
+            await readableStreamClosed.catch(() => { /* Ignore the error */ });
         }
 
+        console.log(did);
         await instanceCoreApi.post(`${API}/devices`, {
             ...deviceCreated,
             uniqueId: did,
