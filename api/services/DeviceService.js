@@ -55,6 +55,16 @@ exports.updateDevice = async (id, device) => {
   return await DeviceModel.findByIdAndUpdate(id, device);
 }
 
+exports.updateDeviceNoMqtt = async (id, device) => {
+  if (device.dataID && device.dataID !== "") {
+    const data = await DataModel.findById(device.dataID);
+    data["deviceName"] = device.name;
+    await DataModel.findByIdAndUpdate(device.dataID, data);
+  }
+
+  return await DeviceModel.findByIdAndUpdate(id, device);
+}
+
 exports.deleteDevice = async (id, userID = null) => {
   let device = await this.getDeviceById(id);
   if (device) {
