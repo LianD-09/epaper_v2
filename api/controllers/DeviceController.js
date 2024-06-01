@@ -29,7 +29,14 @@ exports.createDevice = async (req, res) => {
   try {
     const existDevice = await deviceService.getDeviceByKey('uniqueId', device.uniqueId);
     if (existDevice) {
-      const device = await deviceService.updateDevice(existDevice._id, req.body);;
+      const device = await deviceService.updateDevice(
+        existDevice._id,
+        {
+          ...existDevice,
+          ...req.body
+        }
+      );
+
       res.json({ data: device, status: 2 });
     }
     else {
@@ -38,6 +45,7 @@ exports.createDevice = async (req, res) => {
     }
 
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
