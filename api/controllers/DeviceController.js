@@ -3,7 +3,7 @@ const path = require('path');
 const fs = require('fs');
 
 exports.getAllDevices = async (req, res) => {
-  console.log(req);
+  console.log(req.baseUrl, "\n", req.body);
   //filter
   let filters = {};
   if (req.query.groupBy) {
@@ -29,7 +29,7 @@ exports.getAllDevices = async (req, res) => {
 
 exports.createDevice = async (req, res) => {
   try {
-    console.log(req);
+    console.log(req.baseUrl, "\n", req.body);
     const existDevice = await deviceService.getDeviceByKey('uniqueId', req.body.uniqueId);
     if (existDevice) {
       const device = await deviceService.updateDeviceNoMqtt(
@@ -55,7 +55,7 @@ exports.createDevice = async (req, res) => {
 
 exports.getDeviceById = async (req, res) => {
   try {
-    console.log(req);
+    console.log(req.baseUrl, "\n", req.body);
     const device = await deviceService.getDeviceById(req.params.id);
     res.json({ data: device, status: 1 });
   } catch (err) {
@@ -66,7 +66,7 @@ exports.getDeviceById = async (req, res) => {
 
 exports.updateDevice = async (req, res) => {
   try {
-    console.log(req);
+    console.log(req.baseUrl, "\n", req.body);
     const device = await deviceService.updateDevice(req.params.id, req.body);
     res.json({ data: device, status: 1 });
   } catch (err) {
@@ -77,7 +77,7 @@ exports.updateDevice = async (req, res) => {
 
 exports.deleteDevice = async (req, res) => {
   try {
-    console.log(req);
+    console.log(req.baseUrl, "\n", req.body);
     const device = await deviceService.deleteDevice(req.params.id, req.user.userID);
     res.json({ data: device, status: 1 });
   } catch (err) {
