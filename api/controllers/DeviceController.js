@@ -28,7 +28,7 @@ exports.getAllDevices = async (req, res) => {
 
 exports.createDevice = async (req, res) => {
   try {
-    const existDevice = await deviceService.getDeviceByKey('uniqueId', res.body.uniqueId);
+    const existDevice = await deviceService.getDeviceByKey('uniqueId', req.body.uniqueId);
     if (existDevice) {
       const device = await deviceService.updateDevice(
         existDevice._id,
