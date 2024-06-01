@@ -11,6 +11,7 @@ const deviceSchema = new Schema({
     },
     uniqueId: {
         type: String,
+        trim: true,
     },
     pass: {
         type: String,
