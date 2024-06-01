@@ -52,70 +52,72 @@ const NewDevice = () => {
             className: "notiflix-info"
         });
 
-        if (port) {
-            Notify.info("Writing info to device via Serial Port", {
-                className: "notiflix-info"
-            });
-            const writer = port.writable.getWriter();
-            for (const [key, value] of Object.entries(response.data.data)) {
-                if (key !== "_v" && key !== "createdBy" && key !== "name" && key !== "active") {
-                    const keyValue = `${key}:${value}\n`;
-                    console.log(keyValue);
-                    const data = new TextEncoder().encode(keyValue);
-                    await writer.write(data);
+        // Read Device ID
+        const textDecoder = new TextDecoderStream();
+        port.readable.pipeTo(textDecoder.writable);
+        const reader = textDecoder.readable.getReader();
+        let did = '';
+
+        if (!reader) {
+            console.error('Reader is not initialized');
+            return;
+        }
+
+        try {
+            while (reader) {
+                const { value, done } = await reader.read();
+                const data = value.split(':');
+
+                if (data[0] === 'deviceID') {
+                    did = data[1];
+                    break;
+                }
+                if (done) {
+                    break;
                 }
             }
-            writer.releaseLock();
-            Notify.success(`Write info to device successfully!`, {
-                className: "notiflix-success"
-            });
-            // Read Device ID
-            const textDecoder = new TextDecoderStream();
-            port.readable.pipeTo(textDecoder.writable);
-            const reader = textDecoder.readable.getReader();
-
-            if (!reader) {
-                console.error('Reader is not initialized');
-                return;
-            }
-
-            try {
-                while (reader) {
-                    const { value, done } = await reader.read();
-                    const data = value.split(':');
-
-                    if (data[0] === 'uniqueId') {
-                        await instanceCoreApi.post(`${API}/devices`, {
-                            ...deviceCreated,
-                            uniqueId: data[1],
-                        }).then(async (response) => {
-                            console.log(response.data);
-                            Notify.success(`Device submitted successfully!`, {
-                                className: "notiflix-success"
-                            });
-                            setSubmitted(true);
-                        }).catch(error => {
-                            console.error(error);
-                            setSubmitted(false);
-                            Notify.failure(`Error updating new device info!\n${error}`, {
-                                className: "notiflix-failure"
-                            });
-                        })
-                        break;
-                    }
-                    if (done) {
-                        break;
-                    }
-                }
-            } catch (err) {
-                Notify.warning('Error reading from serial port. Please refreshing the page.');
-            } finally {
-                if (reader) {
-                    reader.releaseLock();
-                }
+        } catch (err) {
+            Notify.warning('Error reading from serial port. Please refreshing the page.');
+        } finally {
+            if (reader) {
+                reader.releaseLock();
             }
         }
 
+        await instanceCoreApi.post(`${API}/devices`, {
+            ...deviceCreated,
+            uniqueId: did,
+        }).then(async (response) => {
+            console.log(response.data);
+            Notify.success(`Device submitted successfully!`, {
+                className: "notiflix-success"
+            });
+            if (port) {
+                Notify.info("Writing info to device via Serial Port", {
+                    className: "notiflix-info"
+                });
+                const writer = port.writable.getWriter();
+                for (const [key, value] of Object.entries(response.data.data)) {
+                    if (key !== "_v" && key !== "createdBy" && key !== "name" && key !== "active" && key !== "uniqueId") {
+                        const keyValue = `${key}:${value}\n`;
+                        console.log(keyValue);
+                        const data = new TextEncoder().encode(keyValue);
+                        await writer.write(data);
+                    }
+                }
+                writer.releaseLock();
+                Notify.success(`Write info to device successfully!`, {
+                    className: "notiflix-success"
+                });
+            }
+            setSubmitted(true);
+        }).catch(error => {
+            console.error(error);
+            setSubmitted(false);
+            Notify.failure(`Error updating new device info!\n${error}`, {
+                className: "notiflix-failure"
+            });
+        })
     };
 
     const handleReset = () => {
