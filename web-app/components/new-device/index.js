@@ -69,7 +69,7 @@ const NewDevice = () => {
                 const data = value.split(':');
 
                 if (data[0] === 'uniqueId') {
-                    did = data[1];
+                    did = data[1].trim();
                     break;
                 }
                 if (done) {
@@ -84,7 +84,6 @@ const NewDevice = () => {
             await readableStreamClosed.catch(() => { /* Ignore the error */ });
         }
 
-        console.log(did);
         await instanceCoreApi.post(`${API}/devices`, {
             ...deviceCreated,
             uniqueId: did,
