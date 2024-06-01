@@ -19,7 +19,7 @@ exports.getAllDevices = async (req, res) => {
 
   try {
     const devices = await deviceService.getAllDevices(filters);
-    res.json({ data: devices, status: "success" });
+    res.json({ data: devices, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -27,8 +27,16 @@ exports.getAllDevices = async (req, res) => {
 
 exports.createDevice = async (req, res) => {
   try {
-    const device = await deviceService.createDevice(req.body, req.user.userID);
-    res.json({ data: device, status: "success" });
+    const existDevice = await deviceService.getDeviceByKey('uniqueId', device.uniqueId);
+    if (existDevice) {
+      const device = await deviceService.updateDevice(req.body, req.user.userID);
+      res.json({ data: device, status: 2 });
+    }
+    else {
+      const device = await deviceService.createDevice(req.body, req.user.userID);
+      res.json({ data: device, status: 1 });
+    }
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -37,7 +45,7 @@ exports.createDevice = async (req, res) => {
 exports.getDeviceById = async (req, res) => {
   try {
     const device = await deviceService.getDeviceById(req.params.id);
-    res.json({ data: device, status: "success" });
+    res.json({ data: device, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -46,7 +54,7 @@ exports.getDeviceById = async (req, res) => {
 exports.updateDevice = async (req, res) => {
   try {
     const device = await deviceService.updateDevice(req.params.id, req.body);
-    res.json({ data: device, status: "success" });
+    res.json({ data: device, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -55,7 +63,7 @@ exports.updateDevice = async (req, res) => {
 exports.deleteDevice = async (req, res) => {
   try {
     const device = await deviceService.deleteDevice(req.params.id, req.user.userID);
-    res.json({ data: device, status: "success" });
+    res.json({ data: device, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -25,9 +25,9 @@ export const getByteArray = async (encode) => {
 }
 
 export const ditheringGrayscale = (byteArray) => {
-    const lumR = [];
-    const lumG = [];
-    const lumB = [];
+    const lumR: number[] = [];
+    const lumG: number[] = [];
+    const lumB: number[] = [];
     for (let i = 0; i < 256; i++) {
         lumR[i] = i * 0.299;
         lumG[i] = i * 0.587;

@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
           };
           userService.createUser(newUser).then((result) => {
             const { password: password, ...returnUser } = result._doc;
-            res.json({ data: returnUser, status: "success" });
+            res.json({ data: returnUser, status: 1 });
           });
         })
         .catch((err) => {
@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
               );
 
               const { password: password, ...returnUser } = existUser;
-              res.json({ data: { token, ...returnUser }, status: "success" });
+              res.json({ data: { token, ...returnUser }, status: 1 });
             }
           })
           .catch((err) => {
@@ -75,9 +75,9 @@ exports.getUserById = async (req, res) => {
     if (req.params.id === req.user.userID) {
       const user = await userService.getUserById(req.params.id);
       const { password: password, ...returnData } = user._doc;
-      res.json({ data: returnData, status: "success" });
+      res.json({ data: returnData, status: 1 });
     } else {
-      res.json({ data: null, status: "success" });
+      res.json({ data: null, status: 1 });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -89,9 +89,9 @@ exports.updateUser = async (req, res) => {
     if (req.params.id === req.user.userID) {
       const user = await userService.updateUser(req.params.id, req.body);
       const { password: password, ...returnData } = user._doc;
-      res.json({ data: returnData, status: "success" });
+      res.json({ data: returnData, status: 1 });
     } else {
-      res.json({ data: null, status: "success" });
+      res.json({ data: null, status: 1 });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });

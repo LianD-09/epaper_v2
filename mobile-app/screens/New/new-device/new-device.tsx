@@ -28,6 +28,7 @@ import { NewDeviceFillScreenProps, RootStackNewParamList } from '../../../naviga
 import { useDispatch } from 'react-redux';
 import { openCenterModal } from '../../../redux/slice/center-modal-slice';
 import { wifiServiceAndCharacteristic } from '../../../utils/constants';
+import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
 
 const NewDeviceScreen = ({ navigation, route }) => {
     const { mode } = route.params;
@@ -76,6 +77,7 @@ const NewDeviceScreen = ({ navigation, route }) => {
 
     const handleConnect = async (e: Device) => {
         try {
+            dispacth(openLoading());
             const connected = await connectToDevice(e);
             if (connected) {
                 dispacth(openCenterModal({
@@ -107,6 +109,9 @@ const NewDeviceScreen = ({ navigation, route }) => {
                 btnTitle: 'Close',
                 btnCancelTitle: '',
             }))
+        }
+        finally {
+            dispacth(closeLoading());
         }
     }
 

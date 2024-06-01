@@ -68,7 +68,7 @@ const BottomModal = () => {
             onModalHide={() => dispatch(closeBottomModal())}
         >
             <View style={styles.container}>
-                <Pressable style={{ flex: 1 }} onPress={handleClose} />
+                <Pressable style={{ flex: 1 }} onPress={() => modalNoti.backgroundPressable && handleClose()} />
 
                 <View style={styles.content}>
                     <View

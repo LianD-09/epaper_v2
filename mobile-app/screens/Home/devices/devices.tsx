@@ -11,79 +11,71 @@ import Color from '../../../themes/color';
 import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
-import { DataType, Status, Template } from '../../../types/type';
+import { DataType, Device, DeviceRaw, Status, Template } from '../../../types/type';
 import DevicesItem from '../../../components/home/devices/devices-item';
 import Typography from '../../../libs/typography';
 import fontSize from '../../../themes/font-size';
 import fontWeight from '../../../themes/font-weight';
-import { navigateThroughStack } from '../../../navigation/root-navigation';
+import { navigateThroughStack, navigationRef } from '../../../navigation/root-navigation';
 import { NewDeviceScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
-
-const mockdata = [
-    {
-        id: 1,
-        name: 'EPD 01',
-        status: Status.ACTIVE,
-        dataType: DataType.PRODUCT,
-        dataId: 1,
-        dataName: 'Thịt gà Minh',
-        ssid: 'Do Ngoc',
-        pass: '12345678',
-        createdBy: 1,
-    },
-    {
-        id: 2,
-        name: 'EPD 02',
-        status: Status.INACTIVE,
-        dataType: DataType.STUDENT,
-        dataId: 1,
-        dataName: 'Linh DA',
-        ssid: 'Do Ngoc',
-        pass: '12345678',
-        createdBy: 1,
-    },
-    {
-        id: 3,
-        name: 'EPD 03',
-        status: Status.ACTIVE,
-        dataType: DataType.EMPLOYEE,
-        dataId: 1,
-        dataName: 'Minh',
-        ssid: 'Do Ngoc',
-        pass: '12345678',
-        createdBy: 1,
-    },
-    {
-        id: 4,
-        name: 'EPD 04',
-        status: Status.ACTIVE,
-        dataType: DataType.CLIENT,
-        dataId: 1,
-        dataName: 'Minh Linh',
-        ssid: 'Do Ngoc',
-        pass: '12345678',
-        createdBy: 1,
-    },
-    {
-        id: 5,
-        name: 'EPD 05',
-        status: Status.ACTIVE,
-        dataType: DataType.ROOM,
-        dataId: 1,
-        dataName: '1208B',
-        ssid: 'Do Ngoc',
-        pass: '12345678',
-        createdBy: 1,
-    },
-]
+import { useDispatch } from 'react-redux';
+import { getAllDevices } from '../../../services/device-services';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
+import { AxiosError } from 'axios';
+import { useFocusEffect } from '@react-navigation/native';
 
 const DevicesScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const [devices, setDevices] = useState<Array<DeviceRaw>>([]);
+    const [isFetching, setIsFetching] = useState(false);
+
     const { active, inactive } = useMemo(() => {
         return {
-            active: mockdata.filter((e, index) => e.status === Status.ACTIVE),
-            inactive: mockdata.filter((e, index) => e.status === Status.INACTIVE)
+            active: devices.filter((e, index) => e.active === true),
+            inactive: devices.filter((e, index) => e.active === false)
         }
-    }, [mockdata])
+    }, [devices]);
+
+    const formatDevices = useMemo(() => {
+        return devices.map((e, index) => ({
+            id: e._id,
+            name: e.name,
+            status: e.active ? Status.ACTIVE : Status.INACTIVE,
+            dataId: e.dataID,
+            dataName: e.dataName,
+            ssid: e.ssid,
+            pass: e.pass,
+            createdBy: e.createdBy,
+        }))
+    }, [devices])
+
+    const getDevices = async () => {
+        try {
+            setIsFetching(true);
+            const allDevices = await getAllDevices();
+            setDevices(allDevices.data.data);
+        }
+        catch (e) {
+            dispatch(openCenterModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Fetch devices and data failed',
+                content: (e as AxiosError).message,
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }));
+        }
+        finally {
+            setIsFetching(false);
+        }
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getDevices()
+            return () => { };
+        }, [])
+    );
 
     return (
         <View style={styles.container}>
@@ -163,7 +155,12 @@ const DevicesScreen = ({ navigation }) => {
                     bgColor={Color.white[100]}
                 >
                     <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w700} style={{ marginBottom: 8 }}>All devices:</Typography>
-                    {mockdata.map((e, index) => <DevicesItem key={index} {...e}></DevicesItem>)}
+                    {formatDevices.length > 0 && !isFetching ?
+                        formatDevices.map((e, index) => <DevicesItem key={index} {...e}></DevicesItem>) :
+                        isFetching ?
+                            <Typography fontSize={fontSize.VeryTiny} fontFamily={fontWeight.w500} > Getting devices...</Typography> :
+                            <Typography fontSize={fontSize.VeryTiny} fontFamily={fontWeight.w500} > No devices found</Typography>
+                    }
                 </Card>
             </ScrollView>
         </View>

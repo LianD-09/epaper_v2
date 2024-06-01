@@ -135,7 +135,7 @@ const TextField = ({
                                     value={value}
                                     autoFocus={focus}
                                     placeholder={placeholder}
-                                    placeholderTextColor={value !== '' ? Color.disable[200] : placeholderTextColor}
+                                    placeholderTextColor={error ? Color.error[500] : placeholderTextColor}
                                     keyboardType={keyboardType}
                                     secureTextEntry={secure}
                                     editable={disable ? false : true}
@@ -179,7 +179,7 @@ const TextField = ({
                     )}
                 </View>
             </Card>
-            {(helperErrorText !== '') && (
+            {(helperErrorText !== '' && error) && (
                 <Text style={[styles.errorText, { color: errorText ? Color.error[900] : Color.black[100] }]}>{helperText}</Text>
             )}
         </View>

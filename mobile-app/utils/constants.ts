@@ -53,6 +53,8 @@ export const wifiServiceAndCharacteristic =
         ssid: "00001a11-0000-1000-8000-00805f9b34fb",
         password: "00001a12-0000-1000-8000-00805f9b34fb",
         restart: "00001a1f-0000-1000-8000-00805f9b34fb",
+        uniqueId: "00001a13-0000-1000-8000-00805f9b34fb",
+        topicId: "00001a14-0000-1000-8000-00805f9b34fb",
     }
 };
 export const dataServiceAndCharacteristic = {

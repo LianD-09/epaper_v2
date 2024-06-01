@@ -8,12 +8,15 @@ import Card from "../../../libs/card";
 import { Client, DataRaw, DataType, Employee, Product, Room, Status, Student, Template } from "../../../types/type";
 import { capitalize } from "../../../utils/utils";
 import Divider from "../../../libs/divider";
+import { getDataById } from "../../../services/data-services";
+import { openCenterModal } from "../../../redux/slice/center-modal-slice";
+import { useDispatch } from "react-redux";
+import { AxiosError } from "axios";
 
 export type DevicesDetailProps = {
     id: string | number,
     name: string,
     status: Status,
-    dataType: DataType,
     dataId: string | number,
     dataName: string,
     ssid: string,
@@ -26,14 +29,102 @@ const DevicesDetail = ({
     name,
     dataName,
     status,
-    dataType,
     ssid,
     pass,
     dataId,
     createdBy
 }: DevicesDetailProps) => {
     let color;
+    const dispatch = useDispatch();
     const [dataDetail, setDataDetail] = useState<Template>();
+    const [rawData, setRawData] = useState<DataRaw>();
+
+    const getDataForDevice = async () => {
+        try {
+            const res = await getDataById(dataId);
+            const data: DataRaw = res.data.data as DataRaw;
+            setRawData(data);
+
+            let newData: Template;
+            switch (data?.type?.toLowerCase()) {
+                case DataType.PRODUCT: {
+                    let item: Product;
+                    item = {
+                        ...data,
+                        id: data._id,
+                        category: data.input2 ?? '',
+                        price: data.input3 ?? '',
+                    }
+                    newData = item;
+                    setDataDetail(newData);
+                    break;
+                }
+                case DataType.CLIENT: {
+                    let item: Client;
+                    item = {
+                        ...data,
+                        id: data._id,
+                        email: data.input2 ?? '',
+                        address: data.input3 ?? '',
+                    }
+                    newData = item;
+                    setDataDetail(newData);
+                    break;
+                }
+                case DataType.EMPLOYEE: {
+                    let item: Employee;
+                    item = {
+                        ...data,
+                        id: data._id,
+                        email: data.input2 ?? '',
+                        employeeId: data.input3 ?? '',
+                        department: data.input4 ?? '',
+                    }
+                    newData = item;
+                    setDataDetail(newData);
+                    break;
+                }
+                case DataType.ROOM: {
+                    let item: Room;
+                    item = {
+                        ...data,
+                        id: data._id,
+                        purpose: data.input2 ?? '',
+                        manager: data.input3 ?? '',
+                        roomStatus: data.input4 ?? '',
+                    }
+                    newData = item;
+                    setDataDetail(newData);
+                    break;
+                }
+                case DataType.STUDENT: {
+                    let item: Student;
+                    item = {
+                        ...data,
+                        id: data._id,
+                        email: data.input2 ?? '',
+                        studentId: data.input3 ?? '',
+                        class: data.input4 ?? ''
+                    }
+                    newData = item;
+                    setDataDetail(newData);
+                    break;
+                }
+                default:
+                    break;
+            }
+        }
+        catch (e) {
+            dispatch(openCenterModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Fetch devices and data failed',
+                content: (e as AxiosError).message,
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }));
+        }
+    }
 
     switch (status) {
         case Status.ACTIVE:
@@ -52,94 +143,11 @@ const DevicesDetail = ({
 
     useEffect(() => {
         //call api
-        let data: DataRaw = {
-            _id: id,
-            type: 'Employee',
-            name: 'Thịt gà',
-            input2: 'Thực phẩm',
-            input3: '10000',
-            input4: 'Available',
-            active: true,
-            activeStartTime: 1715438397,
-            deviceName: 'EPD 01',
-            deviceID: 1,
-            activeTimestamp: [],
-            fontStyle: 'Monospace 12pt',
-            designSchema: 'Theme 1',
-            createdBy: 1,
-        };
-        let newData: Template;
-        switch (dataType) {
-            case DataType.PRODUCT: {
-                let item: Product;
-                item = {
-                    ...data,
-                    id: data._id,
-                    category: data.input2 ?? '',
-                    price: data.input3 ?? '',
-                }
-                newData = item;
-                setDataDetail(newData);
-                break;
-            }
-            case DataType.CLIENT: {
-                let item: Client;
-                item = {
-                    ...data,
-                    id: data._id,
-                    email: data.input2 ?? '',
-                    address: data.input3 ?? '',
-                }
-                newData = item;
-                setDataDetail(newData);
-                break;
-            }
-            case DataType.EMPLOYEE: {
-                let item: Employee;
-                item = {
-                    ...data,
-                    id: data._id,
-                    email: data.input2 ?? '',
-                    employeeId: data.input3 ?? '',
-                    department: data.input4 ?? '',
-                }
-                newData = item;
-                setDataDetail(newData);
-                break;
-            }
-            case DataType.ROOM: {
-                let item: Room;
-                item = {
-                    ...data,
-                    id: data._id,
-                    purpose: data.input2 ?? '',
-                    manager: data.input3 ?? '',
-                    roomStatus: data.input4 ?? '',
-                }
-                newData = item;
-                setDataDetail(newData);
-                break;
-            }
-            case DataType.STUDENT: {
-                let item: Student;
-                item = {
-                    ...data,
-                    id: data._id,
-                    email: data.input2 ?? '',
-                    studentId: data.input3 ?? '',
-                    class: data.input4 ?? ''
-                }
-                newData = item;
-                setDataDetail(newData);
-                break;
-            }
-            default:
-                break;
-        }
+        getDataForDevice();
     }, [])
 
     const renderByType = () => {
-        switch (dataType) {
+        switch (rawData?.type?.toLowerCase()) {
             case DataType.PRODUCT:
                 return (
                     <>
@@ -236,7 +244,7 @@ const DevicesDetail = ({
             <Card bgColor={Color.secondary[100]}>
                 <View style={styles.itemRow}>
                     <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Type:</Typography>
-                    <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{capitalize(dataType)}</Typography>
+                    <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{capitalize(rawData?.type ?? '')}</Typography>
                 </View>
                 <View style={styles.itemRow}>
                     <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Name:</Typography>

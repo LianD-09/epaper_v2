@@ -448,6 +448,8 @@ void MQTT_Loop(const char *topic, UBYTE *BlackImage)
         int dataType = preferences.getInt("dataType", 0);
 
         EPD_2IN9_V2_Init();
+        Paint_Clear(0xff);
+        EPD_2IN9_V2_Display(BlackImage);
         MQTT_Client_Init(ssid.c_str(), password.c_str(), topic, BlackImage);
         MQTT_Connect(topic, BlackImage);
 
@@ -473,6 +475,10 @@ void MQTT_Loop(const char *topic, UBYTE *BlackImage)
             {
                 displayWrite5(BlackImage);
             }
+        }
+        else
+        {
+            displayEmpty(BlackImage);
         }
         String updateOK = "updateOK|";
         Serial.println(updateOK.c_str());

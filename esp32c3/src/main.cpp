@@ -18,7 +18,7 @@ Preferences preferences;
 UBYTE *BlackImage;
 UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
 uint64_t chipid = ESP.getEfuseMac();
-int mode = 1;
+int mode = 0;
 
 void setup()
 {
@@ -47,13 +47,13 @@ void setup()
 
     preferences.begin("my-app", false);
 
-    bool debugMode = preferences.getBool("debugMode", false);
-    if (debugMode)
-    {
-        enterDebugMode(BlackImage);
-        preferences.putBool("debugMode", false); // Clear flag
-        ESP.restart();
-    }
+    // bool debugMode = preferences.getBool("debugMode", false);
+    // if (debugMode)
+    // {
+    //     enterDebugMode(BlackImage);
+    //     preferences.putBool("debugMode", false); // Clear flag
+    //     ESP.restart();
+    // }
 
 #if 1
     Paint_Clear(0xff);
@@ -146,10 +146,16 @@ void setup()
 
 void loop()
 {
-    if (mode == 3)
+    if (mode == 1)
     {
         BLE_Advertise(BlackImage);
         BLE_Loop(BlackImage);
+    }
+    if (digitalRead(20) == LOW)
+    {
+        Serial.print("press Pin 20");
+        mode = (mode + 1) % 2;
+        DEV_Delay_ms(100);
     }
 #if 1
     if (digitalRead(9) == LOW)
@@ -163,10 +169,16 @@ void loop()
         DEV_Delay_ms(2000);
         startDebugging();
     }
+
+    static string did = "uniqueId:" + to_string(chipid);
+    Serial.println(did.c_str());
+    DEV_Delay_ms(500);
+
     static String key = "";
     static String value = "";
     static bool isKey = true;
     static bool updated = false;
+
     while (Serial.available())
     { // Check if data is available to read
         char c = Serial.read();
@@ -185,6 +197,7 @@ void loop()
             key = "";
             value = "";
             isKey = true;
+            DEV_Delay_ms(200);
         }
         else
         {

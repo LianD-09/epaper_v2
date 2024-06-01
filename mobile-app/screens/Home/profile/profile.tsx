@@ -15,27 +15,22 @@ import { StatusBar } from 'expo-status-bar';
 import { Device, User, } from '../../../types/type';
 import TextField from '../../../libs/text-field';
 import Button from '../../../libs/button';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import fontWeight from '../../../themes/font-weight';
 import fontSize from '../../../themes/font-size';
 import { navigate, navigateThroughStack, navigationRef, replace } from '../../../navigation/root-navigation';
 import iconHide from 'assets/icons/hide.png';
 import iconShow from 'assets/icons/show.png';
 import Typography from '../../../libs/typography';
+import { RootState, UserState } from '../../../redux/store';
 
 const ProfileScreen = ({ navigation, route }) => {
     const [user, setUser] = useState<User | null>(null);
+    const userData = useSelector<RootState, UserState>(state => state.user);
     const dispath = useDispatch();
 
     useEffect(() => {
-        setUser({
-            "id": "662a314ced8bb0d2c3680953",
-            "email": "doanhlinh09@gmail.com",
-            "name": "Linh Do",
-            "gender": 1,
-            "createdAt": "2024-04-25T10:32:44.141Z",
-            "updatedAt": "2024-04-25T10:32:44.141Z",
-        })
+        setUser(userData.data);
     }, []);
 
     const handleLogout = () => {

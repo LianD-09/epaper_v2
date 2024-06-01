@@ -16,11 +16,14 @@ import { Device, } from '../../../types/type';
 import TextField from '../../../libs/text-field';
 import Button from '../../../libs/button';
 import { useDispatch } from 'react-redux';
-import fontWeight from '../../../themes/font-weight';
-import fontSize from '../../../themes/font-size';
-import { replace } from '../../../navigation/root-navigation';
+import { pop } from '../../../navigation/root-navigation';
 import iconHide from 'assets/icons/hide.png';
 import iconShow from 'assets/icons/show.png';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
+import { deleteDevice, updateDevice } from '../../../services/device-services';
+import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
+import { validateName, validateSSID, validateWifiPass } from '../../../utils/regex';
+import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
 
 const EditDevicesScreen = ({ navigation, route }) => {
     const { data, dataType } = route.params;
@@ -37,9 +40,83 @@ const EditDevicesScreen = ({ navigation, route }) => {
         setPass(item.pass);
     }, []);
 
-    const handlePress = () => {
+    const handlePress = async () => {
         // call api
-        replace('DevicesScreen');
+        try {
+            dispath(openLoading());
+            await updateDevice((data as Device).id, {
+                ...data,
+                ssid,
+                pass,
+                name
+            });
+
+            dispath(openBottomModal({
+                isOpen: true,
+                isFailed: false,
+                title: 'Successful',
+                content: 'This device has been updated.',
+                btnTitle: 'Close',
+                callback: () => pop(),
+                btnCancelTitle: ''
+            }))
+        }
+        catch (e) {
+            console.log(e);
+            dispath(openBottomModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Failed',
+                content: 'Something was wrong. Please try again.',
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }))
+        }
+        finally {
+            dispath(closeLoading());
+        }
+    }
+
+    const handleDelete = () => {
+        // call api
+        dispath(openCenterModal({
+            isOpen: true,
+            isFailed: false,
+            title: 'Warning',
+            content: 'Are you sure you want to delete this device? This device and its data display status will be deleted.',
+            btnTitle: 'Yes',
+            callback: async () => {
+                try {
+                    dispath(openLoading());
+                    await deleteDevice((data as Device).id);
+
+                    dispath(openBottomModal({
+                        isOpen: true,
+                        isFailed: false,
+                        title: 'Successful',
+                        content: 'This device has been removed.',
+                        btnTitle: 'Close',
+                        callback: () => pop(),
+                        btnCancelTitle: ''
+                    }))
+                }
+                catch (e) {
+                    console.log(e);
+                    dispath(openBottomModal({
+                        isOpen: true,
+                        isFailed: true,
+                        title: 'Failed',
+                        content: 'Something was wrong. Please try again.',
+                        btnTitle: 'Close',
+                        btnCancelTitle: ''
+                    }))
+                }
+                finally {
+                    dispath(closeLoading());
+                }
+            },
+            btnCancelTitle: 'Cancel',
+        }))
     }
 
     useEffect(() => {
@@ -109,7 +186,15 @@ const EditDevicesScreen = ({ navigation, route }) => {
                             }
                         />
                     </View>
-                    <Button onPress={handlePress}>{'Submit'}</Button>
+                    <View style={{ width: '100%', gap: 4 }}>
+                        <Button
+                            onPress={handlePress}
+                            disable={!validateSSID(ssid) || !validateWifiPass(pass) || !validateName(name)}
+                        >
+                            {'Submit'}
+                        </Button>
+                        <Button onPress={handleDelete} deleted>{'Delete'}</Button>
+                    </View>
                 </Card>
             </ScrollView>
         </View>

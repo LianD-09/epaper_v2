@@ -1,16 +1,17 @@
-import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native"
+import { Image, Pressable, StyleSheet, View, } from "react-native"
 import Color from "../../themes/color";
-import { LegacyRef, forwardRef } from "react";
+import { forwardRef } from "react";
 import React from "react";
 import Typography from "../../libs/typography";
 import fontSize from "../../themes/font-size";
 import fontWeight from "../../themes/font-weight";
-import Card from "../../libs/card";
 import HomeItem, { HomeItemProps } from "./home-item";
+import { DataRaw, DataType, DeviceRaw } from "../../types/type";
+import { capitalize } from "../../utils/utils";
 
 type HomeCardProps = {
     title: TitleEnum,
-    data?: any,
+    data?: Array<DataRaw> | Array<DeviceRaw>,
     navigation: any,
 }
 
@@ -42,27 +43,27 @@ const HomeCard = forwardRef<View, HomeCardProps>(({
                     {
                         color: Color.purple[600],
                         label: 'Product',
-                        description: '10 datas'
+                        description: `${data?.filter((e, index) => (e as DataRaw).type === capitalize(DataType.PRODUCT)).length} data`
                     },
                     {
                         color: Color.orange[700],
                         label: 'Student',
-                        description: '10 datas'
+                        description: `${data?.filter((e, index) => (e as DataRaw).type === capitalize(DataType.STUDENT)).length} data`
                     },
                     {
                         color: Color.info[600],
                         label: 'Employee',
-                        description: '10 datas'
+                        description: `${data?.filter((e, index) => (e as DataRaw).type === capitalize(DataType.EMPLOYEE)).length} data`
                     },
                     {
                         color: Color.primary[600],
                         label: 'Client',
-                        description: '10 datas'
+                        description: `${data?.filter((e, index) => (e as DataRaw).type === capitalize(DataType.CLIENT)).length} data`
                     },
                     {
                         color: Color.success[500],
                         label: 'Room',
-                        description: '10 datas'
+                        description: `${data?.filter((e, index) => (e as DataRaw).type === capitalize(DataType.ROOM)).length} data`
                     },
                 ];
                 break;
@@ -71,17 +72,17 @@ const HomeCard = forwardRef<View, HomeCardProps>(({
                     {
                         color: Color.primary[600],
                         label: 'Total',
-                        description: '20 devices'
+                        description: `${data?.length} devices`
                     },
                     {
                         color: Color.success[500],
                         label: 'Active',
-                        description: '10 devices'
+                        description: `${data?.filter((e, index) => (e as DeviceRaw).active === true).length} devices`
                     },
                     {
                         color: Color.error[800],
                         label: 'Inactive',
-                        description: '10 devices'
+                        description: `${data?.filter((e, index) => (e as DeviceRaw).active === false).length} devices`
                     },
                 ];
                 break;

@@ -18,7 +18,6 @@ export type DevicesItemProps = {
     id: string | number,
     name: string,
     status: Status,
-    dataType: DataType,
     dataId: string | number,
     dataName: string,
     ssid: string,
@@ -32,7 +31,6 @@ const DevicesItem = ({
     status,
     dataName,
     ssid,
-    dataType,
     ...detailData
 }: DevicesItemProps) => {
     const dispatch = useDispatch();
@@ -60,7 +58,7 @@ const DevicesItem = ({
             title: name,
             btnTitle: "Edit",
             btnCancelTitle: "Close",
-            content: <DevicesDetail id={id} dataType={dataType} dataName={dataName} name={name} status={status} ssid={ssid} {...detailData} />,
+            content: <DevicesDetail id={id} dataName={dataName} name={name} status={status} ssid={ssid} {...detailData} />,
             callback: () => {
                 navigate<EditDevicesScreenProps, RootStackHomeParamList>('EditDevicesScreen', {
                     data: {

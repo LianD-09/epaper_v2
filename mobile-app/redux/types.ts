@@ -1,4 +1,5 @@
 import { ImageSourcePropType } from "react-native";
+import { User } from "../types/type";
 
 export type BMState = {
     isOpen: boolean,
@@ -8,6 +9,7 @@ export type BMState = {
     content?: React.ReactNode,
     btnTitle: string,
     btnCancelTitle: string,
+    backgroundPressable?: boolean,
     callback?: ((...args: any) => any) | null | undefined,
 }
 
@@ -45,6 +47,12 @@ export type CMState = {
     content?: React.ReactNode,
     btnTitle: string,
     btnCancelTitle: string,
+    backgroundPressable?: boolean,
     callback?: ((...args: any) => any) | null | undefined,
     callbackCancel?: ((...args: any) => any) | null | undefined,
+}
+
+export type UserState = {
+    isLogin: boolean,
+    data: User,
 }

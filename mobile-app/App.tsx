@@ -25,7 +25,7 @@ import CenterModal from './components/modals/center-modal';
 import ScanScreen from './screens/Scan/scan';
 import LoadingModal from './components/modals/loading-modal';
 import WifiApStack from './navigation/wifi-ap-stack';
-import { validateToken } from './utils/utils';
+// import { validateToken } from './utils/utils';
 
 
 // LogBox.ignoreAllLogs();
@@ -62,26 +62,13 @@ export default function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Load front
-  // useEffect(() => {
-  //   async function prepare() {
-  //     try {
-  //       await fetchFonts();
-  //     } catch (e) {
-  //       console.log(e);
-  //     } finally {
-  //       setAppIsReady(true);
-  //     }
-  //   }
-  //   prepare();
-  // }, []);
-  const prepare = async () => {
-    setIsLoggedIn(await validateToken());
-  }
+  // const prepare = async () => {
+  //   setIsLoggedIn(await validateToken());
+  // }
 
-  useEffect(() => {
-    prepare();
-  }, [])
+  // useEffect(() => {
+  //   prepare();
+  // }, [])
 
   const onLayoutRootView = useCallback(async () => {
     if (appIsReady) {

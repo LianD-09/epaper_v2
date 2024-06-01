@@ -37,10 +37,23 @@ export type Device = {
     createdBy: string | number,
     dataID: string | number,
     dataName: string,
+    uniqueID: string,
     name: string,
     pass: string
     ssid: string
     id: string | number,
+}
+
+export type DeviceRaw = {
+    active?: boolean,
+    createdBy?: string | number,
+    dataID?: string | number,
+    dataName?: string,
+    uniqueID: string,
+    name: string,
+    pass: string
+    ssid: string
+    _id: string | number,
 }
 
 export type Product = {

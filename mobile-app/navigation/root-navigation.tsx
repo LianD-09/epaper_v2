@@ -26,6 +26,12 @@ export function popToTop() {
     }
 }
 
+export function pop() {
+    if (navigationRef.isReady()) {
+        navigationRef.dispatch(StackActions.pop());
+    }
+}
+
 export function navigateThroughStack<T extends object | undefined, R extends RootStack>(nameTab: keyof RootTab, nameScreen: keyof R, params?: T) {
     if (navigationRef.isReady()) {
         navigationRef.dispatch(CommonActions.navigate({

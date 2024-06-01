@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import { getToken, removeToken } from './storage-services';
 import { navigationRef } from '../navigation/root-navigation';
 
@@ -7,7 +7,7 @@ const API_ADHOC = process.env.EXPO_PUBLIC_API_ADHOC;
 
 axios.defaults.headers.common['Accept'] = 'application/json';
 
-const addInterceptor = (instant) => {
+const addInterceptor = (instant: AxiosInstance) => {
 
     instant.interceptors.request.use(
         async (config) => {
@@ -26,8 +26,8 @@ const addInterceptor = (instant) => {
 
     instant.interceptors.response.use(
         async (response) => {
-            const { code } = response;
-            if (code === 401 || (code === 500 && !response.config.headers.Authorization)) {
+            const { status } = response;
+            if (status === 401 || (status === 500 && !response.config.headers.Authorization)) {
                 await removeToken();
                 navigationRef.reset({
                     index: 0,
@@ -40,8 +40,8 @@ const addInterceptor = (instant) => {
             }
             return response;
         },
-        async (err) => {
-            if (err.response?.status === 401) {
+        async (error) => {
+            if (error.response?.status === 401) {
                 await removeToken();
                 navigationRef.reset({
                     index: 0,
@@ -52,7 +52,94 @@ const addInterceptor = (instant) => {
                     ]
                 });
             }
-            return Promise.reject(err);
+            // Handle error message
+            if (error instanceof AxiosError) {
+                let newError: AxiosError = new AxiosError(
+                    error.message,
+                    error.code,
+                    error.config,
+                    error.request,
+                    error.response
+                );
+
+                const dataErr = error.response?.data;
+                if (
+                    dataErr &&
+                    "message" in dataErr || "error" in dataErr
+                ) {
+                    if (!!dataErr["message"]) {
+                        newError = new AxiosError(
+                            dataErr["message"],
+                            error.code,
+                            error.config,
+                            error.request,
+                            error.response
+                        );
+                    }
+
+                    if (!!dataErr["error"]) {
+                        newError = new AxiosError(
+                            dataErr["error"],
+                            error.code,
+                            error.config,
+                            error.request,
+                            error.response
+                        );
+                    }
+                }
+                return Promise.reject(newError);
+            }
+            return Promise.reject(error);
+        }
+    )
+    return instant;
+}
+
+const addInterceptorNonToken = (instant: AxiosInstance) => {
+
+    instant.interceptors.response.use(
+        async (response) => {
+            return response;
+        },
+        async (error) => {
+            // Handle error message
+            if (error instanceof AxiosError) {
+                let newError: AxiosError = new AxiosError(
+                    error.message,
+                    error.code,
+                    error.config,
+                    error.request,
+                    error.response
+                );
+
+                const dataErr = error.response?.data;
+                if (
+                    dataErr &&
+                    "message" in dataErr || "error" in dataErr
+                ) {
+                    if (!!dataErr["message"]) {
+                        newError = new AxiosError(
+                            dataErr["message"],
+                            error.code,
+                            error.config,
+                            error.request,
+                            error.response
+                        );
+                    }
+
+                    if (!!dataErr["error"]) {
+                        newError = new AxiosError(
+                            dataErr["error"],
+                            error.code,
+                            error.config,
+                            error.request,
+                            error.response
+                        );
+                    }
+                }
+                return Promise.reject(newError);
+            }
+            return Promise.reject(error);
         }
     )
     return instant;
@@ -68,11 +155,19 @@ const createInstance = (api) => {
     return instant;
 }
 
+const createInstanceNonToken = (api) => {
+    const instant = axios.create({
+        baseURL: api,
+    });
+
+    addInterceptorNonToken(instant);
+
+    return instant;
+}
+
 export const instanceToken = createInstance(API);
 
-export const instanceNonToken = axios.create({
-    baseURL: API,
-});
+export const instanceNonToken = createInstanceNonToken(API);
 
 export const instanceAdhoc = axios.create({
     baseURL: API_ADHOC,

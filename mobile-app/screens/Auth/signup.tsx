@@ -23,21 +23,47 @@ import Typography from '../../libs/typography';
 import FontSize from '../../themes/font-size';
 import FontWeight from '../../themes/font-weight';
 import { closeLoading, openLoading } from '../../redux/slice/loading-slice';
+import { signupRequest } from '../../services/auth-services';
+import { openCenterModal } from '../../redux/slice/center-modal-slice';
 
 const Signup = ({ navigation }) => {
-    const [remember, setRemember] = useState(false);
     const dispatch = useDispatch();
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
-    const handleSubmitEvent = () => {
+    const handleSubmitEvent = async () => {
         try {
             dispatch(openLoading());
-            navigation.navigate('Sign-in', { name: 'Sign in' });
+            const res = await signupRequest({
+                name,
+                email,
+                gender: 1,
+                password
+            })
+            if (!!res) {
+                dispatch(openCenterModal({
+                    isOpen: true,
+                    isFailed: false,
+                    title: 'Success',
+                    content: 'Sign up successfully',
+                    btnTitle: 'Close',
+                    btnCancelTitle: ''
+                }));
+                navigation.navigate('Sign-in', { name: 'Sign in' });
+            }
         }
         catch (e) {
             console.log(e);
+            dispatch(openCenterModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Signup failed',
+                content: 'Something was wrong.',
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }));
         }
         finally {
             dispatch(closeLoading());
@@ -63,10 +89,17 @@ const Signup = ({ navigation }) => {
                     />
                     <View style={styles.inputView}>
                         <TextField
+                            keyboardType='default'
+                            placeholder={'Your name'}
+                            label={'Name'}
+                            onChange={setName}
+                            disable={false}
+                        />
+                        <TextField
                             keyboardType='email-address'
                             placeholder={'Your email'}
                             label={'Email'}
-                            onChange={() => null}
+                            onChange={setEmail}
                             disable={false}
                         />
                         <TextField

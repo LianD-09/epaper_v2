@@ -12,7 +12,7 @@ exports.getAllData = async (req, res) => {
 
   try {
     const dataList = await dataService.getAllData(filters);
-    res.json({ data: dataList, status: "success" });
+    res.json({ data: dataList, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -21,7 +21,7 @@ exports.getAllData = async (req, res) => {
 exports.createData = async (req, res) => {
   try {
     const data = await dataService.createData(req.body, req.user.userID);
-    res.json({ data: data, status: "success" });
+    res.json({ data: data, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -30,7 +30,7 @@ exports.createData = async (req, res) => {
 exports.getDataById = async (req, res) => {
   try {
     const data = await dataService.getDataById(req.params.id);
-    res.json({ data: data, status: "success" });
+    res.json({ data: data, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -39,7 +39,7 @@ exports.getDataById = async (req, res) => {
 exports.updateData = async (req, res) => {
   try {
     const data = await dataService.updateData(req.params.id, req.body);
-    res.json({ data: data, status: "success" });
+    res.json({ data: data, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -48,7 +48,7 @@ exports.updateData = async (req, res) => {
 exports.deleteData = async (req, res) => {
   try {
     const data = await dataService.deleteData(req.params.id, req.user.userID);
-    res.json({ data: data, status: "success" });
+    res.json({ data: data, status: 1 });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

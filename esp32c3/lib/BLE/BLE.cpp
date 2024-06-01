@@ -187,6 +187,10 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
     {
         preferences.putString("pass", chrVal.c_str());
     }
+    if (chrUUID.compare(WIFI_CHR_TOPICID_UUID) == 0)
+    {
+        preferences.putString("_id", chrVal.c_str());
+    }
     // Restart and write value to 0
     if (chrUUID.compare(WIFI_CHR_RESTART_UUID) == 0)
     {
@@ -313,6 +317,7 @@ void DescriptorCallbacks::onRead(NimBLEDescriptor *pDescriptor)
 
 void BLE_Init(const std::string &deviceName)
 {
+    String topic = preferences.getString("_id", "");
     String ssid = preferences.getString("ssid", "");
     String password = preferences.getString("pass", "");
     String name = preferences.getString("name", "");
@@ -365,6 +370,27 @@ void BLE_Init(const std::string &deviceName)
     pPass->setValue(password);
     pPass->setCallbacks(new CharacteristicCallbacks());
     pPass->notify(true);
+    // Device ID - Unique ID
+    NimBLECharacteristic *pDID = pServiceWifi->createCharacteristic(
+        NimBLEUUID(WIFI_CHR_DID_UUID),
+        NIMBLE_PROPERTY::READ |
+            NIMBLE_PROPERTY::READ_ENC |
+            NIMBLE_PROPERTY::READ_AUTHEN);
+    pDID->setValue(ESP.getEfuseMac());
+    pDID->setCallbacks(new CharacteristicCallbacks());
+    pDID->notify(true);
+    // Password
+    NimBLECharacteristic *pTopicID = pServiceWifi->createCharacteristic(
+        NimBLEUUID(WIFI_CHR_TOPICID_UUID),
+        NIMBLE_PROPERTY::READ |
+            NIMBLE_PROPERTY::READ_ENC |
+            NIMBLE_PROPERTY::READ_AUTHEN |
+            NIMBLE_PROPERTY::WRITE |
+            NIMBLE_PROPERTY::WRITE_ENC |
+            NIMBLE_PROPERTY::WRITE_AUTHEN);
+    pTopicID->setValue(topic);
+    pTopicID->setCallbacks(new CharacteristicCallbacks());
+    pTopicID->notify(true);
     // Restart call
     NimBLECharacteristic *pRestart = pServiceWifi->createCharacteristic(
         NimBLEUUID(WIFI_CHR_RESTART_UUID),

@@ -53,6 +53,7 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
         allDevices,
         connectedDevice,
         stopScanDevices,
+        disconnectFromDevice,
         changeData
     } = useBLE(false);
 
@@ -95,6 +96,9 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
                 break;
             case DataType.STUDENT:
                 break;
+        }
+        return () => {
+            disconnectFromDevice();
         }
     }, []);
 

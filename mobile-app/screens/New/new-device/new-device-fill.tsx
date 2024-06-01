@@ -12,7 +12,7 @@ import Color from '../../../themes/color';
 import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
-import { DataType, Device, } from '../../../types/type';
+import { DataType, Device, DeviceRaw, } from '../../../types/type';
 import TextField from '../../../libs/text-field';
 import Button from '../../../libs/button';
 import { useDispatch } from 'react-redux';
@@ -27,29 +27,55 @@ import { NewDataScreenProps, RootStackNewParamList } from '../../../navigation/p
 import { openCenterModal } from '../../../redux/slice/center-modal-slice';
 import Typography from '../../../libs/typography';
 import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
+import { createDevice } from '../../../services/device-services';
+import { validateName, validateSSID, validateWifiPass } from '../../../utils/regex';
+import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
+import { AxiosError } from 'axios';
 
 const NewDeviceFillScreen = ({ navigation, route }) => {
     const [name, setName] = useState<string>('');
     const [ssid, setSsid] = useState<string>('');
     const [pass, setPass] = useState<string>('');
+    const [nameError, setNameError] = useState<boolean>(false);
+    const [ssidError, setSsidError] = useState<boolean>(false);
+    const [passError, setPassError] = useState<boolean>(false);
     const [hide, setHide] = useState<boolean>(true);
     const dispath = useDispatch();
-    const { changeCharacteristicsValue, changeWifiConfiguration, connectedDevice } = useBLE();
+    const { changeCharacteristicsValue, changeWifiConfiguration, connectedDevice, disconnectFromDevice, uniqueId } = useBLE();
 
     const handlePress = async () => {
+        const nameErr = !validateName(name);
+        const ssidErr = !validateSSID(ssid);
+        const passErr = !validateWifiPass(pass);
+        if (nameErr || ssidErr || passErr) {
+            setNameError(nameErr);
+            setSsidError(ssidErr);
+            setPassError(passErr);
+            return;
+        }
+
         try {
             dispath(openLoading());
             // call api
-            await changeWifiConfiguration(ssid, pass);
+            const res = await createDevice({
+                uniqueID: uniqueId,
+                name: name,
+                pass: pass,
+                ssid: ssid,
+            });
+
+            const newDevice = res.data.data as DeviceRaw;
+
+            await changeWifiConfiguration(ssid, pass, newDevice._id);
             dispath(openCenterModal({
                 isOpen: true,
                 isFailed: false,
-                title: 'Update device successfully',
+                title: `${res.data.status === 1 ? 'Create' : 'Update'} device successfully`,
                 btnTitle: 'Add data',
                 btnCancelTitle: 'Reset device',
                 icon: require('assets/icons/success-color.png'),
-                content: `Device has been updated. Do you want to create or update data?`,
-                callback: () => navigate<NewDataScreenProps, RootStackNewParamList>('NewDataScreen'),
+                content: `Device has been ${res.data.status === 1 ? 'create' : 'update'}. Do you want to create or update data?`,
+                callback: () => replace<NewDataScreenProps, RootStackNewParamList>('NewDataScreen'),
                 callbackCancel: async () => {
                     await changeCharacteristicsValue(
                         wifiServiceAndCharacteristic.uuid,
@@ -71,6 +97,14 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
         }
         catch (e) {
             console.log(e);
+            dispath(openBottomModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Create new device failed',
+                content: (e as AxiosError).message,
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }))
         }
         finally {
             dispath(closeLoading());
@@ -78,7 +112,9 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-
+        return () => {
+            disconnectFromDevice();
+        }
     }, [])
 
     return (
@@ -110,6 +146,9 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                             value={name}
                             placeholder={'Device name'}
                             label={'Device name'}
+                            error={nameError}
+                            helperText={'This field cannot be empty and contain alphabet characters, ".", "-" only'}
+                            onFocus={() => setNameError(false)}
                             onChange={setName}
                             disable={false}
                         />
@@ -117,6 +156,9 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                             value={ssid}
                             placeholder={'Network SSID'}
                             label={'Network SSID'}
+                            error={ssidError}
+                            helperText={'This field cannot be empty'}
+                            onFocus={() => setSsidError(false)}
                             onChange={setSsid}
                             disable={false}
                         />
@@ -126,7 +168,10 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                             secure={hide}
                             placeholder={'Password'}
                             label={'Password'}
+                            error={passError}
+                            helperText={'This field cannot be empty and contain at least 8 characters'}
                             onChange={setPass}
+                            onFocus={() => setPassError(false)}
                             disable={false}
                             labelIcon={
                                 <Pressable

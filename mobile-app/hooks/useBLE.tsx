@@ -30,8 +30,9 @@ interface BluetoothLowEnergyApi {
     characteristics: Characteristic[];
     services: Service[];
     bleManager: BleManager;
+    uniqueId: string;
     changeCharacteristicsValue: (serviceUUID: string, characteristicUUID: string, value: string, withResponse?: boolean) => Promise<boolean>;
-    changeWifiConfiguration: (ssid: string, pass: string) => void;
+    changeWifiConfiguration: (ssid: string, pass: string, topicId: string | number) => void;
     changeData: (
         dataType: DataType,
         data: {
@@ -60,6 +61,8 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         setServices,
         services,
         setCharacteristics,
+        uniqueId,
+        setUniqueId
     } = useContext(BLEContext);
 
     const dispatch = useDispatch();
@@ -127,11 +130,13 @@ function useBLE(required = true): BluetoothLowEnergyApi {
             setCharacteristics(characteristicList);
 
 
-            // Read wifi ssid to perform requesting key
+            // Read uniqueId to perform requesting key and save to variable
             const val = await deviceConnection.readCharacteristicForService(
                 '00001a10-0000-1000-8000-00805f9b34fb',
-                '00001a11-0000-1000-8000-00805f9b34fb'
+                '00001a13-0000-1000-8000-00805f9b34fb'
             );
+
+            setUniqueId(val.value ?? '');
 
             result = true;
         } catch (e) {
@@ -272,7 +277,7 @@ function useBLE(required = true): BluetoothLowEnergyApi {
     }, []);
 
     // Start service BLE
-    const changeWifiConfiguration = async (ssid: string, pass: string) => {
+    const changeWifiConfiguration = async (ssid: string, pass: string, topicId: string | number) => {
         try {
             await changeCharacteristicsValue(
                 wifiServiceAndCharacteristic.uuid,
@@ -283,6 +288,11 @@ function useBLE(required = true): BluetoothLowEnergyApi {
                 wifiServiceAndCharacteristic.uuid,
                 wifiServiceAndCharacteristic.characteristics.password,
                 pass
+            );
+            await changeCharacteristicsValue(
+                wifiServiceAndCharacteristic.uuid,
+                wifiServiceAndCharacteristic.characteristics.topicId,
+                topicId.toString()
             );
         }
         catch (e) {
@@ -377,6 +387,7 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         characteristics,
         services,
         bleManager,
+        uniqueId,
         disconnectFromDevice,
         changeCharacteristicsValue,
         changeWifiConfiguration,

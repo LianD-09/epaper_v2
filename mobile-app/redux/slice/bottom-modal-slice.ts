@@ -10,6 +10,7 @@ const initialState: BMState = {
     btnTitle: "",
     btnCancelTitle: "",
     callback: null,
+    backgroundPressable: true,
 };
 
 export const bottomModalSlice = createSlice({

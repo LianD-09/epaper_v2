@@ -13,7 +13,9 @@ interface BLEProviderContextValues {
     services: Service[],
     setServices: React.Dispatch<React.SetStateAction<Service[]>>,
     characteristics: Characteristic[],
-    setCharacteristics: React.Dispatch<React.SetStateAction<Characteristic[]>>
+    setCharacteristics: React.Dispatch<React.SetStateAction<Characteristic[]>>,
+    uniqueId: string,
+    setUniqueId: React.Dispatch<React.SetStateAction<string>>
 }
 
 export const BLEContext = createContext<BLEProviderContextValues>({
@@ -28,6 +30,8 @@ export const BLEContext = createContext<BLEProviderContextValues>({
     setServices: (value) => [],
     characteristics: [],
     setCharacteristics: (value) => [],
+    uniqueId: '',
+    setUniqueId: (value) => '',
 });
 
 const { Provider } = BLEContext;
@@ -43,6 +47,7 @@ export const BLEProvider = ({ children, bleManager }: BLEProviderProps) => {
     const [services, setServices] = useState<Service[]>([]);
     const [characteristics, setCharacteristics] = useState<Characteristic[]>([]);
     const [isScanning, setIsScanning] = useState<boolean>(false);
+    const [uniqueId, setUniqueId] = useState<string>('');
 
     return (
         <Provider value={{
@@ -57,6 +62,8 @@ export const BLEProvider = ({ children, bleManager }: BLEProviderProps) => {
             setServices,
             services,
             setCharacteristics,
+            uniqueId,
+            setUniqueId
         }}>
             {children}
         </Provider>

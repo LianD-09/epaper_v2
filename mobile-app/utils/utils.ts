@@ -1,6 +1,7 @@
 import { encode as base64Encode, decode as base64Decode } from 'base-64';
 import { encode as utf8Encode, decode as utf8Decode } from 'utf8';
 import { getToken } from '../services/storage-services';
+import { AxiosError } from 'axios';
 
 // Hàm mã hóa chuỗi tiếng Việt sang base64
 export const encodeValue = (input) => {
@@ -26,7 +27,7 @@ export const validateToken = async () => {
     if (!!!token) return false;
 
     const payload = token.split(".")[1];
-    const decodedToken = atob(payload);
+    const decodedToken = base64Decode(payload);
     const { exp } = JSON.parse(decodedToken);
     return Date.now() <= exp * 1000;
 }

@@ -122,6 +122,7 @@ const NewDataScreen = ({ navigation, route }) => {
                             onPress={() => {
                                 navigate<NewDataFillScreenProps, RootStackNewParamList>('NewDataFillScreen', { dataType: e.value })
                             }}
+                            pressOpacity={0.6}
                         >
                             <Image source={e.icon} style={{ width: 48, height: 48 }} tintColor={Color.white[100]} />
                             <Typography color={Color.white[100]} fontFamily={fontWeight.w700} fontSize={fontSize.Big}>

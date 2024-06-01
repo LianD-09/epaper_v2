@@ -11,6 +11,7 @@ const initialState: CMState = {
     btnCancelTitle: "",
     callback: null,
     callbackCancel: null,
+    backgroundPressable: true,
 };
 
 export const centerModalSlice = createSlice({

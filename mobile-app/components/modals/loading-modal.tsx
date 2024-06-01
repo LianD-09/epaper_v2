@@ -47,8 +47,8 @@ const LoadingModal = () => {
             coverScreen={false}
             deviceWidth={deviceWidth}
             avoidKeyboard={true}
-            animationIn={"slideInUp"}
-            animationOut={"slideOutDown"}
+            animationIn={"fadeIn"}
+            animationOut={"fadeOut"}
             backdropOpacity={modalConfig.opacity}
             backdropTransitionInTiming={modalConfig.transitionInTiming}
             backdropTransitionOutTiming={modalConfig.transitionOutTiming}

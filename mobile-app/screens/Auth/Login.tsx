@@ -25,6 +25,13 @@ import FontWeight from '../../themes/font-weight';
 import FeaturesAuth from '../../components/auth/features-auth';
 import { closeLoading, openLoading } from '../../redux/slice/loading-slice';
 import { validateToken } from '../../utils/utils';
+import { loginRequest } from '../../services/auth-services';
+import { openCenterModal } from '../../redux/slice/center-modal-slice';
+import { AxiosError } from 'axios';
+import { navigationRef } from '../../navigation/root-navigation';
+import { storeToken } from '../../services/storage-services';
+import { UserRaw } from '../../types/type';
+import { loginUser } from '../../redux/slice/user-slice';
 
 const Login = ({ navigation }) => {
   const [remember, setRemember] = useState(false);
@@ -32,13 +39,53 @@ const Login = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmitEvent = () => {
+  const handleSubmitEvent = async () => {
     try {
       dispatch(openLoading());
-      navigation.navigate('Dashboard', { name: 'Dashboard' });
+      const res = await loginRequest({ email, password });
+      if (!!res) {
+        const data = res.data.data as UserRaw;
+        dispatch(openCenterModal({
+          isOpen: true,
+          isFailed: false,
+          title: 'Success',
+          content: 'Login successfully',
+          btnTitle: 'Close',
+          btnCancelTitle: ''
+        }));
+
+        storeToken(res.data.data.token);
+
+        dispatch(loginUser({
+          isLogin: true, data: {
+            id: data._id,
+            email: data.email,
+            gender: data.gender,
+            name: data.name,
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt,
+          }
+        }));
+
+        navigationRef.reset({
+          index: 0,
+          routes: [
+            {
+              name: 'Dashboard'
+            },
+          ]
+        });
+      }
     }
     catch (e) {
-      console.log(e);
+      dispatch(openCenterModal({
+        isOpen: true,
+        isFailed: true,
+        title: 'Login failed',
+        content: 'Email or password is incorrect!',
+        btnTitle: 'Close',
+        btnCancelTitle: ''
+      }));
     }
     finally {
       dispatch(closeLoading());
@@ -70,7 +117,7 @@ const Login = ({ navigation }) => {
                 keyboardType='email-address'
                 placeholder={'Your email'}
                 label={'Email'}
-                onChange={() => null}
+                onChange={(text) => setEmail(text)}
                 disable={false}
               />
               <TextField

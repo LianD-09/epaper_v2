@@ -29,16 +29,16 @@ exports.getDeviceById = async (id) => {
   return await DeviceModel.findById(id);
 }
 
+exports.getDeviceByKey = async (key, value) => {
+  const obj = Object.fromEntries([
+    [key, value]
+  ]);
+
+  return await DeviceModel.findOne(obj);
+}
+
 exports.createDevice = async (device, userID = null) => {
   device.createdBy = userID;
-  const existDevice = await DeviceModel.findOne({
-    uniqueId: device.uniqueId
-  });
-
-  if (existDevice) {
-    throw Error('This device is existed!');
-  }
-
   const deviceCreated = await DeviceModel.create(device);
   mqttClient.subscribe(`${deviceCreated._id}`);
   return deviceCreated;
