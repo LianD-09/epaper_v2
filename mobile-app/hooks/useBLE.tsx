@@ -136,7 +136,7 @@ function useBLE(required = true): BluetoothLowEnergyApi {
                 '00001a13-0000-1000-8000-00805f9b34fb'
             );
 
-            setUniqueId(val.value ?? '');
+            setUniqueId(decodeValue(val.value ?? ''));
 
             result = true;
         } catch (e) {

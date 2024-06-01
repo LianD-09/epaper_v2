@@ -376,7 +376,7 @@ void BLE_Init(const std::string &deviceName)
         NIMBLE_PROPERTY::READ |
             NIMBLE_PROPERTY::READ_ENC |
             NIMBLE_PROPERTY::READ_AUTHEN);
-    pDID->setValue(ESP.getEfuseMac());
+    pDID->setValue(to_string(ESP.getEfuseMac()));
     pDID->setCallbacks(new CharacteristicCallbacks());
     pDID->notify(true);
     // Password

@@ -63,6 +63,8 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                 pass: pass,
                 ssid: ssid,
             });
+            console.log(res.data);
+
 
             const newDevice = res.data.data as DeviceRaw;
 
@@ -74,7 +76,7 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                 btnTitle: 'Add data',
                 btnCancelTitle: 'Reset device',
                 icon: require('assets/icons/success-color.png'),
-                content: `Device has been ${res.data.status === 1 ? 'create' : 'update'}. Do you want to create or update data?`,
+                content: `Device has been ${res.data.status === 1 ? 'created' : 'updated'}. Do you want to create or update data?`,
                 callback: () => replace<NewDataScreenProps, RootStackNewParamList>('NewDataScreen'),
                 callbackCancel: async () => {
                     await changeCharacteristicsValue(
@@ -92,7 +94,8 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                             }
                         }]
                     })
-                }
+                },
+                backgroundPressable: false,
             }))
         }
         catch (e) {

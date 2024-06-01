@@ -9,7 +9,7 @@ const deviceSchema = new Schema({
     ssid: {
         type: String,
     },
-    uniqueId: {
+    uniqueID: {
         type: String,
         trim: true,
     },
