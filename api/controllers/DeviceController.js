@@ -21,13 +21,14 @@ exports.getAllDevices = async (req, res) => {
     const devices = await deviceService.getAllDevices(filters);
     res.json({ data: devices, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 }
 
 exports.createDevice = async (req, res) => {
   try {
-    const existDevice = await deviceService.getDeviceByKey('uniqueId', device.uniqueId);
+    const existDevice = await deviceService.getDeviceByKey('uniqueId', res.body.uniqueId);
     if (existDevice) {
       const device = await deviceService.updateDevice(
         existDevice._id,
@@ -55,6 +56,7 @@ exports.getDeviceById = async (req, res) => {
     const device = await deviceService.getDeviceById(req.params.id);
     res.json({ data: device, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -64,6 +66,7 @@ exports.updateDevice = async (req, res) => {
     const device = await deviceService.updateDevice(req.params.id, req.body);
     res.json({ data: device, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -73,6 +76,7 @@ exports.deleteDevice = async (req, res) => {
     const device = await deviceService.deleteDevice(req.params.id, req.user.userID);
     res.json({ data: device, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };

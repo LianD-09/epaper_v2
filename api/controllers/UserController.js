@@ -26,6 +26,7 @@ exports.register = async (req, res) => {
       res.status(409).json({ error: "Email has been used" });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -66,6 +67,7 @@ exports.login = async (req, res) => {
         res.status(401).json({ error: "Email and password incorrect" });
       });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -80,6 +82,7 @@ exports.getUserById = async (req, res) => {
       res.json({ data: null, status: 1 });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -94,6 +97,7 @@ exports.updateUser = async (req, res) => {
       res.json({ data: null, status: 1 });
     }
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 }

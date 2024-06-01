@@ -14,6 +14,7 @@ exports.getAllData = async (req, res) => {
     const dataList = await dataService.getAllData(filters);
     res.json({ data: dataList, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -23,6 +24,7 @@ exports.createData = async (req, res) => {
     const data = await dataService.createData(req.body, req.user.userID);
     res.json({ data: data, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -32,6 +34,7 @@ exports.getDataById = async (req, res) => {
     const data = await dataService.getDataById(req.params.id);
     res.json({ data: data, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 }
@@ -41,6 +44,7 @@ exports.updateData = async (req, res) => {
     const data = await dataService.updateData(req.params.id, req.body);
     res.json({ data: data, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
@@ -50,6 +54,7 @@ exports.deleteData = async (req, res) => {
     const data = await dataService.deleteData(req.params.id, req.user.userID);
     res.json({ data: data, status: 1 });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ error: err.message });
   }
 };
