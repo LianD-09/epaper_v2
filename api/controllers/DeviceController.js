@@ -35,7 +35,7 @@ exports.createDevice = async (req, res) => {
       const device = await deviceService.updateDeviceNoMqtt(
         existDevice._id,
         {
-          ...existDevice,
+          ...existDevice._doc,
           ...req.body
         }
       );

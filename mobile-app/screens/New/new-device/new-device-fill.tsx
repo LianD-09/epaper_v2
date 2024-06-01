@@ -79,23 +79,23 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                 content: `Device has been ${res.data.status === 1 ? 'created' : 'updated'}. Do you want to create or update data?`,
                 callback: () => replace<NewDataScreenProps, RootStackNewParamList>('NewDataScreen'),
                 callbackCancel: async () => {
-                    await changeCharacteristicsValue(
-                        wifiServiceAndCharacteristic.uuid,
-                        wifiServiceAndCharacteristic.characteristics.restart,
-                        "1",
-                        false
-                    );
-                    navigationRef.reset({
-                        index: 0,
-                        routes: [{
-                            name: 'Home',
-                            params: {
-                                screen: "HomeScreen"
-                            }
-                        }]
-                    })
+                    // await changeCharacteristicsValue(
+                    //     wifiServiceAndCharacteristic.uuid,
+                    //     wifiServiceAndCharacteristic.characteristics.restart,
+                    //     "1",
+                    //     false
+                    // );
+                    // navigationRef.reset({
+                    //     index: 0,
+                    //     routes: [{
+                    //         name: 'Home',
+                    //         params: {
+                    //             screen: "HomeScreen"
+                    //         }
+                    //     }]
+                    // })
                 },
-                backgroundPressable: false,
+                // backgroundPressable: false,
             }))
         }
         catch (e) {
