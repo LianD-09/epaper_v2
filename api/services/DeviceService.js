@@ -46,7 +46,7 @@ exports.createDevice = async (device, userID = null) => {
 
 exports.updateDevice = async (id, device) => {
   await mqttClient.updateDevice(id, device);
-  if (device.dataID !== "") {
+  if (device.dataID && device.dataID !== "") {
     const data = await DataModel.findById(device.dataID);
     data["deviceName"] = device.name;
     await DataModel.findByIdAndUpdate(device.dataID, data);
@@ -65,7 +65,7 @@ exports.deleteDevice = async (id, userID = null) => {
     return null;
   }
 
-  if (device.dataID !== "") {
+  if (device.dataID && device.dataID !== "") {
     await mqttClient.updateDevice(device._id, {});
     const data = await DataModel.findById(device.dataID);
     const now = Math.floor(new Date().getTime() / 1000);
