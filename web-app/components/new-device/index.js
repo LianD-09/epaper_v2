@@ -68,7 +68,7 @@ const NewDevice = () => {
                 const { value, done } = await reader.read();
                 const data = value.split(':');
 
-                if (data[0] === 'deviceID') {
+                if (data[0] === 'uniqueId') {
                     did = data[1];
                     break;
                 }
