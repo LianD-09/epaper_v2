@@ -12,11 +12,12 @@ import Button from '../../libs/button';
 import Typography from '../../libs/typography';
 import fontSize from '../../themes/font-size';
 import fontWeight from '../../themes/font-weight';
-import WifiManager from "react-native-wifi-reborn";
+// import WifiManager from "react-native-wifi-reborn";
 import { closeLoading, openLoading } from '../../redux/slice/loading-slice';
 import { clearSettings, getSettings, restartDevice } from "../../services/wifi-ap-service";
 import { openBottomModal } from '../../redux/slice/bottom-modal-slice';
 import { navigate } from '../../navigation/root-navigation';
+import NetInfo, { NetInfoStateType } from "@react-native-community/netinfo";
 
 export default function WifiApScreen() {
     const dispatch = useDispatch();
@@ -46,11 +47,11 @@ export default function WifiApScreen() {
         }
     }
 
-    const getConnectingWifi = async () => {
-        await WifiManager.getCurrentWifiSSID().then(
-            res => setConnecting(res)
-        )
-    }
+    // const getConnectingWifi = async () => {
+    //     await WifiManager.getCurrentWifiSSID().then(
+    //         res => setConnecting(res)
+    //     )
+    // }
 
     const handleClear = () => {
         dispatch(openCenterModal({
@@ -121,7 +122,18 @@ export default function WifiApScreen() {
     }
 
     useEffect(() => {
-        getConnectingWifi();
+        // Subscribe
+        const unsubscribe = NetInfo.addEventListener(state => {
+            if (state.type === NetInfoStateType.wifi && state.isConnected) {
+                setConnecting(state.details.ssid ?? '')
+                // getConnectingWifi();
+            }
+        });
+
+        return () => {
+            // Unsubscribe
+            unsubscribe();
+        }
     }, [])
 
     return (

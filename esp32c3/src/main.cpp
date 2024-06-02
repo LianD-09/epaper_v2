@@ -7,12 +7,11 @@
 #include <ota.h>
 #include <stdlib.h>
 #include <BLE.h>
-#include <siot_core_lib.h>
+
 using namespace std;
 
 #define ENABLE_BLUETOOTH 1
 
-WiFiSelfEnroll MyWiFi;
 String wifiName;
 Preferences preferences;
 UBYTE *BlackImage;
@@ -46,6 +45,7 @@ void setup()
     Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
 
     preferences.begin("my-app", false);
+    wifiName = "AP-" + String(chipid);
 
     // bool debugMode = preferences.getBool("debugMode", false);
     // if (debugMode)
@@ -90,18 +90,14 @@ void setup()
     Serial.println(dataID);
     Serial.println(dataType);
 
-    // Check wifi connection first then turn on adhoc if cannot connect
-    wifiName = "AP-" + String(chipid);
-    MyWiFi.setup(BlackImage, wifiName.c_str(), "12345678");
-
     if (!ssid.isEmpty() && !password.isEmpty())
     {
         // If SSID and password are available in Preferences, use them to connect to Wi-Fi
-        MQTT_Client_Init(ssid.c_str(), password.c_str(), topic.c_str(), BlackImage);
+        MQTT_Client_Init(ssid.c_str(), password.c_str(), topic.c_str(), wifiName, BlackImage);
     }
     else
     {
-        MQTT_Client_Init(SSID, PASS, topic.c_str(), BlackImage);
+        MQTT_Client_Init(SSID, PASS, topic.c_str(), wifiName, BlackImage);
     }
     MQTT_Connect(topic.c_str(), BlackImage);
 
@@ -224,8 +220,7 @@ void loop()
         EPD_2IN9_V2_Init();
         Paint_Clear(0xff);
         EPD_2IN9_V2_Display(BlackImage);
-        MyWiFi.setup(BlackImage, wifiName.c_str(), "12345678");
-        MQTT_Client_Init(ssid.c_str(), password.c_str(), topic.c_str(), BlackImage);
+        MQTT_Client_Init(ssid.c_str(), password.c_str(), topic.c_str(), wifiName, BlackImage);
         MQTT_Connect(topic.c_str(), BlackImage);
 
         if (!dataID.isEmpty())
@@ -255,13 +250,13 @@ void loop()
         {
             displayEmpty(BlackImage);
         }
-        MQTT_Loop(topic.c_str(), BlackImage);
+        MQTT_Loop(topic.c_str(), wifiName, BlackImage);
         updated = false;
     }
     else
     {
         String topic = preferences.getString("_id", "");
-        MQTT_Loop(topic.c_str(), BlackImage);
+        MQTT_Loop(topic.c_str(), wifiName, BlackImage);
     }
     printf("loop done, updated = %d\r\n", updated);
 #endif

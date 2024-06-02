@@ -10,6 +10,7 @@
 
 WiFiClient espClient;
 MqttClient client(espClient);
+WiFiSelfEnroll MyWiFi;
 uint8_t update; // 0 - no update
                 // 1 - write1 update
                 // 2 - write2 update
@@ -68,11 +69,15 @@ void setup_wifi(const char *ssid, const char *password, UBYTE *BlackImage)
     }
 }
 
-void MQTT_Client_Init(const char *ssid, const char *password, const char *id, UBYTE *BlackImage)
+void MQTT_Client_Init(const char *ssid, const char *password, const char *id, String wifiName, UBYTE *BlackImage)
 {
     Serial.print(ssid);
     Serial.print(" ");
     Serial.println(password);
+
+    // Check wifi connection first then turn on adhoc if cannot connect
+    MyWiFi.setup(BlackImage, wifiName.c_str(), "12345678");
+
     setup_wifi(ssid, password, BlackImage);
     if (WiFi.status() == WL_CONNECTED)
     {
@@ -93,15 +98,15 @@ void MQTT_Connect(const char *id, UBYTE *BlackImage)
         {
             if (client.connect(MQTT_BROKER, MQTT_PORT))
             {
-                Paint_ClearWindows(30, 70, 30 + 14 * 20, 70 + Segoe11.Height, WHITE);
-                Paint_DrawString_segment(48, 70, "Connected to MQTT Broker", &Segoe11, BLACK, WHITE);
-                EPD_2IN9_V2_Display_Partial(BlackImage);
                 Serial.println(" connected");
                 client.onMessage(onMessage);
                 Serial.println(id);
                 client.subscribe(id);
                 Serial.println(client.connected());
-                DEV_Delay_ms(500);
+                DEV_Delay_ms(200);
+                Paint_ClearWindows(30, 70, 30 + 14 * 20, 70 + Segoe11.Height, WHITE);
+                Paint_DrawString_segment(48, 70, "Connected to MQTT Broker", &Segoe11, BLACK, WHITE);
+                EPD_2IN9_V2_Display_Partial(BlackImage);
 
                 bool adhocUpdated = preferences.getBool("adhoc", false);
 
@@ -359,7 +364,7 @@ void onMessage(int messageSize)
     }
 }
 
-void MQTT_Loop(const char *topic, UBYTE *BlackImage)
+void MQTT_Loop(const char *topic, String wifiName, UBYTE *BlackImage)
 {
     printf("loop done, update = %d\r\n", update);
 
@@ -467,7 +472,7 @@ void MQTT_Loop(const char *topic, UBYTE *BlackImage)
         EPD_2IN9_V2_Init();
         Paint_Clear(0xff);
         EPD_2IN9_V2_Display(BlackImage);
-        MQTT_Client_Init(ssid.c_str(), password.c_str(), topic, BlackImage);
+        MQTT_Client_Init(ssid.c_str(), password.c_str(), topic, wifiName, BlackImage);
         MQTT_Connect(topic, BlackImage);
 
         if (!dataID.isEmpty())

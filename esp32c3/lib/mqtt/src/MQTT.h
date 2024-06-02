@@ -166,8 +166,8 @@ okmLeKAnXwjgNexvZVJFx75B76GDHg==\
 */
 // extern Preferences preferences;
 
-void MQTT_Client_Init(const char *ssid, const char *password, const char *id, UBYTE *Image);
+void MQTT_Client_Init(const char *ssid, const char *password, const char *id, String wifiName, UBYTE *Image);
 void MQTT_Connect(const char *id, UBYTE *Image);
-void MQTT_Loop(const char *id, UBYTE *Image);
+void MQTT_Loop(const char *id, String wifiName, UBYTE *Image);
 
 #endif /* __MQTT */
