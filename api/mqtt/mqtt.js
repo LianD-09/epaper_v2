@@ -177,7 +177,7 @@ exports.getAllDevicesStatuses = async (topics) => {
     topics.forEach(topic => {
       // this.subscribe(topic);
       // Delete previous timeout to avoid from wrong updating
-      if (deviceTimeouts.get(topic)) {
+      if (deviceTimeouts.has(topic)) {
         clearTimeout(deviceTimeouts.get(topic));
       }
 
