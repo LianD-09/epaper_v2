@@ -171,17 +171,22 @@ exports.getAllDevicesStatuses = async (topics) => {
   return new Promise((resolve) => {
     const deviceTimeouts = new Map();
 
+    const handler = getStatusHandler(topics, deviceTimeouts, updateStatus);
+    globalMessageHandlers.set("pingOK", handler);
+
     topics.forEach(topic => {
       // this.subscribe(topic);
+      // Delete previous timeout to avoid from wrong updating
+      if (deviceTimeouts.get(topic)) {
+        clearTimeout(deviceTimeouts.get(topic));
+      }
+
       client.publish(`${topic}`, "ping|");
       deviceTimeouts.set(topic, setTimeout(() => {
         console.log(`No response from device ${topic}, setting status to false`);
         updateStatus(topic, false); // Implement this function to update the device status in your storage
       }, responseTimeout));
     })
-
-    const handler = getStatusHandler(topics, deviceTimeouts, updateStatus);
-    globalMessageHandlers.set("pingOK", handler);
 
     setTimeout(() => {
       resolve();
