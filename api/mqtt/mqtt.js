@@ -171,9 +171,6 @@ exports.getAllDevicesStatuses = async (topics) => {
   return new Promise((resolve) => {
     const deviceTimeouts = new Map();
 
-    const handler = getStatusHandler(topics, deviceTimeouts, updateStatus);
-    globalMessageHandlers.set("pingOK", handler);
-
     topics.forEach(topic => {
       // this.subscribe(topic);
       client.publish(`${topic}`, "ping|");
@@ -182,6 +179,9 @@ exports.getAllDevicesStatuses = async (topics) => {
         updateStatus(topic, false); // Implement this function to update the device status in your storage
       }, responseTimeout));
     })
+
+    const handler = getStatusHandler(topics, deviceTimeouts, updateStatus);
+    globalMessageHandlers.set("pingOK", handler);
 
     setTimeout(() => {
       resolve();

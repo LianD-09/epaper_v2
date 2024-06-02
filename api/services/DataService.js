@@ -121,7 +121,9 @@ exports.updateDataNoMqtt = async (id, data) => {
   }
 
   if (data.active) {
-    const device = await DeviceModel.findById(data.deviceID);
+    const device = await DeviceModel.findOne({
+      uniqueID: data.uniqueID,
+    });
     const oldDataID = device.dataID;
     const now = Math.floor(new Date().getTime() / 1000);
 
