@@ -10,6 +10,7 @@ const PASS = process.env.MQTT_PASSWORD;
 let client = null;
 const responseTimeout = 6000;
 let globalMessageHandlers = new Map();
+const deviceTimeouts = new Map();
 // const ca = fs.readFileSync(`/etc/ssl/mongoKey/ca.crt`);
 // const cert = fs.readFileSync(`/etc/ssl/mongoKey/backend.crt`);
 // const key = fs.readFileSync(`/etc/ssl/mongoKey/backend.key`);
@@ -169,7 +170,6 @@ exports.getAllDevicesStatuses = async (topics) => {
   }
 
   return new Promise((resolve) => {
-    const deviceTimeouts = new Map();
 
     const handler = getStatusHandler(topics, deviceTimeouts, updateStatus);
     globalMessageHandlers.set("pingOK", handler);
