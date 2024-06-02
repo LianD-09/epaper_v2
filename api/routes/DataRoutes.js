@@ -4,12 +4,13 @@ const {
   getAllData,
   getDataById,
   createData,
+  createDataNoMqtt,
   updateData,
+  updateDataNoMqtt,
   deleteData,
 } = require("../controllers/DataController");
 
 const auth = require("../auth/auth");
-const { createDataNoMqtt, updateDataNoMqtt } = require("../services/DataService");
 const router = express.Router();
 
 router.use(auth);

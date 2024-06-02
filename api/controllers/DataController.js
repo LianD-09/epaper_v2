@@ -64,6 +64,17 @@ exports.updateData = async (req, res) => {
   }
 };
 
+exports.updateDataNoMqtt = async (req, res) => {
+  try {
+    console.log(req.baseUrl, "\n", req.body);
+    const data = await dataService.updateDataNoMqtt(req.params.id, req.body);
+    res.json({ data: data, status: 1 });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.deleteData = async (req, res) => {
   try {
     console.log(req.baseUrl, "\n", req.body);
