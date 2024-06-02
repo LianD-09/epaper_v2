@@ -101,6 +101,23 @@ void MQTT_Connect(const char *id, UBYTE *BlackImage)
                 Serial.println(id);
                 client.subscribe(id);
                 Serial.println(client.connected());
+                DEV_Delay_ms(500);
+
+                bool adhocUpdated = preferences.getBool("adhoc", false);
+
+                if (adhocUpdated)
+                {
+                    String ssid = preferences.getString("ssid", "");
+                    String pass = preferences.getString("pass", "");
+                    String adhocOK = "adhocOK|" + ssid + "|" + pass;
+                    Serial.println("Sending new updated info by adhoc...");
+                    client.beginMessage(id);
+                    client.print(adhocOK.c_str());
+                    client.endMessage();
+                    preferences.putBool("adhoc", false);
+                    DEV_Delay_ms(100);
+                }
+
                 break;
             }
             else

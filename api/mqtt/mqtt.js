@@ -102,7 +102,7 @@ exports.connect = () => {
       console.error('MQTT Error:', err);
     });
 
-    client.on("message", (topic, message) => {
+    client.on("message", async (topic, message) => {
       console.log(topic, message.toString());
       const data = message.toString();
       const regex = /^writeOK\|(.*)$/;
@@ -125,6 +125,15 @@ exports.connect = () => {
           const handler = globalMessageHandlers.get("removeOK");
           handler(topic);
         }
+      }
+      else if (data.startsWith("adhocOK")) {
+        console.log(data);
+        const [_, ssid, pass] = data.split('|');
+
+        await DeviceModel.findByIdAndUpdate(topic, {
+          ssid: ssid,
+          pass: pass,
+        })
       }
     })
   }

@@ -46,6 +46,7 @@ const DevicesScreen = ({ navigation }) => {
             ssid: e.ssid,
             pass: e.pass,
             createdBy: e.createdBy,
+            uniqueID: e.uniqueID
         }))
     }, [devices])
 
@@ -156,7 +157,7 @@ const DevicesScreen = ({ navigation }) => {
                 >
                     <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w700} style={{ marginBottom: 8 }}>All devices:</Typography>
                     {formatDevices.length > 0 && !isFetching ?
-                        formatDevices.map((e, index) => <DevicesItem key={index} {...e}></DevicesItem>) :
+                        formatDevices.map((e, index) => <DevicesItem key={index} {...e} dataId={e.dataId ?? ''} dataName={e.dataName ?? ''} createdBy={e.createdBy ?? ''} />) :
                         isFetching ?
                             <Typography fontSize={fontSize.VeryTiny} fontFamily={fontWeight.w500} > Getting devices...</Typography> :
                             <Typography fontSize={fontSize.VeryTiny} fontFamily={fontWeight.w500} > No devices found</Typography>

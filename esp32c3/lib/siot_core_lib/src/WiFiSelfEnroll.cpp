@@ -10,6 +10,7 @@
 #define FLASH_NAMESPACE_KEY_SSID "ssid"
 #define FLASH_NAMESPACE_KEY_PASSWORD "pass"
 #define FLASH_NAMESPACE_KEY_DEVICEID "id"
+#define FLASH_NAMESPACE_KEY_UPDATE_BY_ADHOC "adhoc"
 
 /// @brief the default wifi SSID
 #define SOICT_WIFI_SSID "SOICT_CORE_BOARD"
@@ -143,6 +144,15 @@ void WiFiSelfEnroll::_APISave()
     {
         deviceid = server.arg(myArg);
         preferences.putString(FLASH_NAMESPACE_KEY_DEVICEID, deviceid);
+#ifdef _DEBUG_
+        Serial.println(server.arg(myArg));
+#endif
+    }
+
+    /// Save update variable will be called after connected Wifi again
+    if (server.hasArg("s") || server.hasArg("p"))
+    {
+        preferences.putBool(FLASH_NAMESPACE_KEY_UPDATE_BY_ADHOC, true);
 #ifdef _DEBUG_
         Serial.println(server.arg(myArg));
 #endif

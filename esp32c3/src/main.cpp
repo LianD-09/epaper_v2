@@ -224,6 +224,7 @@ void loop()
         EPD_2IN9_V2_Init();
         Paint_Clear(0xff);
         EPD_2IN9_V2_Display(BlackImage);
+        MyWiFi.setup(BlackImage, wifiName.c_str(), "12345678");
         MQTT_Client_Init(ssid.c_str(), password.c_str(), topic.c_str(), BlackImage);
         MQTT_Connect(topic.c_str(), BlackImage);
 
