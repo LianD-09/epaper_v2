@@ -136,6 +136,9 @@ exports.updateDataNoMqtt = async (id, data) => {
       await DataModel.findByIdAndUpdate(oldDataID, oldData);
     }
     data["activeStartTime"] = `${now}`;
+
+    data["deviceID"] = device._id;
+    data["deviceName"] = device.name;
     await DataModel.findByIdAndUpdate(`${data._id}`, data);
 
     device["active"] = true;
