@@ -12,132 +12,69 @@ import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
 import DataItem from '../../../components/home/data/data-item';
-import { DataType, Status, Template } from '../../../types/type';
+import { DataRaw, DataType, Status, Template } from '../../../types/type';
 import Typography from '../../../libs/typography';
 import fontSize from '../../../themes/font-size';
 import fontWeight from '../../../themes/font-weight';
 import { navigateThroughStack } from '../../../navigation/root-navigation';
 import { NewDataScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
-
-const mockdata = [
-    {
-        id: 1,
-        name: 'Thịt gà Minh',
-        deviceName: 'EPD 01',
-        status: Status.ACTIVE,
-        dataType: DataType.PRODUCT,
-        data: {
-            id: 1,
-            name: 'Thịt gà Minh',
-            category: 'Thực phẩm',
-            price: '10000',
-            active: true,
-            activeStartTime: 1715438397,
-            deviceName: 'EPD 01',
-            deviceID: 1,
-            activeTimestamp: [],
-            fontStyle: 'Monospace 12pt',
-            designSchema: 'Theme 1',
-            createdBy: 1,
-        }
-    },
-    {
-        id: 2,
-        name: 'Linh DA',
-        deviceName: 'EPD 01',
-        status: Status.INACTIVE,
-        dataType: DataType.STUDENT,
-        data: {
-            id: 1,
-            name: 'Linh DA',
-            email: 'linh@gmail.com',
-            studentId: '20194314',
-            class: 'IT2-02',
-            active: false,
-            activeStartTime: 1715438397,
-            deviceName: 'EPD 01',
-            deviceID: 1,
-            activeTimestamp: [],
-            fontStyle: 'Monospace 12pt',
-            designSchema: 'Theme 1',
-            createdBy: 1,
-        }
-    },
-    {
-        id: 3,
-        name: 'Minh',
-        deviceName: 'EPD 01',
-        status: Status.INACTIVE,
-        dataType: DataType.EMPLOYEE,
-        data: {
-            id: 1,
-            name: 'Minh',
-            email: 'linh@gmail.com',
-            employeeId: '20194333',
-            department: '8B',
-            active: false,
-            activeStartTime: 1715438397,
-            deviceName: 'EPD 01',
-            deviceID: 1,
-            activeTimestamp: [],
-            fontStyle: 'Monospace 12pt',
-            designSchema: 'Theme 1',
-            createdBy: 1,
-        }
-    },
-    {
-        id: 4,
-        name: 'Minh Linh',
-        deviceName: 'EPD 01',
-        status: Status.UNKNOWN,
-        dataType: DataType.CLIENT,
-        data: {
-            id: 1,
-            name: 'Minh Linh',
-            email: 'linh@gmail.com',
-            address: '141/7 - 8B',
-            active: false,
-            activeStartTime: 1715438397,
-            deviceName: 'EPD 01',
-            deviceID: 1,
-            activeTimestamp: [],
-            fontStyle: 'Monospace 12pt',
-            designSchema: 'Theme 1',
-            createdBy: 1,
-        }
-    },
-    {
-        id: 5,
-        name: '1208B',
-        deviceName: 'EPD 01',
-        status: Status.ACTIVE,
-        dataType: DataType.ROOM,
-        data: {
-            id: 1,
-            name: '1208B',
-            email: 'linh@gmail.com',
-            purpose: 'Lao động',
-            manager: 'Linh DA',
-            roomStatus: 'Khả dụng',
-            active: true,
-            activeStartTime: 1715438397,
-            deviceName: 'EPD 01',
-            deviceID: 1,
-            activeTimestamp: [],
-            fontStyle: 'Monospace 12pt',
-            designSchema: 'Theme 1',
-            createdBy: 1,
-        }
-    },
-]
+import { useFocusEffect } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { getAllData } from '../../../services/data-services';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
+import { AxiosError } from 'axios';
 
 const DataScreen = ({ navigation }) => {
+    const dispatch = useDispatch();
+    const [data, setData] = useState<Array<DataRaw>>([]);
+    const [isFetching, setIsFetching] = useState(false);
     const { active, inactive } = useMemo(() => {
         return {
-            active: mockdata.filter((e, index) => e.status === Status.ACTIVE),
-            inactive: mockdata.filter((e, index) => e.status === Status.INACTIVE)
+            active: data.filter((e, index) => e.active === true),
+            inactive: data.filter((e, index) => e.active === false)
         }
-    }, [mockdata])
+    }, [data]);
+
+    const formatData = useMemo(() => {
+        return data.map((e, index) => ({
+            id: e._id,
+            name: e.name,
+            deviceName: e.deviceName,
+            status: e.active ? Status.ACTIVE : Status.INACTIVE,
+            dataType: DataType[e.type.toUpperCase()],
+            data: e
+        }));
+    }, [data])
+
+    const getData = async () => {
+        try {
+            setIsFetching(true);
+            const allDevices = await getAllData();
+            setData(allDevices.data.data);
+        }
+        catch (e) {
+            dispatch(openCenterModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Fetch data failed',
+                content: (e as AxiosError).message,
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }));
+        }
+        finally {
+            setIsFetching(false);
+        }
+    }
+
+    useFocusEffect(
+        React.useCallback(() => {
+            getData();
+            return () => {
+                setData([]);
+            };
+        }, [])
+    );
 
     return (
         <View style={styles.container}>
@@ -217,7 +154,12 @@ const DataScreen = ({ navigation }) => {
                     bgColor={Color.white[100]}
                 >
                     <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w700} style={{ marginBottom: 8 }}>All devices:</Typography>
-                    {mockdata.map((e, index) => <DataItem {...e} key={index} />)}
+                    {formatData.length > 0 && !isFetching ?
+                        formatData.map((e, index) => <DataItem {...e} key={index} />) :
+                        isFetching ?
+                            <Typography fontSize={fontSize.VeryTiny} fontFamily={fontWeight.w500} > Getting data...</Typography> :
+                            <Typography fontSize={fontSize.VeryTiny} fontFamily={fontWeight.w500} > No data found</Typography>
+                    }
                 </Card>
             </ScrollView>
         </View>

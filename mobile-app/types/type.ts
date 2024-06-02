@@ -14,7 +14,7 @@ export enum DataType {
     IMAGE = "image",
 }
 
-export type User = {
+export interface User {
     id: string | number,
     email: string,
     name: string,
@@ -134,7 +134,20 @@ export type Room = {
     createdBy: string | number,
 }
 
-export type Template = Product | Student | Room | Client | Employee;
+export type Image_ = {
+    id: string | number,
+    data: string,
+    active: boolean,
+    activeStartTime: number,
+    deviceName: string,
+    deviceID: string | number,
+    activeTimestamp: Array<string>,
+    fontStyle: string,
+    designSchema: string,
+    createdBy: string | number,
+}
+
+export type Template = Product | Student | Room | Client | Employee | Image_;
 
 export type DataRaw = {
     _id: string | number,
@@ -164,4 +177,8 @@ export type DataRaw = {
     fontStyle: string,
     designSchema: string,
     createdBy: string | number,
+}
+
+export type DataDto = DataRaw & {
+    uniqueID?: string
 }

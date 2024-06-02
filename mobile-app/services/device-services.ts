@@ -17,6 +17,21 @@ export const getAllDevices = async () => {
     }
 }
 
+export const getActiveDevices = async () => {
+    try {
+        const res = await instance.get(`${urlEndpoint}`, {
+            params: {
+                active: true
+            }
+        });
+        return res;
+    }
+    catch (e) {
+        console.log(e);
+        throw e;
+    }
+}
+
 export const getDeviceById = async (id: string | number) => {
     try {
         const res = await instance.get(`${urlEndpoint}/${id}`);

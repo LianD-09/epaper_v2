@@ -24,7 +24,7 @@ const img = require("assets/icons/dropdown-down.png");
 
 export type SelectProps = {
   items: Array<SelectItem>,
-  onSelect: (value: any, ...args: any) => any,
+  onSelect: (item: SelectItem, ...args: any) => any,
   label: string,
   mode?: string,
   placeholder?: string,
@@ -32,7 +32,7 @@ export type SelectProps = {
   onChange?: (...args: any) => any,
   error?: boolean,
   helperText?: string,
-  value?: string | number | boolean | null | undefined,
+  value?: SelectItem | null,
   pt?: number,
   pb?: number,
   pl?: number,
@@ -81,7 +81,7 @@ const Select = ({
   useEffect(() => {
     setErrorField(error);
     if (select.selectedItem && label === select.label) {
-      onSelect(select.selectedItem?.value);
+      onSelect(select.selectedItem);
       dispatch(resetSelectedItem());
     }
     if (!select.isOpen) {
@@ -90,7 +90,7 @@ const Select = ({
   }, [error, select.selectedItem, select.isOpen]);
 
   useEffect(() => {
-    setSelectedItem(items.filter((x) => x?.value === value)[0]);
+    setSelectedItem(items.filter((x) => x?.value === value?.value)[0]);
   }, [value]);
 
   useEffect(() => {

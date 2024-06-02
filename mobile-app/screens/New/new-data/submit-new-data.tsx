@@ -44,9 +44,9 @@ const deviceMock: Array<SelectItem> = Array(5).fill(1).map((e, index) => {
 const SubmitNewDataScreen = ({ navigation, route }) => {
     const dispacth = useDispatch();
     const { data, dataType } = route.params as SubmitNewDataScreenProps;
-    const [device, setDevice] = useState<string | number | null>(null);
-    const [font, setFont] = useState<string>('');
-    const [theme, setTheme] = useState<string>('');
+    const [device, setDevice] = useState<SelectItem | null>(null);
+    const [font, setFont] = useState<SelectItem | null>(null);
+    const [theme, setTheme] = useState<SelectItem | null>(null);
     const {
         scanForPeripherals,
         connectToDevice,
@@ -103,8 +103,8 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
     }, []);
 
     const handleSubmit = async () => {
-        let fontESP = fonts.find((value) => font === value.db);
-        let themeESP = themes.find((value) => theme === value.db);
+        let fontESP = fonts.find((value) => font?.value === value.db);
+        let themeESP = themes.find((value) => theme?.value === value.db);
         try {
             // call api
             dispacth(openLoading());
@@ -156,9 +156,9 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
                             onFocus={() => {
                                 scanForPeripherals(true);
                             }}
-                            onSelect={(value) => {
-                                setDevice(value);
-                                let device = allDevices.find((e) => e.id == value);
+                            onSelect={(item) => {
+                                setDevice(item);
+                                let device = allDevices.find((e) => e.id == item.value);
                                 if (device) {
                                     connectToDevice(device)
                                 }

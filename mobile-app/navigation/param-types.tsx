@@ -1,16 +1,16 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { Client, DataRaw, DataType, Device, Employee, Product, Room, Student } from '../types/type';
+import { Client, DataRaw, DataType, Device, Employee, Product, Room, Student, Template } from '../types/type';
 import * as BLE from "react-native-ble-plx";
 
 export type RootStack = {}
 
 export type EditDataScreenProps = {
-    data?: Product | Student | Employee | Room | Client;
-    dataType?: DataType;
+    data: Template;
+    dataType: DataType;
 }
 export type SubmitEditDataScreenProps = {
-    data?: DataRaw;
-    dataType?: DataType;
+    data: DataRaw;
+    dataType: DataType;
 }
 
 export type EditDevicesScreenProps = {

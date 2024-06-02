@@ -60,7 +60,7 @@ const DevicesScreen = ({ navigation }) => {
             dispatch(openCenterModal({
                 isOpen: true,
                 isFailed: true,
-                title: 'Fetch devices and data failed',
+                title: 'Fetch devices failed',
                 content: (e as AxiosError).message,
                 btnTitle: 'Close',
                 btnCancelTitle: ''
@@ -74,7 +74,9 @@ const DevicesScreen = ({ navigation }) => {
     useFocusEffect(
         React.useCallback(() => {
             getDevices()
-            return () => { };
+            return () => {
+                setDevices([]);
+            };
         }, [])
     );
 

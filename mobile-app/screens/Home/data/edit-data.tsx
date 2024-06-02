@@ -21,11 +21,15 @@ import { openDateTimePickerModal, resetDateTimePickerData } from '../../../redux
 import DateTimeField from '../../../libs/date-time-field';
 import fontWeight from '../../../themes/font-weight';
 import fontSize from '../../../themes/font-size';
-import { navigate } from '../../../navigation/root-navigation';
-import { RootStackHomeParamList, SubmitEditDataScreenProps } from '../../../navigation/param-types';
+import { navigate, pop } from '../../../navigation/root-navigation';
+import { EditDataScreenProps, RootStackHomeParamList, SubmitEditDataScreenProps } from '../../../navigation/param-types';
+import { updateData } from '../../../services/data-services';
+import { capitalize } from '../../../utils/utils';
+import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
+import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
 
 const EditDataScreen = ({ navigation, route }) => {
-    const { data, dataType } = route.params;
+    const { data, dataType } = route.params as EditDataScreenProps;
     const [active, setActive] = useState<boolean>(false);
     const [name, setName] = useState<string>('');
     const [input2, setInput2] = useState<string>('');
@@ -37,33 +41,37 @@ const EditDataScreen = ({ navigation, route }) => {
     useEffect(() => {
         let item: Template = data as Template;
         setActive(item.active);
-        setName(item.name);
 
         switch (dataType) {
             case DataType.PRODUCT:
                 item = data as Product;
+                setName(item.name);
                 setInput2(item.category);
                 setInput3(item.price);
                 break;
             case DataType.CLIENT:
                 item = data as Client;
+                setName(item.name);
                 setInput2(item.email);
                 setInput3(item.address);
                 break;
             case DataType.EMPLOYEE:
                 item = data as Employee;
+                setName(item.name);
                 setInput2(item.email);
                 setInput3(item.employeeId);
                 setInput4(item.department);
                 break;
             case DataType.ROOM:
                 item = data as Room;
+                setName(item.name);
                 setInput2(item.purpose);
                 setInput3(item.manager);
                 setInput4(item.roomStatus);
                 break;
             case DataType.STUDENT:
                 item = data as Student;
+                setName(item.name);
                 setInput2(item.email);
                 setInput3(item.studentId);
                 setInput4(item.class);
@@ -236,21 +244,59 @@ const EditDataScreen = ({ navigation, route }) => {
         }
     }
 
-    const handlePress = () => {
+    const handlePress = async () => {
         if (active) {
             navigate<SubmitEditDataScreenProps, RootStackHomeParamList>('SubmitEditDataScreen', {
                 data: {
                     ...data,
+                    _id: data?.id,
                     name,
                     input2,
                     input3,
                     input4,
+                    active,
+                    type: capitalize(dataType),
                 },
                 dataType: dataType
             })
         }
         else {
             // call api
+            try {
+                dispath(openLoading());
+                await updateData(data?.id, {
+                    ...data,
+                    name,
+                    input2,
+                    input3,
+                    input4,
+                    active,
+                    type: capitalize(dataType),
+                });
+                dispath(openBottomModal({
+                    isOpen: true,
+                    isFailed: false,
+                    title: 'Successful',
+                    content: 'This data has been updated.',
+                    btnTitle: 'Close',
+                    callback: () => pop(),
+                    btnCancelTitle: ''
+                }))
+            }
+            catch (e) {
+                console.log(e);
+                dispath(openBottomModal({
+                    isOpen: true,
+                    isFailed: true,
+                    title: 'Failed',
+                    content: 'Something was wrong. Please try again.',
+                    btnTitle: 'Close',
+                    btnCancelTitle: ''
+                }))
+            }
+            finally {
+                dispath(closeLoading());
+            }
         }
     }
 

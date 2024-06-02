@@ -1,4 +1,4 @@
-import { DataRaw } from "../types/type";
+import { DataDto } from "../types/type";
 import { instanceToken } from "./axios";
 
 const instance = instanceToken;
@@ -28,9 +28,9 @@ export const getDataById = async (id: string | number) => {
     }
 }
 
-export const createData = async (data: Omit<DataRaw, '_id' | 'createdBy'>) => {
+export const createDataNoMqtt = async (data: Omit<DataDto, '_id' | 'createdBy'>) => {
     try {
-        const res = await instance.post(`${urlEndpoint}`, data);
+        const res = await instance.post(`${urlEndpoint}/n`, data);
         return res;
     }
     catch (e) {
@@ -39,9 +39,20 @@ export const createData = async (data: Omit<DataRaw, '_id' | 'createdBy'>) => {
     }
 }
 
-export const updateData = async (id: string | number, data: Omit<Partial<DataRaw>, '_id' | 'createdBy'>) => {
+export const updateData = async (id: string | number, data: Omit<Partial<DataDto>, '_id' | 'createdBy'>) => {
     try {
         const res = await instance.put(`${urlEndpoint}/${id}`, data);
+        return res;
+    }
+    catch (e) {
+        console.log(e);
+        throw e;
+    }
+}
+
+export const updateDataNoMqtt = async (id: string | number, data: Omit<Partial<DataDto>, '_id' | 'createdBy' | 'deviceID' | 'deviceName'>) => {
+    try {
+        const res = await instance.put(`${urlEndpoint}/n/${id}`, data);
         return res;
     }
     catch (e) {

@@ -125,7 +125,7 @@ export default function WifiApScreen() {
         // Subscribe
         const unsubscribe = NetInfo.addEventListener(state => {
             if (state.type === NetInfoStateType.wifi && state.isConnected) {
-                setConnecting(state.details.ssid ?? '')
+                setConnecting(state.details.ssid ?? '');
                 // getConnectingWifi();
             }
         });

@@ -11,7 +11,7 @@ import { capitalize } from "../../../utils/utils";
 import { useDispatch } from "react-redux";
 import { openBottomModal } from "../../../redux/slice/bottom-modal-slice";
 import { navigate, navigateThroughStack } from "../../../navigation/root-navigation";
-import { EditDataScreenProps, EditDevicesScreenProps, NewDeviceScreenProps, RootStackHomeParamList, RootStackNewParamList } from "../../../navigation/param-types";
+import { EditDevicesScreenProps, NewDeviceScreenProps, RootStackHomeParamList, RootStackNewParamList } from "../../../navigation/param-types";
 import DevicesDetail from "./devices-detail";
 import { openCenterModal } from "../../../redux/slice/center-modal-slice";
 

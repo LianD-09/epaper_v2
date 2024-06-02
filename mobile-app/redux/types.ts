@@ -18,6 +18,7 @@ export type SelectItem = {
     value: string | number | boolean,
     image?: ImageSourcePropType,
     iconBg?: string,
+    type?: "mqtt" | "bluetooth"
 }
 
 export type SelectState = {

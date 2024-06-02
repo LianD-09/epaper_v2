@@ -5,7 +5,7 @@ import Typography from "../../../libs/typography";
 import fontSize from "../../../themes/font-size";
 import fontWeight from "../../../themes/font-weight";
 import Card from "../../../libs/card";
-import { Client, DataType, Employee, Product, Room, Status, Student, Template } from "../../../types/type";
+import { Client, DataType, Employee, Image_, Product, Room, Status, Student, Template } from "../../../types/type";
 import { capitalize } from "../../../utils/utils";
 import Divider from "../../../libs/divider";
 
@@ -44,10 +44,9 @@ const DataDetail = ({
     }
 
     const renderByType = () => {
-        let item: Template;
         switch (dataType) {
-            case DataType.PRODUCT:
-                item = data as Product;
+            case DataType.PRODUCT: {
+                let item = data as Product;
                 return (
                     <>
                         <View style={styles.itemRow}>
@@ -60,8 +59,9 @@ const DataDetail = ({
                         </View>
                     </>
                 );
-            case DataType.CLIENT:
-                item = data as Client;
+            }
+            case DataType.CLIENT: {
+                let item = data as Client;
                 return (
                     <>
                         <View style={styles.itemRow}>
@@ -74,8 +74,9 @@ const DataDetail = ({
                         </View>
                     </>
                 );
-            case DataType.EMPLOYEE:
-                item = data as Employee;
+            }
+            case DataType.EMPLOYEE: {
+                let item = data as Employee;
                 return (
                     <>
                         <View style={styles.itemRow}>
@@ -92,8 +93,9 @@ const DataDetail = ({
                         </View>
                     </>
                 );
-            case DataType.ROOM:
-                item = data as Room;
+            }
+            case DataType.ROOM: {
+                let item = data as Room;
                 return (
                     <>
                         <View style={styles.itemRow}>
@@ -110,8 +112,9 @@ const DataDetail = ({
                         </View>
                     </>
                 );
-            case DataType.STUDENT:
-                item = data as Student;
+            }
+            case DataType.STUDENT: {
+                let item = data as Student;
                 return (
                     <>
                         <View style={styles.itemRow}>
@@ -127,6 +130,12 @@ const DataDetail = ({
                         </View>
                     </>
                 );
+            }
+            case DataType.IMAGE:
+                {
+                    let item = data as Image_;
+                    return null;
+                }
             default:
                 return null;
         }

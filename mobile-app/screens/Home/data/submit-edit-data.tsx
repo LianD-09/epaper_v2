@@ -1,6 +1,6 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-native/no-inline-styles */
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     ScrollView,
     StyleSheet,
@@ -10,12 +10,20 @@ import Color from '../../../themes/color';
 import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
-import { DataRaw, DataType, Template } from '../../../types/type';
+import { DataRaw, DataType, DeviceRaw, Template } from '../../../types/type';
 import Button from '../../../libs/button';
 import Select from '../../../libs/select';
 import { fonts, themes } from '../../../utils/constants';
 import { SelectItem } from '../../../redux/types';
-import { replace } from '../../../navigation/root-navigation';
+import { popToTop, replace } from '../../../navigation/root-navigation';
+import { SubmitEditDataScreenProps } from '../../../navigation/param-types';
+import { getActiveDevices } from '../../../services/device-services';
+import useBLE from '../../../hooks/useBLE';
+import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
+import { useDispatch } from 'react-redux';
+import { updateData, updateDataNoMqtt } from '../../../services/data-services';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
+import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
 
 const fontList: Array<SelectItem> = fonts.map(e => {
     return {
@@ -38,17 +46,76 @@ const deviceMock: Array<SelectItem> = Array(5).fill(1).map((e, index) => {
 })
 
 const SubmitEditDataScreen = ({ navigation, route }) => {
-    const { data, dataType } = route.params;
-    const [device, setDevice] = useState<string | number | null>(null);
-    const [font, setFont] = useState<string>('');
-    const [theme, setTheme] = useState<string>('');
+    const dispacth = useDispatch();
+    const { data, dataType } = route.params as SubmitEditDataScreenProps;
+    const [device, setDevice] = useState<SelectItem | null>(null);
+    const [font, setFont] = useState<SelectItem | null>(null);
+    const [theme, setTheme] = useState<SelectItem | null>(null);
+    const [activeDevices, setActiveDevices] = useState<DeviceRaw[]>([]);
+    const {
+        scanForPeripherals,
+        connectToDevice,
+        allDevices,
+        connectedDevice,
+        stopScanDevices,
+        disconnectFromDevice,
+        changeData,
+        uniqueId
+    } = useBLE(false);
+
+
+    const deviceList: SelectItem[] = useMemo(() => {
+        const formatActives: Array<SelectItem> = activeDevices.map(e => ({
+            label: e.name,
+            value: e._id,
+            type: 'mqtt',
+        }));
+
+        return !!connectedDevice ? [
+            ...formatActives,
+            {
+                label: connectedDevice?.name,
+                value: connectedDevice?.id,
+                image: require('assets/icons/bluetooth-48px.png'),
+                type: 'bluetooth'
+            } as SelectItem,
+            ...allDevices.map(e => {
+                return {
+                    label: e.name,
+                    value: e.id,
+                    image: require('assets/icons/bluetooth-48px.png'),
+                    type: 'bluetooth'
+                } as SelectItem
+            })
+        ] : [
+            ...formatActives,
+            ...allDevices.map(e => {
+                return {
+                    label: e.name,
+                    value: e.id,
+                    image: require('assets/icons/bluetooth-48px.png'),
+                    type: 'bluetooth'
+                } as SelectItem
+            })
+        ]
+    }, [allDevices, connectedDevice, activeDevices]);
+
+    const getAllActiveDevice = async () => {
+        try {
+            const res = await getActiveDevices();
+
+            setActiveDevices(res.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
 
     useEffect(() => {
-        let item: DataRaw = data as DataRaw;
+        let item: DataRaw = data;
 
-        setDevice(item.deviceID);
-        setFont(item.fontStyle);
-        setTheme(item.designSchema);
+        setFont(fontList.find(e => e.value === item.fontStyle) ?? null);
+        setTheme(themeList.find(e => e.value === item.designSchema) ?? null);
 
         switch (dataType) {
             case DataType.PRODUCT:
@@ -61,14 +128,74 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
                 break;
             case DataType.STUDENT:
                 break;
+            case DataType.IMAGE:
+                break;
+        }
+
+        getAllActiveDevice();
+
+        return () => {
+            disconnectFromDevice();
         }
     }, []);
 
     const handleSubmit = async () => {
-        let fontESP = fonts.find((value) => font === value.db);
-        let themeESP = themes.find((value) => theme === value.db);
-        // call api
-        replace('DataScreen');
+        let fontESP = fonts.find((value) => font?.value === value.db);
+        let themeESP = themes.find((value) => theme?.value === value.db);
+
+        try {
+            dispacth(openLoading());
+            // call api
+            if (device?.type === 'bluetooth') {
+                const res = await updateDataNoMqtt(data._id, {
+                    ...data,
+                    uniqueID: uniqueId,
+                    fontStyle: font?.value as string,
+                    designSchema: theme?.value as string
+                });
+
+                await changeData(dataType, {
+                    ...data,
+                    font: fontESP?.sign ?? fonts[3].sign,
+                    schema: themeESP?.sign ?? themes[0].sign,
+                    dataId: res.data.data._id,
+                });
+
+            }
+            else {
+                await updateData(data._id, {
+                    ...data,
+                    deviceID: device?.value as string,
+                    deviceName: device?.label,
+                    fontStyle: font?.value as string,
+                    designSchema: theme?.value as string
+                })
+            }
+            dispacth(openBottomModal({
+                isOpen: true,
+                isFailed: false,
+                title: 'Successful',
+                content: 'This device has been updated.',
+                btnTitle: 'Close',
+                callback: () => popToTop(),
+                btnCancelTitle: ''
+            }))
+        }
+        catch (e) {
+            console.log(e);
+            dispacth(openBottomModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Failed',
+                content: 'Something was wrong. Please try again.',
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }))
+        }
+        finally {
+            dispacth(closeLoading());
+        }
+
     }
 
     return (
@@ -100,8 +227,21 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
                             value={device}
                             placeholder={'Select a device'}
                             label={'Device'}
-                            items={deviceMock}
-                            onSelect={setDevice} />
+                            items={deviceList}
+                            onFocus={() => {
+                                scanForPeripherals(true);
+                            }}
+                            onSelect={(value) => {
+                                setDevice(value);
+                                let device = allDevices.find((e) => e.id == value.value);
+                                if (device) {
+                                    connectToDevice(device)
+                                }
+                            }}
+                            onBlur={() => {
+                                stopScanDevices();
+                            }}
+                        />
                         <Select
                             value={font}
                             placeholder={'Select a font'}
