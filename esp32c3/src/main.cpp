@@ -11,6 +11,7 @@
 using namespace std;
 
 #define ENABLE_BLUETOOTH 1
+#define MODE_BUTTON_PIN 20
 
 String wifiName;
 Preferences preferences;
@@ -19,9 +20,25 @@ UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD
 uint64_t chipid = ESP.getEfuseMac();
 int mode = 0;
 
+void IRAM_ATTR ISR_Mode()
+{
+    static unsigned long last_interrupt_time = 0;
+    unsigned long interrupt_time = millis();
+
+    if (interrupt_time - last_interrupt_time > 200)
+    {
+        // debounce the button press
+        Serial.print("Button press");
+        mode = (mode + 1) % 2;
+        last_interrupt_time = interrupt_time;
+    }
+}
+
 void setup()
 {
     Serial.begin(115200);
+    pinMode(MODE_BUTTON_PIN, INPUT_PULLUP);
+    attachInterrupt(MODE_BUTTON_PIN, ISR_Mode, CHANGE);
     Serial.println("epd say hi");
     pinMode(2, OUTPUT); // Initialize the built-in LED pin as an output
     digitalWrite(2, LOW);
@@ -144,15 +161,16 @@ void loop()
 {
     if (mode == 1)
     {
-        BLE_Advertise(BlackImage);
         BLE_Loop(BlackImage);
+        BLE_Advertise(BlackImage);
     }
-    if (digitalRead(20) == LOW)
-    {
-        Serial.print("press Pin 20");
-        mode = (mode + 1) % 2;
-        DEV_Delay_ms(100);
-    }
+
+    // if (digitalRead(20) == LOW)
+    // {
+    //     Serial.print("press Pin 20");
+    //     mode = (mode + 1) % 2;
+    //     DEV_Delay_ms(100);
+    // }
 #if 1
     if (digitalRead(9) == LOW)
     {                                      // Check if the button is pressed
