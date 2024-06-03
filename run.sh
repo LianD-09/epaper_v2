@@ -62,7 +62,7 @@ if [ "${1}" = "pull-be" ]; then
     git pull origin master
 
     # delete old process
-    pm2 delete all
+    pm2 delete api
 
     pm2 cleardump
 
