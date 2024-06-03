@@ -49,7 +49,7 @@ exports.createDataNoMqtt = async (data, userID = null) => {
   if (data.active) {
     const createdData = await DataModel.create(data);
 
-    const device = await DeviceModel.findById(data.uniqueID);
+    const device = await DeviceModel.findOne({ uniqueID: data.uniqueID });
     const oldDataID = device.dataID;
     const now = Math.floor(new Date().getTime() / 1000);
 
