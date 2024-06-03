@@ -68,12 +68,12 @@ exports.createDataNoMqtt = async (data, userID = null) => {
     data["deviceID"] = device._id;
     data["deviceName"] = device.name;
     data["activeStartTime"] = `${now}`;
-    await DataModel.findByIdAndUpdate(`${data._id}`, data);
+    await DataModel.findByIdAndUpdate(`${createdData._id}`, data);
 
     device["active"] = true;
     device["dataID"] = `${data._id}`;
     device["dataName"] = `${data.name}`;
-    await DeviceModel.findByIdAndUpdate(data.deviceID, device);
+    await DeviceModel.findByIdAndUpdate(device._id, device);
 
     return await DataModel.findById(createdData._id);
   } else {
