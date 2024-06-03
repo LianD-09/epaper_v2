@@ -109,7 +109,7 @@ exports.updateDataNoMqtt = async (id, data) => {
 
     device["dataID"] = "";
     device["dataName"] = "";
-    await DeviceModel.findByIdAndUpdate(id, device);
+    await DeviceModel.findByIdAndUpdate(device._id, device);
 
     if (!data.active) {
       const now = Math.floor(new Date().getTime() / 1000);
