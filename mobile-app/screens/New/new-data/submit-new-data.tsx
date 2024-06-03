@@ -10,16 +10,20 @@ import Color from '../../../themes/color';
 import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
-import { DataRaw, DataType, Template } from '../../../types/type';
+import { DataRaw, DataType, DeviceRaw, Template } from '../../../types/type';
 import Button from '../../../libs/button';
 import Select from '../../../libs/select';
 import { fonts, themes } from '../../../utils/constants';
 import { SelectItem } from '../../../redux/types';
-import { replace } from '../../../navigation/root-navigation';
+import { popToTop, replace } from '../../../navigation/root-navigation';
 import { SubmitNewDataScreenProps } from '../../../navigation/param-types';
 import useBLE from '../../../hooks/useBLE';
 import { useDispatch } from 'react-redux';
 import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
+import { getActiveDevices } from '../../../services/device-services';
+import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
+import { createData, createDataNoMqtt } from '../../../services/data-services';
+import { capitalize } from '../../../utils/utils';
 
 const fontList: Array<SelectItem> = fonts.map(e => {
     return {
@@ -47,6 +51,7 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
     const [device, setDevice] = useState<SelectItem | null>(null);
     const [font, setFont] = useState<SelectItem | null>(null);
     const [theme, setTheme] = useState<SelectItem | null>(null);
+    const [activeDevices, setActiveDevices] = useState<DeviceRaw[]>([]);
     const {
         scanForPeripherals,
         connectToDevice,
@@ -54,35 +59,57 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
         connectedDevice,
         stopScanDevices,
         disconnectFromDevice,
-        changeData
+        changeData,
+        uniqueId
     } = useBLE(false);
 
+
     const deviceList: SelectItem[] = useMemo(() => {
+        const formatActives: Array<SelectItem> = activeDevices.map(e => ({
+            label: e.name,
+            value: e._id,
+            type: 'mqtt',
+        }));
+
         return !!connectedDevice ? [
-            ...deviceMock,
+            ...formatActives,
             {
                 label: connectedDevice?.name,
                 value: connectedDevice?.id,
-                image: require('assets/icons/bluetooth-48px.png')
+                image: require('assets/icons/bluetooth-48px.png'),
+                type: 'bluetooth'
             } as SelectItem,
             ...allDevices.map(e => {
                 return {
                     label: e.name,
                     value: e.id,
-                    image: require('assets/icons/bluetooth-48px.png')
+                    image: require('assets/icons/bluetooth-48px.png'),
+                    type: 'bluetooth'
                 } as SelectItem
             })
         ] : [
-            ...deviceMock,
+            ...formatActives,
             ...allDevices.map(e => {
                 return {
                     label: e.name,
                     value: e.id,
-                    image: require('assets/icons/bluetooth-48px.png')
+                    image: require('assets/icons/bluetooth-48px.png'),
+                    type: 'bluetooth'
                 } as SelectItem
             })
         ]
-    }, [allDevices, connectedDevice]);
+    }, [allDevices, connectedDevice, activeDevices]);
+
+    const getAllActiveDevice = async () => {
+        try {
+            const res = await getActiveDevices();
+
+            setActiveDevices(res.data.data);
+        }
+        catch (e) {
+            console.log(e);
+        }
+    }
 
     useEffect(() => {
         switch (dataType) {
@@ -97,6 +124,9 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
             case DataType.STUDENT:
                 break;
         }
+
+        getAllActiveDevice();
+
         return () => {
             disconnectFromDevice();
         }
@@ -106,17 +136,65 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
         let fontESP = fonts.find((value) => font?.value === value.db);
         let themeESP = themes.find((value) => theme?.value === value.db);
         try {
-            // call api
             dispacth(openLoading());
-            await changeData(dataType, {
-                ...data,
-                font: fontESP?.sign ?? fonts[3].sign,
-                schema: themeESP?.sign ?? themes[0].sign,
-            })
-            // replace('DataScreen');
+            // call api
+            if (device?.type === 'bluetooth') {
+                console.log(124);
+
+                const res = await createDataNoMqtt({
+                    ...data,
+                    uniqueID: uniqueId,
+                    fontStyle: font?.value as string,
+                    designSchema: theme?.value as string,
+                    type: capitalize(dataType),
+                    active: true,
+                    activeStartTime: -1,
+                    deviceID: '',
+                    deviceName: '',
+                    activeTimestamp: []
+                });
+
+                await changeData(dataType, {
+                    ...data,
+                    font: fontESP?.sign ?? fonts[3].sign,
+                    schema: themeESP?.sign ?? themes[0].sign,
+                    dataId: res.data.data._id.toString(),
+                });
+
+            }
+            else {
+                await createData({
+                    ...data,
+                    deviceID: device?.value as string,
+                    deviceName: device?.label ?? "",
+                    fontStyle: font?.value as string,
+                    designSchema: theme?.value as string,
+                    type: capitalize(dataType),
+                    active: true,
+                    activeStartTime: -1,
+                    activeTimestamp: []
+                })
+            }
+            dispacth(openBottomModal({
+                isOpen: true,
+                isFailed: false,
+                title: 'Successful',
+                content: 'This data has been created.',
+                btnTitle: 'Close',
+                callback: () => popToTop(),
+                btnCancelTitle: ''
+            }))
         }
         catch (e) {
             console.log(e);
+            dispacth(openBottomModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Failed',
+                content: 'Something was wrong. Please try again.',
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }))
         }
         finally {
             dispacth(closeLoading());

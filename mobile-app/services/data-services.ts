@@ -28,6 +28,16 @@ export const getDataById = async (id: string | number) => {
     }
 }
 
+export const createData = async (data: Omit<DataDto, '_id' | 'createdBy'>) => {
+    try {
+        const res = await instance.post(`${urlEndpoint}`, data);
+        return res;
+    }
+    catch (e) {
+        console.log(e);
+        throw e;
+    }
+}
 export const createDataNoMqtt = async (data: Omit<DataDto, '_id' | 'createdBy'>) => {
     try {
         const res = await instance.post(`${urlEndpoint}/n`, data);

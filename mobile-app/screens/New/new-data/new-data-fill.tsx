@@ -20,12 +20,15 @@ import { openDateTimePickerModal, resetDateTimePickerData } from '../../../redux
 import DateTimeField from '../../../libs/date-time-field';
 import fontWeight from '../../../themes/font-weight';
 import fontSize from '../../../themes/font-size';
-import { navigate } from '../../../navigation/root-navigation';
-import { RootStackNewParamList, SubmitNewDataScreenProps } from '../../../navigation/param-types';
-import { openLoading } from '../../../redux/slice/loading-slice';
+import { navigate, pop } from '../../../navigation/root-navigation';
+import { NewDataFillScreenProps, RootStackNewParamList, SubmitNewDataScreenProps } from '../../../navigation/param-types';
+import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
+import { createDataNoMqtt } from '../../../services/data-services';
+import { capitalize } from '../../../utils/utils';
+import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
 
 const NewDataFillScreen = ({ navigation, route }) => {
-    const { dataType } = route.params;
+    const { dataType } = route.params as NewDataFillScreenProps;
     const [active, setActive] = useState<boolean>(false);
     const [name, setName] = useState<string>('');
     const [input2, setInput2] = useState<string>('');
@@ -194,7 +197,7 @@ const NewDataFillScreen = ({ navigation, route }) => {
         }
     }
 
-    const handlePress = () => {
+    const handlePress = async () => {
         if (active) {
             navigate<SubmitNewDataScreenProps, RootStackNewParamList>('SubmitNewDataScreen', {
                 data: {
@@ -207,9 +210,46 @@ const NewDataFillScreen = ({ navigation, route }) => {
                 dataType: dataType
             })
         }
-        else {
-            // call api
-            // dispath(openLoading());
+        else try {
+            dispath(openLoading());
+
+            await createDataNoMqtt({
+                name,
+                input2,
+                input3,
+                input4,
+                active,
+                type: capitalize(dataType),
+                activeStartTime: -1,
+                deviceID: '',
+                deviceName: '',
+                activeTimestamp: [],
+                fontStyle: '',
+                designSchema: ''
+            });
+            dispath(openBottomModal({
+                isOpen: true,
+                isFailed: false,
+                title: 'Successful',
+                content: 'This data has been created.',
+                btnTitle: 'Close',
+                callback: () => pop(),
+                btnCancelTitle: ''
+            }))
+        }
+        catch (e) {
+            console.log(e);
+            dispath(openBottomModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Failed',
+                content: 'Something was wrong. Please try again.',
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }))
+        }
+        finally {
+            dispath(closeLoading());
         }
     }
 

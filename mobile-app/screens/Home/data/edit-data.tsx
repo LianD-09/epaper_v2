@@ -23,10 +23,11 @@ import fontWeight from '../../../themes/font-weight';
 import fontSize from '../../../themes/font-size';
 import { navigate, pop } from '../../../navigation/root-navigation';
 import { EditDataScreenProps, RootStackHomeParamList, SubmitEditDataScreenProps } from '../../../navigation/param-types';
-import { updateData } from '../../../services/data-services';
+import { deleteData, updateData } from '../../../services/data-services';
 import { capitalize } from '../../../utils/utils';
 import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
 import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
 
 const EditDataScreen = ({ navigation, route }) => {
     const { data, dataType } = route.params as EditDataScreenProps;
@@ -299,6 +300,47 @@ const EditDataScreen = ({ navigation, route }) => {
             }
         }
     }
+    const handleDelete = () => {
+        // call api
+        dispath(openCenterModal({
+            isOpen: true,
+            isFailed: false,
+            title: 'Warning',
+            content: 'Are you sure you want to delete this data?',
+            btnTitle: 'Yes',
+            callback: async () => {
+                try {
+                    dispath(openLoading());
+                    await deleteData((data as Template).id);
+
+                    dispath(openBottomModal({
+                        isOpen: true,
+                        isFailed: false,
+                        title: 'Successful',
+                        content: 'This data has been removed.',
+                        btnTitle: 'Close',
+                        callback: () => pop(),
+                        btnCancelTitle: ''
+                    }))
+                }
+                catch (e) {
+                    console.log(e);
+                    dispath(openBottomModal({
+                        isOpen: true,
+                        isFailed: true,
+                        title: 'Failed',
+                        content: 'Something was wrong. Please try again.',
+                        btnTitle: 'Close',
+                        btnCancelTitle: ''
+                    }))
+                }
+                finally {
+                    dispath(closeLoading());
+                }
+            },
+            btnCancelTitle: 'Cancel',
+        }))
+    }
 
     useEffect(() => {
         dispath(resetDateTimePickerData());
@@ -358,7 +400,10 @@ const EditDataScreen = ({ navigation, route }) => {
                         </View>
                         }
                     </View>
-                    <Button onPress={handlePress}>{active ? 'Continue' : 'Submit'}</Button>
+                    <View style={{ width: '100%', gap: 4 }}>
+                        <Button onPress={handlePress}>{active ? 'Continue' : 'Submit'}</Button>
+                        <Button onPress={handleDelete} deleted>{'Delete'}</Button>
+                    </View>
                 </Card>
             </ScrollView>
         </View>
