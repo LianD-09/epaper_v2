@@ -49,7 +49,7 @@ exports.createDataNoMqtt = async (data, userID = null) => {
   if (data.active) {
     const createdData = await DataModel.create(data);
 
-    const device = await DeviceModel.findById(data.deviceID);
+    const device = await DeviceModel.findById(data.uniqueID);
     const oldDataID = device.dataID;
     const now = Math.floor(new Date().getTime() / 1000);
 
@@ -65,6 +65,8 @@ exports.createDataNoMqtt = async (data, userID = null) => {
         await DataModel.findByIdAndUpdate(oldDataID, oldData);
       }
     }
+    data["deviceID"] = device._id;
+    data["deviceName"] = device.name;
     data["activeStartTime"] = `${now}`;
     await DataModel.findByIdAndUpdate(`${data._id}`, data);
 
