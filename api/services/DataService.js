@@ -109,7 +109,7 @@ exports.updateDataNoMqtt = async (id, data) => {
 
     device["dataID"] = "";
     device["dataName"] = "";
-    await DeviceModel.findByIdAndUpdate(device._id, device);
+    await DeviceModel.findByIdAndUpdate(oldData.deviceID, device);
 
     if (!data.active) {
       const now = Math.floor(new Date().getTime() / 1000);
@@ -129,13 +129,15 @@ exports.updateDataNoMqtt = async (id, data) => {
     const oldDataID = device.dataID;
     const now = Math.floor(new Date().getTime() / 1000);
 
-    if (oldDataID !== "" && oldData) {
-      oldData["active"] = false;
-      oldData["deviceID"] = "";
-      oldData["deviceName"] = "";
-      oldData["activeTimestamp"].push(`${oldData["activeStartTime"]}-${now}`)
-      oldData["activeStartTime"] = -1;
-      await DataModel.findByIdAndUpdate(oldDataID, oldData);
+    if (oldDataID !== "" && oldDataID !== `${data._id}`) {
+      const oldDataDevice = await DataModel.findById(oldDataID);
+
+      oldDataDevice["active"] = false;
+      oldDataDevice["deviceID"] = "";
+      oldDataDevice["deviceName"] = "";
+      oldDataDevice["activeTimestamp"].push(`${oldDataDevice["activeStartTime"]}-${now}`)
+      oldDataDevice["activeStartTime"] = -1;
+      await DataModel.findByIdAndUpdate(oldDataID, oldDataDevice);
     }
     data["activeStartTime"] = `${now}`;
 
