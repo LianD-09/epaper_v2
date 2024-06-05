@@ -16,7 +16,23 @@ uint8_t _update; // 0 - no update
                  // 7 - device update
                  // 8 - remove update
                  // 9 - restart
+                 // 10 - image send
 const int connectTimeout = 20000;
+// Buffer to store received data
+uint8_t *dataBuffer = nullptr;
+size_t bufferSize = 0;
+size_t receivedSize = 0;
+
+// Function to calculate checksum
+uint8_t _calculateChecksum(const uint8_t *data, size_t length)
+{
+    uint8_t checksum = 0;
+    for (size_t i = 0; i < length; i++)
+    {
+        checksum = (checksum + data[i]) % 256;
+    }
+    return checksum;
+}
 
 void display_on_message(UBYTE *BlackImage)
 {
@@ -119,7 +135,24 @@ void display_on_message(UBYTE *BlackImage)
         DEV_Delay_ms(1000);
         ESP.restart();
     }
-    DEV_Delay_ms(5000);
+    if (_update == 10)
+    {
+        // Serial.println(uxTaskGetStackHighWaterMark(NULL));
+
+        unsigned char decoded_message[receivedSize + 1];
+        int lenght = decode_base64(dataBuffer, receivedSize, decoded_message);
+        EPD_2IN9_V2_Init();
+        Paint_Clear(0xff);
+        Paint_DrawImage(decoded_message, 0, 0, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT);
+        EPD_2IN9_V2_Display(BlackImage);
+
+        delete[] dataBuffer;
+        dataBuffer = nullptr;
+        bufferSize = 0;
+        receivedSize = 0;
+        _update = 0;
+    }
+    DEV_Delay_ms(500);
 }
 
 void ServerCallbacks::onConnect(NimBLEServer *pServer)
@@ -176,20 +209,23 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
 {
     std::string chrVal = pCharacteristic->getValue();
     std::string chrUUID = pCharacteristic->getUUID();
-    Serial.print("Characteristic witten value:");
-    Serial.println(chrVal.c_str());
+    // Serial.print("Characteristic witten value:");
+    // Serial.println(chrVal.c_str());
     // Wifi write
     if (chrUUID.compare(WIFI_CHR_SSID_UUID) == 0)
     {
         preferences.putString("ssid", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(WIFI_CHR_PASSWORD_UUID) == 0)
     {
         preferences.putString("pass", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(WIFI_CHR_TOPICID_UUID) == 0)
     {
         preferences.putString("_id", chrVal.c_str());
+        return;
     }
     // Restart and write value to 0
     if (chrUUID.compare(WIFI_CHR_RESTART_UUID) == 0)
@@ -198,27 +234,33 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
         {
             _update = 9;
         }
+        return;
     }
     // Data write
     if (chrUUID.compare(DATA_CHR_NAME_UUID) == 0)
     {
         preferences.putString("name", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(DATA_CHR_INPUT2_UUID) == 0)
     {
         preferences.putString("input2", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(DATA_CHR_INPUT3_UUID) == 0)
     {
         preferences.putString("input3", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(DATA_CHR_INPUT4_UUID) == 0)
     {
         preferences.putString("input4", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(DATA_CHR_INPUT5_UUID) == 0)
     {
         preferences.putString("input5", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(DATA_CHR_FONT_UUID) == 0)
     {
@@ -254,16 +296,98 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
         {
             preferences.putString("font", "Segoe20");
         }
+        return;
     }
     if (chrUUID.compare(DATA_CHR_SCHEMA_UUID) == 0)
     {
         preferences.putString("schema", chrVal.c_str());
+        return;
     }
     if (chrUUID.compare(DATA_CHR_ID_UUID) == 0)
     {
         String oldData = preferences.getString("dataID", "");
         preferences.putString("dataID", chrVal.c_str());
         preferences.putString("oldData", oldData);
+        return;
+    }
+    if (chrUUID.compare(DATA_CHR_IMAGE_UUID) == 0)
+    {
+        const uint8_t *data = reinterpret_cast<const uint8_t *>(chrVal.c_str());
+        size_t length = chrVal.length();
+        string dataLength = chrVal.substr(0, 2);
+
+        if (length < 5)
+        {
+            Serial.println("Invalid chunk received");
+            return;
+        }
+        size_t chunkLength = hex_string_to_number(dataLength);
+        if (chunkLength + 5 != length)
+        {
+            Serial.println("Invalid chunk length");
+            return;
+        }
+
+        string receivedChecksumStr = chrVal.substr(length - 3, 2);
+        uint8_t flag = chrVal[length - 1];
+
+        uint8_t receivedChecksum = hex_string_to_number(receivedChecksumStr);
+        uint8_t calculatedChecksum = _calculateChecksum(data + 2, chunkLength);
+
+        if (receivedChecksum != calculatedChecksum)
+        {
+            Serial.println("Checksum mismatch");
+            return;
+        }
+
+        if (!dataBuffer)
+        {
+            // Allocate buffer on the first write
+            bufferSize = chunkLength;
+
+            // Only one chunk
+            if (flag == '1')
+            {
+                dataBuffer = new uint8_t[bufferSize + 1]; // for end character '\0'
+            }
+            // More than 1 chunk
+            else
+            {
+                dataBuffer = new uint8_t[bufferSize];
+            }
+        }
+        else
+        {
+            // Resize buffer to accommodate new data
+            size_t newSize = receivedSize + chunkLength;
+            if (flag == '1')
+            {
+                newSize++; // for end character '\0'
+            }
+
+            uint8_t *tempBuffer = new uint8_t[newSize];
+            if (dataBuffer)
+            {
+                memcpy(tempBuffer, dataBuffer, receivedSize);
+                delete[] dataBuffer;
+            }
+            dataBuffer = tempBuffer;
+            bufferSize = newSize;
+        }
+
+        // Copy received data to the buffer
+        memcpy(dataBuffer + receivedSize, data + 2, chunkLength);
+        receivedSize += chunkLength;
+        Serial.print("Chunk received: ");
+        Serial.print(chunkLength);
+        Serial.println(" bytes");
+
+        if (flag == '1')
+        {
+            dataBuffer[receivedSize] = '\0';
+            _update = 10;
+        }
+        return;
     }
     // Update when receive type value
     if (chrUUID.compare(DATA_CHR_TYPE_UUID) == 0)
@@ -293,6 +417,12 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
             preferences.putInt("dataType", 5);
             _update = 5;
         }
+        else if (compareStrings(chrVal.c_str(), "image"))
+        {
+            preferences.putInt("dataType", 6);
+            _update = 10;
+        }
+        return;
     }
 };
 
@@ -342,6 +472,7 @@ void BLE_Init(const std::string &deviceName)
     NimBLEDevice::setSecurityAuth(true, true, true);
     NimBLEDevice::setSecurityPasskey(123456);
     NimBLEDevice::setSecurityIOCap(BLE_HS_IO_DISPLAY_ONLY);
+    NimBLEDevice::setMTU(300);
     pServer = NimBLEDevice::createServer();
     pServer->setCallbacks(pCallBacks, true);
     // Wifi configuration service
@@ -479,6 +610,15 @@ void BLE_Init(const std::string &deviceName)
     pDataInput5->setValue(input5);
     pDataInput5->setCallbacks(new CharacteristicCallbacks());
     pDataInput5->notify(true);
+    // Image
+    NimBLECharacteristic *pDataImage = pServiceData->createCharacteristic(
+        NimBLEUUID(DATA_CHR_IMAGE_UUID),
+        NIMBLE_PROPERTY::WRITE |
+            NIMBLE_PROPERTY::WRITE_ENC |
+            NIMBLE_PROPERTY::WRITE_AUTHEN);
+    pDataImage->setValue(input5);
+    pDataImage->setCallbacks(new CharacteristicCallbacks());
+    pDataImage->notify(true);
     // Font
     NimBLECharacteristic *pDataFont = pServiceData->createCharacteristic(
         NimBLEUUID(DATA_CHR_FONT_UUID),
@@ -564,4 +704,10 @@ void BLE_Loop(UBYTE *BlackImage)
 
     Serial.println("BLE loop");
     display_on_message(BlackImage);
+
+    // Free the buffer after processing
+    //   delete[] dataBuffer;
+    //   dataBuffer = nullptr;
+    //   bufferSize = 0;
+    //   receivedSize = 0;
 }

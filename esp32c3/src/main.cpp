@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <BLE.h>
 
+// change larger loop stack space - default 8192
+SET_LOOP_TASK_STACK_SIZE(16 * 1024)
+
 using namespace std;
 
 #define ENABLE_BLUETOOTH 1
@@ -19,9 +22,11 @@ UBYTE *BlackImage;
 UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
 uint64_t chipid = ESP.getEfuseMac();
 int mode = 0;
+portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 void IRAM_ATTR ISR_Mode()
 {
+    portENTER_CRITICAL_ISR(&mux);
     static unsigned long last_interrupt_time = 0;
     unsigned long interrupt_time = millis();
 
@@ -32,13 +37,15 @@ void IRAM_ATTR ISR_Mode()
         mode = (mode + 1) % 2;
         last_interrupt_time = interrupt_time;
     }
+    portEXIT_CRITICAL_ISR(&mux);
 }
 
 void setup()
 {
     Serial.begin(115200);
+
     pinMode(MODE_BUTTON_PIN, INPUT_PULLUP);
-    attachInterrupt(MODE_BUTTON_PIN, ISR_Mode, CHANGE);
+    attachInterrupt(MODE_BUTTON_PIN, ISR_Mode, FALLING);
     Serial.println("epd say hi");
     pinMode(2, OUTPUT); // Initialize the built-in LED pin as an output
     digitalWrite(2, LOW);
@@ -60,7 +67,8 @@ void setup()
     }
     printf("Paint_NewImage\r\n");
     Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
-
+    Serial.println(uxTaskGetStackHighWaterMark(NULL));
+#if 1
     preferences.begin("my-app", false);
     wifiName = "AP-" + String(chipid);
 
@@ -72,7 +80,6 @@ void setup()
     //     ESP.restart();
     // }
 
-#if 1
     Paint_Clear(0xff);
     const char *Welcome = "Epaper Project";
     UWORD x;

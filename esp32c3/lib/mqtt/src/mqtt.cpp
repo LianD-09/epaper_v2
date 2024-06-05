@@ -83,6 +83,7 @@ void MQTT_Client_Init(const char *ssid, const char *password, const char *id, St
     {
         client.setId(id);
         client.setUsernamePassword(MQTT_USERNAME, MQTT_PASSWORD);
+        client.setTxPayloadSize(8192);
     }
 }
 
@@ -201,6 +202,10 @@ void handleMessage(char *message)
                 {
                     type = 8;
                 }
+                else if (compareStrings(msg.c_str(), "image"))
+                {
+                    type = 9;
+                }
                 else
                 {
                     msg = "";
@@ -255,11 +260,15 @@ void handleMessage(char *message)
                         preferences.putString("ssid", msg);
                     }
                 }
-                else
+                else if (type == 8)
                 {
                     update = 9;
                     preferences.putString("firmware", msg);
                     printf("----- update = %d\r\n", update);
+                }
+                else if (type == 9)
+                {
+                    update = 10;
                 }
                 break;
             case 3:
@@ -544,5 +553,5 @@ void MQTT_Loop(const char *topic, String wifiName, UBYTE *BlackImage)
         }
         update = 0;
     }
-    DEV_Delay_ms(5000);
+    DEV_Delay_ms(500);
 }
