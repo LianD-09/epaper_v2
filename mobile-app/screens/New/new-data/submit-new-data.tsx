@@ -24,6 +24,7 @@ import { getActiveDevices } from '../../../services/device-services';
 import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
 import { createData, createDataNoMqtt } from '../../../services/data-services';
 import { capitalize } from '../../../utils/utils';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
 
 const fontList: Array<SelectItem> = fonts.map(e => {
     return {
@@ -60,7 +61,8 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
         stopScanDevices,
         disconnectFromDevice,
         changeData,
-        uniqueId
+        uniqueId,
+        sendImage
     } = useBLE(false);
 
 
@@ -139,7 +141,26 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
             dispacth(openLoading());
             // call api
             if (device?.type === 'bluetooth') {
-                console.log(124);
+                let check = 0;
+                if (dataType === DataType.IMAGE) {
+                    if (data.input2) {
+                        check = await sendImage(data.input2);
+
+                    }
+
+                    if (check <= 0) {
+                        dispacth(openCenterModal({
+                            isOpen: true,
+                            isFailed: true,
+                            title: 'Error',
+                            content: 'Cannot send image. Please try again.',
+                            btnTitle: 'Close',
+                            btnCancelTitle: ''
+                        }));
+
+                        return;
+                    }
+                }
 
                 const res = await createDataNoMqtt({
                     ...data,
@@ -156,6 +177,7 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
 
                 await changeData(dataType, {
                     ...data,
+                    input2: dataType === DataType.IMAGE ? '' : data.input2,
                     font: fontESP?.sign ?? fonts[3].sign,
                     schema: themeESP?.sign ?? themes[0].sign,
                     dataId: res.data.data._id.toString(),
@@ -245,18 +267,22 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
                                 stopScanDevices();
                             }}
                         />
-                        <Select
-                            value={font}
-                            placeholder={'Select a font'}
-                            label={'Font'}
-                            items={fontList}
-                            onSelect={setFont} />
-                        <Select
-                            value={theme}
-                            placeholder={'Theme'}
-                            label={'Theme'}
-                            items={themeList}
-                            onSelect={setTheme} />
+                        {dataType !== DataType.IMAGE &&
+                            <>
+                                <Select
+                                    value={font}
+                                    placeholder={'Select a font'}
+                                    label={'Font'}
+                                    items={fontList}
+                                    onSelect={setFont} />
+                                <Select
+                                    value={theme}
+                                    placeholder={'Theme'}
+                                    label={'Theme'}
+                                    items={themeList}
+                                    onSelect={setTheme} />
+                            </>
+                        }
                     </View>
                     <Button
                         onPress={handleSubmit}

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View } from "react-native"
+import { StyleSheet, Text, View } from "react-native"
 import Color from "../../../themes/color";
 import Typography from "../../../libs/typography";
 import fontSize from "../../../themes/font-size";
@@ -8,6 +8,8 @@ import Card from "../../../libs/card";
 import { Client, DataType, Employee, Image_, Product, Room, Status, Student, Template } from "../../../types/type";
 import { capitalize } from "../../../utils/utils";
 import Divider from "../../../libs/divider";
+import WebView from "react-native-webview";
+import { decodeImageData } from "../../../services/image-services";
 
 export type DataDetailProps = {
     id: string | number,
@@ -134,7 +136,78 @@ const DataDetail = ({
             case DataType.IMAGE:
                 {
                     let item = data as Image_;
-                    return null;
+                    const pixels = decodeImageData(item.data);
+                    const htmlContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    </head>
+                    <body style="display:flex;flex-direction:column;justify-content:center;align-items:center">
+                        <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;flex:1;">
+                            <canvas id="canvas" width="128" height="296"></canvas>
+                        </div>
+                        <script>
+                        const byteArray = ${JSON.stringify(pixels)};
+                        const canvas = document.getElementById('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const imageData = ctx.createImageData(128, 296);
+                        for (let i = 0; i < byteArray.length; i++) {
+                            const value = byteArray[i];
+                            const idx = i * 4;
+                            imageData.data[idx] = value;
+                            imageData.data[idx + 1] = value;
+                            imageData.data[idx + 2] = value;
+                            imageData.data[idx + 3] = 255;
+                        }
+                        ctx.putImageData(imageData, 0, 0);
+                        const dataUrl = canvas.toDataURL();
+                        window.ReactNativeWebView.postMessage(dataUrl);
+                        </script>
+                    </body>
+                    </html>
+                `;
+                    return (
+                        <>
+                            <View style={styles.itemRow}>
+                                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Direction:</Typography>
+                                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w600}>{capitalize(item.direction)}</Typography>
+                            </View>
+                            <View style={{
+                                gap: 4,
+                                transform: [{
+                                    scale: 0.9
+                                }]
+                            }}>
+                                {/* <View style={styles.buttonCustomViewLabel}>
+                                    <Text style={styles.label}>Preview</Text>
+                                </View> */}
+                                <Card
+                                    style={{
+                                        width: '100%',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        minWidth: 128 + 60,
+                                        minHeight: 296 + 60,
+                                        transform: [{
+                                            rotate: item.direction === 'horizontal' ? '-90deg' : '0deg'
+                                        }]
+                                    }}
+                                >
+                                    <WebView
+                                        originWhitelist={['*']}
+                                        source={{ html: htmlContent }}
+                                        style={[styles.webview, {
+                                            width: 128 + 20,
+                                            height: 296 + 20,
+                                        }]}
+                                        javaScriptEnabled={true}
+                                    />
+                                </Card >
+                            </View>
+
+                        </>
+                    )
                 }
             default:
                 return null;
@@ -171,7 +244,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         gap: 12,
-        marginTop: 16
+        marginTop: 16,
     },
     itemRow: {
         flexDirection: 'row',
@@ -179,7 +252,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 5,
         width: '100%'
-    }
+    },
+    webview: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonCustomViewLabel: {
+        flexDirection: "column",
+        width: "100%",
+    },
+    label: {
+        paddingHorizontal: 16,
+        fontSize: fontSize.Tiny,
+        fontFamily: fontWeight.w700,
+        color: Color.primary[400],
+    },
 })
 
 export default DataDetail;

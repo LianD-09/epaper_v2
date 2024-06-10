@@ -2,15 +2,17 @@
 /* eslint-disable react-native/no-inline-styles */
 import React, { useState, useEffect, useRef } from 'react';
 import {
+    Image,
     ScrollView,
     StyleSheet,
+    Text,
     View,
 } from 'react-native';
 import Color from '../../../themes/color';
 import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
-import { DataType } from '../../../types/type';
+import { Algorithms, DataType } from '../../../types/type';
 import TextField from '../../../libs/text-field';
 import SwitchCustom from '../../../libs/switch-custom';
 import Typography from '../../../libs/typography';
@@ -24,8 +26,27 @@ import { navigate, pop } from '../../../navigation/root-navigation';
 import { NewDataFillScreenProps, RootStackNewParamList, SubmitNewDataScreenProps } from '../../../navigation/param-types';
 import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
 import { createDataNoMqtt } from '../../../services/data-services';
-import { capitalize } from '../../../utils/utils';
+import { capitalize, encodeValue } from '../../../utils/utils';
 import { openBottomModal } from '../../../redux/slice/bottom-modal-slice';
+import Select from '../../../libs/select';
+import { SelectItem } from '../../../redux/types';
+import { directions } from '../../../utils/constants';
+import * as ImagePicker from 'expo-image-picker';
+import { openCenterModal } from '../../../redux/slice/center-modal-slice';
+import { ditheringGrayscale, getByteArray } from '../../../services/image-services';
+import WebView from 'react-native-webview';
+
+const directionItems: SelectItem[] = directions.map(e => ({
+    label: capitalize(e),
+    value: e
+}));
+
+const algorithmsItems: SelectItem[] = Object.entries(Algorithms)
+    .filter(e => typeof e[1] === 'number')
+    .map(e => ({
+        value: e[1],
+        label: `Style ${e[1]}`,
+    }))
 
 const NewDataFillScreen = ({ navigation, route }) => {
     const { dataType } = route.params as NewDataFillScreenProps;
@@ -36,7 +57,48 @@ const NewDataFillScreen = ({ navigation, route }) => {
     const [input4, setInput4] = useState<string>('');
     const [input5, setInput5] = useState<string>('');
     const [dateTime, setDateTime] = useState<Date>(new Date());
-    const dispath = useDispatch();
+    const [direction, setDirection] = useState<SelectItem | null>(null);
+    const [algorithm, setAlgorithm] = useState<SelectItem | null>(null);
+    const [image, setImage] = useState<ImagePicker.ImagePickerAsset>();
+    const [showImage, setShowImage] = useState<number[]>([]);
+    const dispatch = useDispatch();
+
+    const handlePickImage = async () => {
+        if (!!!direction) {
+            dispatch(openCenterModal({
+                isOpen: true,
+                isFailed: true,
+                title: 'Notification',
+                content: "You must choose direction to display first.",
+                btnTitle: 'Close',
+                btnCancelTitle: ''
+            }));
+            return;
+        }
+        dispatch(openLoading());
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                // aspect: direction?.value === 'vertical' ? [128, 296] : [296, 128],
+                base64: true,
+            });
+
+            if (!result.canceled) {
+                setImage(result.assets[0]);
+                const res = await getByteArray(result.assets[0].base64, direction?.value === 'horizontal');
+                const format = ditheringGrayscale(res.pixels, algorithm?.value as Algorithms)
+                setInput2(format.bitmap);
+                setShowImage(format.pixels);
+            }
+        }
+        catch (e) {
+            console.log(e);
+        }
+        finally {
+            dispatch(closeLoading());
+        }
+    };
 
     const renderByType = () => {
         switch (dataType) {
@@ -194,6 +256,112 @@ const NewDataFillScreen = ({ navigation, route }) => {
                         />
                     </>
                 );
+            case DataType.IMAGE:
+                const htmlContent = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    </head>
+                    <body style="display:flex;flex-direction:column;justify-content:center;align-items:center">
+                        <div style="display:flex;align-items:center;justify-content:center;flex-direction:column;flex:1;">
+                            <canvas id="canvas" width="128" height="296"></canvas>
+                        </div>
+                        <script>
+                        const byteArray = ${JSON.stringify(showImage)};
+                        const canvas = document.getElementById('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const imageData = ctx.createImageData(128, 296);
+                        for (let i = 0; i < byteArray.length; i++) {
+                            const value = byteArray[i];
+                            const idx = i * 4;
+                            imageData.data[idx] = value;
+                            imageData.data[idx + 1] = value;
+                            imageData.data[idx + 2] = value;
+                            imageData.data[idx + 3] = 255;
+                        }
+                        ctx.putImageData(imageData, 0, 0);
+                        const dataUrl = canvas.toDataURL();
+                        window.ReactNativeWebView.postMessage(dataUrl);
+                        </script>
+                    </body>
+                    </html>
+                `;
+                return (
+                    <>
+                        <Select
+                            items={directionItems}
+                            value={direction}
+                            onSelect={(value) => {
+                                if (value.value != direction?.value) {
+                                    setDirection(value);
+                                    setImage(undefined);
+                                    setInput3(value.value as string);
+                                }
+                            }}
+                            placeholder='Choose direction'
+                            label={'Direction'}
+                        />
+                        <Select
+                            items={algorithmsItems}
+                            value={algorithm}
+                            onSelect={(value) => {
+                                handleChangeAlgorithm(value);
+                            }}
+                            placeholder='Choose style'
+                            label={'Style'}
+                        />
+                        <Button highlight onPress={handlePickImage}>Select image</Button>
+                        {
+                            !!image && <View style={{ gap: 4 }}>
+                                <View style={styles.buttonCustomViewLabel}>
+                                    <Text style={styles.label}>Preview</Text>
+                                </View>
+                                <Card
+                                    style={{
+                                        width: '100%',
+                                        justifyContent: 'center',
+                                        alignItems: 'center',
+                                        transform: [{
+                                            rotate: direction?.value === 'horizontal' ? '-90deg' : '0deg'
+                                        }]
+                                    }}
+                                >
+                                    {/* <Image
+                                    source={{ uri: image.uri }}
+                                    style={{ width: 128, height: 296, marginVertical: 10 }}
+                                /> */}
+                                    <WebView
+                                        originWhitelist={['*']}
+                                        source={{ html: htmlContent }}
+                                        style={[styles.webview, {
+                                            width: 128 + 20,
+                                            height: 296 + 20,
+                                        }]}
+                                        javaScriptEnabled={true}
+                                    />
+                                </Card >
+                            </View>
+                        }
+
+                    </>
+                )
+        }
+    }
+
+    const handleChangeAlgorithm = async (value) => {
+        setAlgorithm(value);
+
+        try {
+            if (!!image) {
+                const res = await getByteArray(image?.base64, direction?.value === 'horizontal');
+                const format = ditheringGrayscale(res.pixels, value.value as Algorithms)
+                setInput2(format.bitmap);
+                setShowImage(format.pixels);
+            }
+        }
+        catch (e) {
+            console.log(e);
         }
     }
 
@@ -201,7 +369,7 @@ const NewDataFillScreen = ({ navigation, route }) => {
         if (active) {
             navigate<SubmitNewDataScreenProps, RootStackNewParamList>('SubmitNewDataScreen', {
                 data: {
-                    name,
+                    name: dataType === DataType.IMAGE ? 'IMAGE' : name,
                     input2,
                     input3,
                     input4,
@@ -211,10 +379,10 @@ const NewDataFillScreen = ({ navigation, route }) => {
             })
         }
         else try {
-            dispath(openLoading());
+            dispatch(openLoading());
 
             await createDataNoMqtt({
-                name,
+                name: dataType === DataType.IMAGE ? 'IMAGE' : name,
                 input2,
                 input3,
                 input4,
@@ -227,7 +395,7 @@ const NewDataFillScreen = ({ navigation, route }) => {
                 fontStyle: '',
                 designSchema: ''
             });
-            dispath(openBottomModal({
+            dispatch(openBottomModal({
                 isOpen: true,
                 isFailed: false,
                 title: 'Successful',
@@ -239,7 +407,7 @@ const NewDataFillScreen = ({ navigation, route }) => {
         }
         catch (e) {
             console.log(e);
-            dispath(openBottomModal({
+            dispatch(openBottomModal({
                 isOpen: true,
                 isFailed: true,
                 title: 'Failed',
@@ -249,12 +417,12 @@ const NewDataFillScreen = ({ navigation, route }) => {
             }))
         }
         finally {
-            dispath(closeLoading());
+            dispatch(closeLoading());
         }
     }
 
     useEffect(() => {
-        dispath(resetDateTimePickerData());
+        dispatch(resetDateTimePickerData());
     }, [])
 
     return (
@@ -342,8 +510,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         gap: 5,
         width: '100%'
-    }
-
+    },
+    webview: {
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    buttonCustomViewLabel: {
+        flexDirection: "column",
+        width: "100%",
+    },
+    label: {
+        paddingHorizontal: 16,
+        fontSize: fontSize.Tiny,
+        fontFamily: fontWeight.w700,
+        color: Color.primary[400],
+    },
 });
 
 export default NewDataFillScreen;

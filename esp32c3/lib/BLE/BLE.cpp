@@ -137,10 +137,13 @@ void display_on_message(UBYTE *BlackImage)
     }
     if (_update == 10)
     {
-        // Serial.println(uxTaskGetStackHighWaterMark(NULL));
+        Serial.println(receivedSize);
 
         unsigned char decoded_message[receivedSize + 1];
-        int lenght = decode_base64(dataBuffer, receivedSize, decoded_message);
+        int length = decode_base64(dataBuffer, receivedSize, decoded_message);
+        preferences.putBytes("input2", decoded_message, length);
+
+        Serial.println("Drawing image...");
         EPD_2IN9_V2_Init();
         Paint_Clear(0xff);
         Paint_DrawImage(decoded_message, 0, 0, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT);
@@ -385,7 +388,6 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
         if (flag == '1')
         {
             dataBuffer[receivedSize] = '\0';
-            _update = 10;
         }
         return;
     }

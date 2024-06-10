@@ -5,6 +5,13 @@ export enum Status {
     UNKNOWN,
 }
 
+export enum Algorithms {
+    'binary' = 1,
+    'bayer' = 2,
+    'floydsteinberg' = 3,
+    'atkinson' = 4,
+}
+
 export enum DataType {
     CLIENT = "client",
     STUDENT = "student",
@@ -136,6 +143,7 @@ export type Room = {
 
 export type Image_ = {
     id: string | number,
+    direction: 'horizontal' | 'vertical',
     data: string,
     active: boolean,
     activeStartTime: number,

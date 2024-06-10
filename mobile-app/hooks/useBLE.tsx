@@ -14,8 +14,9 @@ import { useDispatch } from 'react-redux';
 import { openCenterModal } from '../redux/slice/center-modal-slice';
 import Typography from '../libs/typography';
 import * as Location from 'expo-location';
-import { dataServiceAndCharacteristic, imageServiceAndCharacteristic, wifiServiceAndCharacteristic } from '../utils/constants';
+import { MAX_MTU, dataServiceAndCharacteristic, wifiServiceAndCharacteristic } from '../utils/constants';
 import { DataType } from '../types/type';
+import { encode } from 'base-64';
 
 interface BluetoothLowEnergyApi {
     scanForPeripherals(reScan?: boolean): Promise<void>;
@@ -46,6 +47,7 @@ interface BluetoothLowEnergyApi {
             dataId?: string,
         }
     ) => void;
+    sendImage: (imageData: string) => Promise<number>;
 }
 
 function useBLE(required = true): BluetoothLowEnergyApi {
@@ -106,6 +108,9 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         try {
             const deviceConnection = await bleManager.connectToDevice(device.id);
             setConnectedDevice(deviceConnection);
+            // Request a larger MTU size
+            await device.requestMTU(MAX_MTU + 5 + 3);
+
             await deviceConnection.discoverAllServicesAndCharacteristics();
             stopScanDevices();
             let servicesList = await deviceConnection.services();
@@ -116,7 +121,6 @@ function useBLE(required = true): BluetoothLowEnergyApi {
                 let arr = [
                     wifiServiceAndCharacteristic,
                     dataServiceAndCharacteristic,
-                    imageServiceAndCharacteristic
                 ].find((value, index) => {
                     return value.uuid === servicesList[i].uuid;
                 });
@@ -236,7 +240,6 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         }
         catch (e) {
             console.log(e);
-            alert(e);
             result = false
         }
         return result;
@@ -376,6 +379,48 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         }
     }
 
+    // Function to calculate checksum
+    const _calculateChecksum = (data: string) => {
+        let checksum = 0;
+        for (let i = 0; i < data.length; i++) {
+            checksum = (checksum + data.charCodeAt(i)) % 256;
+        }
+        return checksum;
+    };
+
+    const sendImage = async (imageData: string) => {
+        let sentBytes = 0;
+        try {
+            // Define chunk size
+            const chunkSize = MAX_MTU;
+
+            // Send image data in chunks with checksum
+            for (let i = 0; i < imageData.length; i += chunkSize) {
+                const chunkData = imageData.slice(i, i + chunkSize);
+                const checksum = _calculateChecksum(chunkData);
+                const length = chunkData.length;
+                const dataWithChecksum =
+                    (length < 16 ? '0' + length.toString(16) : length.toString(16)) +
+                    chunkData +
+                    (checksum < 16 ? '0' + checksum.toString(16) : checksum.toString(16)) +
+                    (i + chunkSize >= imageData.length ? '1' : '0');
+
+                await changeCharacteristicsValueForImage(
+                    dataServiceAndCharacteristic.uuid,
+                    dataServiceAndCharacteristic.characteristics.image,
+                    encode(dataWithChecksum)
+                );
+
+                sentBytes += length;
+            }
+
+        } catch (error) {
+            console.error(error);
+            return 0;
+        }
+        return sentBytes;
+    }
+
     return {
         isScanning,
         isEnabledBLELocation,
@@ -393,6 +438,7 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         changeWifiConfiguration,
         changeData,
         stopScanDevices,
+        sendImage,
     };
 }
 

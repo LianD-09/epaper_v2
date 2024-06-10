@@ -45,6 +45,11 @@ export const themes = [
     }
 ]
 
+export const directions = [
+    'horizontal',
+    'vertical'
+]
+
 export const wifiServiceAndCharacteristic =
 {
     name: "wifi",
@@ -67,15 +72,11 @@ export const dataServiceAndCharacteristic = {
         input3: "00001a23-0000-1000-8000-00805f9b34fb",
         input4: "00001a24-0000-1000-8000-00805f9b34fb",
         input5: "00001a25-0000-1000-8000-00805f9b34fb",
+        image: "00001a2b-0000-1000-8000-00805f9b34fb",
         dataId: "00001a2c-0000-1000-8000-00805f9b34fb",
         font: "00001a2d-0000-1000-8000-00805f9b34fb",
         schema: "00001a2e-0000-1000-8000-00805f9b34fb",
     }
 };
-export const imageServiceAndCharacteristic = {
-    name: "image",
-    uuid: "",
-    characteristics: {}
-}
 
-export const MAX_CHARACTERISTIC_VALUE_LENGTH = 512;
+export const MAX_MTU = 255; // Adjust based on BLE packet size limitation (2 bytes lenght + 256 bytes + 2 bytes checksum + 1 flag)

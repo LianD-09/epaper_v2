@@ -95,7 +95,8 @@ const NewDeviceScreen = ({ navigation, route }) => {
                             "1",
                             false
                         );
-                    }
+                    },
+                    backgroundPressable: false
                 }))
             }
         }

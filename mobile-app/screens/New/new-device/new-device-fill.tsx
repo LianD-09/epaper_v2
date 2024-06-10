@@ -25,7 +25,6 @@ import useBLE from '../../../hooks/useBLE';
 import { wifiServiceAndCharacteristic } from '../../../utils/constants';
 import { NewDataScreenProps, RootStackNewParamList } from '../../../navigation/param-types';
 import { openCenterModal } from '../../../redux/slice/center-modal-slice';
-import Typography from '../../../libs/typography';
 import { closeLoading, openLoading } from '../../../redux/slice/loading-slice';
 import { createDevice } from '../../../services/device-services';
 import { validateName, validateSSID, validateWifiPass } from '../../../utils/regex';

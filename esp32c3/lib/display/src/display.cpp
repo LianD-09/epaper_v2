@@ -863,3 +863,16 @@ void displayQRText(UBYTE *BlackImage, const char *text, int mode)
     EPD_2IN9_V2_Display(BlackImage);
     delete[] qrCodeArray;
 }
+
+void displayImage(UBYTE *BlackImage)
+{
+    Serial.println(uxTaskGetStackHighWaterMark(NULL));
+    Serial.println("Drawing image...");
+    uint8_t *imageData = new uint8_t[6316];
+    preferences.getBytes("input2", imageData, 6316);
+    EPD_2IN9_V2_Init();
+    Paint_Clear(0xff);
+    Paint_DrawImage(imageData, 0, 0, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT);
+    EPD_2IN9_V2_Display(BlackImage);
+    delete[] imageData;
+}

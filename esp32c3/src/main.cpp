@@ -151,6 +151,10 @@ void setup()
         {
             displayWrite5(BlackImage);
         }
+        else if (dataType == 6)
+        {
+            displayImage(BlackImage);
+        }
     }
     else
     {

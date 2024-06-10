@@ -10,7 +10,7 @@ import Color from '../../../themes/color';
 import Header from '../../../libs/header';
 import Card from '../../../libs/card';
 import { StatusBar } from 'expo-status-bar';
-import { Client, DataType, Employee, Product, Room, Status, Student, Template } from '../../../types/type';
+import { Client, DataType, Employee, Image_, Product, Room, Status, Student, Template } from '../../../types/type';
 import TextField from '../../../libs/text-field';
 import SwitchCustom from '../../../libs/switch-custom';
 import Typography from '../../../libs/typography';
@@ -76,6 +76,11 @@ const EditDataScreen = ({ navigation, route }) => {
                 setInput2(item.email);
                 setInput3(item.studentId);
                 setInput4(item.class);
+                break;
+            case DataType.IMAGE:
+                item = data as Image_;
+                setInput2(item.data);
+                setInput3(item.direction);
                 break;
         }
     }, []);
@@ -242,6 +247,8 @@ const EditDataScreen = ({ navigation, route }) => {
                         />
                     </>
                 );
+            case DataType.IMAGE:
+                return null;
         }
     }
 
@@ -251,7 +258,7 @@ const EditDataScreen = ({ navigation, route }) => {
                 data: {
                     ...data,
                     _id: data?.id,
-                    name,
+                    name: dataType === DataType.IMAGE ? 'IMAGE' : name,
                     input2,
                     input3,
                     input4,

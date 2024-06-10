@@ -60,7 +60,8 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
         stopScanDevices,
         disconnectFromDevice,
         changeData,
-        uniqueId
+        uniqueId,
+        sendImage
     } = useBLE(false);
 
 
@@ -147,6 +148,26 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
             dispacth(openLoading());
             // call api
             if (device?.type === 'bluetooth') {
+                let check = 0;
+                if (dataType === DataType.IMAGE) {
+                    if (data.input2) {
+                        check = await sendImage(data.input2);
+                    }
+
+                    if (check <= 0) {
+                        dispacth(openCenterModal({
+                            isOpen: true,
+                            isFailed: true,
+                            title: 'Error',
+                            content: 'Cannot send image. Please try again.',
+                            btnTitle: 'Close',
+                            btnCancelTitle: ''
+                        }));
+
+                        return;
+                    }
+                }
+
                 const res = await updateDataNoMqtt(data._id, {
                     ...data,
                     uniqueID: uniqueId,
@@ -156,6 +177,7 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
 
                 await changeData(dataType, {
                     ...data,
+                    input2: dataType === DataType.IMAGE ? '' : data.input2,
                     font: fontESP?.sign ?? fonts[3].sign,
                     schema: themeESP?.sign ?? themes[0].sign,
                     dataId: res.data.data._id,
@@ -242,18 +264,22 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
                                 stopScanDevices();
                             }}
                         />
-                        <Select
-                            value={font}
-                            placeholder={'Select a font'}
-                            label={'Font'}
-                            items={fontList}
-                            onSelect={setFont} />
-                        <Select
-                            value={theme}
-                            placeholder={'Theme'}
-                            label={'Theme'}
-                            items={themeList}
-                            onSelect={setTheme} />
+                        {dataType !== DataType.IMAGE &&
+                            <>
+                                <Select
+                                    value={font}
+                                    placeholder={'Select a font'}
+                                    label={'Font'}
+                                    items={fontList}
+                                    onSelect={setFont} />
+                                <Select
+                                    value={theme}
+                                    placeholder={'Theme'}
+                                    label={'Theme'}
+                                    items={themeList}
+                                    onSelect={setTheme} />
+                            </>
+                        }
                     </View>
                     <Button
                         onPress={handleSubmit}

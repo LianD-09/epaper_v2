@@ -75,7 +75,6 @@ export default function ScanScreen() {
     }
 
     const handleScan = async (result) => {
-        // console.log(result.data);
         ref.current?.pausePreview();
         try {
             const dataRaw = decodeValue(result.raw);
@@ -103,6 +102,7 @@ export default function ScanScreen() {
 
                             if (await WifiManager.getCurrentWifiSSID() === data.ssid) {
                                 dispatch(closeLoading());
+                                setStart(false);
                                 navigate('WifiAp');
                                 return;
                             }

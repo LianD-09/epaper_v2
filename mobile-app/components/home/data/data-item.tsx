@@ -78,6 +78,7 @@ const DataItem = ({
                     ...data,
                     id: data._id,
                     data: data.input2,
+                    direction: data.input3,
                 }) as Image_;
         }
     }, [data]);
