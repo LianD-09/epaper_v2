@@ -9,6 +9,7 @@
 #include <cstdint>
 #include <qrcode.h>
 #include <fonts.h>
+#include <Utils.h>
 
 extern Preferences preferences;
 

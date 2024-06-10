@@ -141,7 +141,8 @@ void display_on_message(UBYTE *BlackImage)
 
         unsigned char decoded_message[receivedSize + 1];
         int length = decode_base64(dataBuffer, receivedSize, decoded_message);
-        preferences.putBytes("input2", decoded_message, length);
+        // preferences.putBytes("input2", decoded_message, length);
+        writeFile(SPIFFS, IMAGE_PATH, decoded_message, length);
 
         Serial.println("Drawing image...");
         EPD_2IN9_V2_Init();

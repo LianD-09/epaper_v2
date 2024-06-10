@@ -122,6 +122,10 @@ const BottomModal = () => {
                         {modalNoti?.btnTitle != '' && (
                             <Button onPress={handlePress}>{modalNoti.btnTitle}</Button>
                         )}
+                        {modalNoti?.btnMores != undefined && modalNoti?.btnMores.map((e, idx) => <React.Fragment key={idx}>
+                            {e}
+                        </React.Fragment>
+                        )}
                         {modalNoti?.btnCancelTitle ? (
                             <TouchableOpacity
                                 style={{ paddingTop: 6, paddingHorizontal: 16, width: '100%', justifyContent: 'center', alignItems: 'center' }}

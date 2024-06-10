@@ -6,6 +6,11 @@
 #include <iomanip>
 #include <vector>
 #include <base64.h>
+#include <SPIFFS.h>
+#include <FS.h>
+
+#define IMAGE_PATH "/input2"
+
 typedef std::pair<std::string, std::string> json_pattern;
 
 std::string uint8_to_hex_string(const uint8_t *v, const size_t s);
@@ -81,5 +86,8 @@ unsigned int encode_base64(const unsigned char input[], unsigned int input_lengt
  */
 unsigned int decode_base64(const unsigned char input[], unsigned char output[]);
 unsigned int decode_base64(const unsigned char input[], unsigned int input_length, unsigned char output[]);
+
+void writeFile(fs::FS &fs, const char *path, const uint8_t *data, size_t length);
+void readFile(fs::FS &fs, const char *path, uint8_t *data, size_t length);
 
 #endif

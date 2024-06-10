@@ -7,6 +7,7 @@
 #include <ArduinoMqttClient.h>
 #include <cstdint>
 #include <ota.h>
+#include <Utils.h>
 
 WiFiClient espClient;
 MqttClient client(espClient);
@@ -152,6 +153,7 @@ void handleMessage(char *message)
                       // 6 - ping
                       // 7 - update
                       // 8 - ota
+                      // 9 - image
     while (*chr != '\0')
     {
         if (*chr == '|')
@@ -268,6 +270,7 @@ void handleMessage(char *message)
                 }
                 else if (type == 9)
                 {
+                    preferences.putString("font", "");
                     update = 10;
                 }
                 break;
@@ -287,7 +290,19 @@ void handleMessage(char *message)
                 preferences.putString("name", msg);
                 break;
             case 5:
-                preferences.putString("input2", msg);
+                if (type == 9)
+                {
+                    unsigned char decoded_message[msg.length() + 1];
+                    int length = decode_base64(reinterpret_cast<const uint8_t *>(&msg[0]), msg.length(), decoded_message);
+                    Serial.println(length);
+
+                    writeFile(SPIFFS, IMAGE_PATH, decoded_message, length);
+                    // preferences.putBytes("input2", decoded_message, length);
+                }
+                else
+                {
+                    preferences.putString("input2", msg);
+                }
                 break;
             case 6:
                 preferences.putString("input3", msg);
@@ -334,6 +349,11 @@ void handleMessage(char *message)
                     update = 5;
                     printf("----- update = %d\r\n", update);
                 }
+                else if (type == 9)
+                {
+                    update = 10;
+                    printf("----- update = %d\r\n", update);
+                }
                 break;
             }
             msg = "";
@@ -358,7 +378,7 @@ void onMessage(int messageSize)
     if (messageSize)
     {
         int size = 0;
-        char *newData = new char[256];
+        char *newData = new char[8192];
         // use the Stream interface to print the contents
         while (client.available())
         {
@@ -370,6 +390,9 @@ void onMessage(int messageSize)
         Serial.println();
         newData[size] = u'\0';
         handleMessage(newData);
+        DEV_Delay_ms(100);
+
+        delete[] newData;
     }
 }
 
@@ -506,6 +529,10 @@ void MQTT_Loop(const char *topic, String wifiName, UBYTE *BlackImage)
             {
                 displayWrite5(BlackImage);
             }
+            else if (dataType == 6)
+            {
+                displayImage(BlackImage);
+            }
         }
         else
         {
@@ -551,6 +578,22 @@ void MQTT_Loop(const char *topic, String wifiName, UBYTE *BlackImage)
             url += firmware;
             performOTAUpdate(url.c_str());
         }
+        update = 0;
+    }
+    else if (update == 10)
+    {
+        String oldData = preferences.getString("oldData", "");
+        displayImage(BlackImage);
+
+        String writeOK = "writeOK|";
+        writeOK += oldData;
+        Serial.println(writeOK.c_str());
+
+        Serial.println(topic);
+        client.beginMessage(topic);
+        client.print(writeOK.c_str());
+        client.endMessage();
+
         update = 0;
     }
     DEV_Delay_ms(500);

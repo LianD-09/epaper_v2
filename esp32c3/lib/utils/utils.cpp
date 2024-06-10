@@ -252,3 +252,50 @@ unsigned int decode_base64(const unsigned char input[], unsigned int input_lengt
 
     return output_length;
 }
+
+void writeFile(fs::FS &fs, const char *path, const uint8_t *data, size_t length)
+{
+    Serial.printf("Writing to file: %s\n", path);
+
+    File file = fs.open(path, FILE_WRITE);
+    if (!file)
+    {
+        Serial.println("Failed to open file for writing");
+        return;
+    }
+
+    if (file.write(data, length))
+    {
+        Serial.println("File written successfully");
+    }
+    else
+    {
+        Serial.println("Failed to write file");
+    }
+
+    file.close();
+}
+
+void readFile(fs::FS &fs, const char *path, uint8_t *data, size_t length)
+{
+    Serial.printf("Reading file: %s\n", path);
+
+    File file = fs.open(path, FILE_READ);
+    if (!file)
+    {
+        Serial.println("Failed to open file for reading");
+        return;
+    }
+
+    size_t bytesRead = file.read(data, length);
+    if (bytesRead == length)
+    {
+        Serial.println("File read successfully");
+    }
+    else
+    {
+        Serial.println("Failed to read file");
+    }
+
+    file.close();
+}

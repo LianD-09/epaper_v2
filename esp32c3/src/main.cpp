@@ -57,6 +57,15 @@ void setup()
     EPD_2IN9_V2_Clear();
     DEV_Delay_ms(500);
 
+    // Initialize SPIFFS
+    if (!SPIFFS.begin(true))
+    {
+        Serial.println("An Error has occurred while mounting SPIFFS");
+        return;
+    }
+
+    Serial.println("SPIFFS mounted successfully");
+
     // Create a new image cache
     /* you have to edit the startup_stm32fxxx.s file and set a big enough heap size */
     if ((BlackImage = (UBYTE *)malloc(Imagesize)) == NULL)

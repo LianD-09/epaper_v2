@@ -8,6 +8,7 @@ const initialState: BMState = {
     icon: undefined,
     content: null,
     btnTitle: "",
+    btnMores: [],
     btnCancelTitle: "",
     callback: null,
     backgroundPressable: true,

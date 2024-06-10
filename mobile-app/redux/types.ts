@@ -8,6 +8,7 @@ export type BMState = {
     icon?: ImageSourcePropType | undefined,
     content?: React.ReactNode,
     btnTitle: string,
+    btnMores?: React.ReactNode[],
     btnCancelTitle: string,
     backgroundPressable?: boolean,
     callback?: ((...args: any) => any) | null | undefined,
