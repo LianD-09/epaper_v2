@@ -209,6 +209,8 @@ exports.writeDevice = async (data) => {
     payload = payload + "write4|";
   } else if (data.type === "Room") {
     payload = payload + "write5|";
+  } else if (data.type === "Image") {
+    payload = payload + "image|";
   }
 
   switch (data.fontStyle) {
@@ -237,7 +239,13 @@ exports.writeDevice = async (data) => {
       payload = payload + "s20|";
       break;
     default:
-      payload = payload + "S16|";
+      if (data.type !== "Image") {
+        payload = payload + "S16|";
+        break;
+      } else {
+        payload = payload + "|";
+        break;
+      }
   }
 
   switch (data.designSchema) {
@@ -254,7 +262,14 @@ exports.writeDevice = async (data) => {
       payload = payload + "4|";
       break;
     default:
-      payload = payload + "1|";
+      if (data.type !== "Image") {
+        payload = payload + "1|";
+        break;
+      }
+      else {
+        payload = payload + "|";
+        break;
+      }
   }
 
   payload = payload + `${data.name}|`;
@@ -283,7 +298,10 @@ exports.writeDevice = async (data) => {
       payload = payload + `${data.input3}|`;
       payload = payload + `${data.input4}|`;
       break;
-
+    case "Image":
+      payload = payload + `${data.input2}|`;
+      payload = payload + `${data.input3}|`;
+      break;
   }
   payload = payload + `${data._id}|`;
   console.log(payload);
