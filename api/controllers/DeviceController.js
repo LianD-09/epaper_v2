@@ -30,7 +30,7 @@ exports.getAllDevices = async (req, res) => {
 exports.createDevice = async (req, res) => {
   try {
     console.log(req.baseUrl, "\n", req.body);
-    const existDevice = await deviceService.getDeviceByKey('uniqueId', req.body.uniqueId);
+    const existDevice = await deviceService.getDeviceByKey('uniqueID', req.body.uniqueID);
     if (existDevice) {
       const device = await deviceService.updateDeviceNoMqtt(
         existDevice._id,
