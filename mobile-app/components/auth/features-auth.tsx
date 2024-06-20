@@ -41,7 +41,7 @@ const listFeatures: Array<FeatureItemType> = [
     },
     {
         color: Color.success[600],
-        label: 'Remote control center',
+        label: 'Wifi remote control',
         iconSrc: require("assets/icons/wifi-epd-48px.png"),
         screen: 'WifiApScreen',
         stack: 'WifiAp'

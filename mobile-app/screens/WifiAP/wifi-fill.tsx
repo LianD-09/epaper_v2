@@ -70,7 +70,7 @@ const WifiFillScreen = ({ navigation, route }) => {
         <View style={styles.container}>
             <StatusBar backgroundColor={Color.white[100]} />
             <Header
-                headerTitle='New device'
+                headerTitle='Network information'
             />
             <ScrollView
                 style={{ flex: 1 }}

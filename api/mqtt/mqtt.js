@@ -276,18 +276,18 @@ exports.writeDevice = async (data) => {
 
   switch (data.type) {
     case "Client":
-      payload = payload + `${data.email}|`;
       payload = payload + `${data.input2}|`;
+      payload = payload + `${data.input3}|`;
       break;
     case "Student":
-      payload = payload + `${data.email}|`;
       payload = payload + `${data.input2}|`;
       payload = payload + `${data.input3}|`;
+      payload = payload + `${data.input4}|`;
       break;
     case "Employee":
-      payload = payload + `${data.email}|`;
       payload = payload + `${data.input2}|`;
       payload = payload + `${data.input3}|`;
+      payload = payload + `${data.input4}|`;
       break;
     case "Product":
       payload = payload + `${data.input2}|`;
