@@ -6,12 +6,12 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3007/api",
-      "description": "Dev server"
+      "url": "https://epaper.toolhub.app/api",
+      "description": "Live server"
     },
     {
-      "url": "https://epaper.artsakh.ventures/api",
-      "description": "Live server"
+      "url": "http://localhost:9000/api",
+      "description": "Dev server"
     }
   ],
   "tags": [
@@ -46,92 +46,6 @@
             "type": "string"
           }
         }
-      },
-      "Quiz": {
-        "type": "object",
-        "properties": {
-          "startTime": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-05-31T08:00:00.000+00:00"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "date-time",
-            "example": "2023-05-31T08:45:00.000+00:00"
-          },
-          "formLink": {
-            "type": "string",
-            "format": "url",
-            "example": "https://example.com/"
-          },
-          "_class": {
-            "type": "string",
-            "default": "647afcfd9524a2813008eb90"
-          }
-        }
-      },
-      "Class": {
-        "type": "object",
-        "properties": {
-          "codename": {
-            "type": "string",
-            "default": "123456"
-          },
-          "subject": {
-            "type": "string",
-            "default": "CN Web"
-          },
-          "semester": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 20222
-          },
-          "studentCount": {
-            "type": "integer",
-            "minimum": 0,
-            "default": 50
-          },
-          "note": {
-            "type": "string",
-            "default": "A note"
-          }
-        }
-      },
-      "QuizRecord": {
-        "type": "object",
-        "properties": {
-          "quiz": {
-            "type": "string",
-            "default": "645d04485aa78ee9ac47e189"
-          },
-          "studentList": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/StudentInput"
-            }
-          }
-        }
-      },
-      "QuizRecordResponse": {
-        "allOf": [
-          {
-            "type": "object",
-            "properties": {
-              "submissionCount": {
-                "type": "integer",
-                "default": "50"
-              },
-              "classStudentCount": {
-                "type": "integer",
-                "default": "50"
-              }
-            }
-          },
-          {
-            "$ref": "#/components/schemas/QuizRecord"
-          }
-        ]
       },
       "User": {
         "allOf": [
@@ -248,6 +162,10 @@
           "createdBy": {
             "type": "string",
             "default": "658c47d0e26a7f86d3e95236"
+          },
+          "uniqueID": {
+            "type": "string",
+            "default": "57957357662566"
           }
         }
       },
@@ -277,6 +195,10 @@
           "active": {
             "type": "boolean",
             "default": true
+          },
+          "uniqueID": {
+            "type": "string",
+            "default": "57957357662566"
           }
         }
       },
@@ -495,7 +417,7 @@
           }
         }
       }
-    }, 
+    },
     "securitySchemes": {
       "bearerAuth": {
         "type": "http",
@@ -507,7 +429,9 @@
   "paths": {
     "/quizzes": {
       "get": {
-        "tags": ["quiz"],
+        "tags": [
+          "quiz"
+        ],
         "summary": "Get all quizzes",
         "description": "Return all quizzes sort by latest startTime, then createdAt, first",
         "security": [
@@ -552,7 +476,9 @@
         }
       },
       "post": {
-        "tags": ["quiz"],
+        "tags": [
+          "quiz"
+        ],
         "summary": "Create new quiz",
         "description": "Return new quiz created",
         "security": [
@@ -598,7 +524,9 @@
     },
     "/quizzes/{id}": {
       "get": {
-        "tags": ["quiz"],
+        "tags": [
+          "quiz"
+        ],
         "summary": "Get quiz by id",
         "description": "Return single quiz",
         "parameters": [
@@ -634,7 +562,9 @@
         }
       },
       "delete": {
-        "tags": ["quiz"],
+        "tags": [
+          "quiz"
+        ],
         "summary": "Delete quiz by id",
         "description": "Return deleted quiz",
         "security": [
@@ -680,7 +610,9 @@
     },
     "/classes": {
       "get": {
-        "tags": ["class"],
+        "tags": [
+          "class"
+        ],
         "summary": "Get all classes",
         "description": "Return all classes",
         "security": [
@@ -744,7 +676,9 @@
         }
       },
       "post": {
-        "tags": ["class"],
+        "tags": [
+          "class"
+        ],
         "summary": "Create new class",
         "description": "Return new class created",
         "security": [
@@ -790,7 +724,9 @@
     },
     "/classes/{id}": {
       "delete": {
-        "tags": ["class"],
+        "tags": [
+          "class"
+        ],
         "summary": "Delete class by id",
         "description": "Return deleted class",
         "security": [
@@ -836,7 +772,9 @@
     },
     "/user/register": {
       "post": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Create new user",
         "description": "Return new user created",
         "parameters": [],
@@ -877,7 +815,9 @@
     },
     "/user/login": {
       "post": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Login user",
         "description": "Return user and jwt",
         "parameters": [],
@@ -921,7 +861,9 @@
     },
     "/quizRecords/{quizId}": {
       "get": {
-        "tags": ["quizRecord"],
+        "tags": [
+          "quizRecord"
+        ],
         "summary": "Get quizRecord by quiz's id",
         "description": "Return single quizRecord",
         "parameters": [
@@ -957,7 +899,9 @@
         }
       },
       "put": {
-        "tags": ["quizRecord"],
+        "tags": [
+          "quizRecord"
+        ],
         "summary": "Update quizRecord's studentList by id",
         "description": "Return single quizRecord before update",
         "parameters": [
@@ -1006,7 +950,9 @@
     },
     "/user/{id}": {
       "get": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Get user by id",
         "description": "Return single user",
         "security": [
@@ -1050,7 +996,9 @@
         }
       },
       "put": {
-        "tags": ["user"],
+        "tags": [
+          "user"
+        ],
         "summary": "Get user by id",
         "description": "Return single user before update",
         "security": [
@@ -1107,7 +1055,9 @@
     },
     "/devices": {
       "get": {
-        "tags": ["device"],
+        "tags": [
+          "device"
+        ],
         "summary": "Get all devices",
         "description": "Get all devices",
         "security": [
@@ -1115,15 +1065,17 @@
             "bearerAuth": []
           }
         ],
-        "parameters": [{
-          "name": "active",
-          "in": "query",
-          "description": "Filter active or inactive devices",
-          "schema": {
-            "type": "boolean",
-            "example": true
+        "parameters": [
+          {
+            "name": "active",
+            "in": "query",
+            "description": "Filter active or inactive devices",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1160,7 +1112,9 @@
         }
       },
       "post": {
-        "tags": ["device"],
+        "tags": [
+          "device"
+        ],
         "summary": "Create new devices",
         "description": "Create new devices",
         "security": [
@@ -1211,7 +1165,9 @@
     },
     "/devices/{id}": {
       "get": {
-        "tags": ["device"],
+        "tags": [
+          "device"
+        ],
         "summary": "Get device by id",
         "description": "Get device by id",
         "security": [
@@ -1219,15 +1175,17 @@
             "bearerAuth": []
           }
         ],
-        "parameters": [{
-          "name": "id",
-          "in": "path",
-          "description": "Device ID",
-          "schema": {
-            "type": "string",
-            "example": "65a2bd97f735f08ba5fa6ef8"
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Device ID",
+            "schema": {
+              "type": "string",
+              "example": "65a2bd97f735f08ba5fa6ef8"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1242,7 +1200,7 @@
                     },
                     "data": {
                       "$ref": "#/components/schemas/Device"
-                    }        
+                    }
                   }
                 }
               }
@@ -1254,7 +1212,9 @@
         }
       },
       "put": {
-        "tags": ["device"],
+        "tags": [
+          "device"
+        ],
         "summary": "Update devices",
         "description": "Update devices",
         "security": [
@@ -1310,7 +1270,9 @@
         }
       },
       "delete": {
-        "tags": ["device"],
+        "tags": [
+          "device"
+        ],
         "summary": "Delete device",
         "description": "Delete device",
         "security": [
@@ -1357,7 +1319,9 @@
     },
     "/devices/upgrade": {
       "post": {
-        "tags": ["device"],
+        "tags": [
+          "device"
+        ],
         "summary": "Upgrade devices",
         "description": "Upgrade devices",
         "security": [
@@ -1434,7 +1398,9 @@
     },
     "/data": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get all data",
         "description": "Get all data",
         "security": [
@@ -1442,15 +1408,17 @@
             "bearerAuth": []
           }
         ],
-        "parameters": [{
-          "name": "groupBy",
-          "in": "query",
-          "description": "Filter active or inactive data",
-          "schema": {
-            "type": "boolean",
-            "example": true
+        "parameters": [
+          {
+            "name": "groupBy",
+            "in": "query",
+            "description": "Filter active or inactive data",
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1480,7 +1448,9 @@
         }
       },
       "post": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Create new data",
         "description": "Create new data",
         "security": [
@@ -1531,7 +1501,9 @@
     },
     "/data/{id}": {
       "get": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Get data by id",
         "description": "Get data by id",
         "security": [
@@ -1539,15 +1511,17 @@
             "bearerAuth": []
           }
         ],
-        "parameters": [{
-          "name": "id",
-          "in": "path",
-          "description": "Data ID",
-          "schema": {
-            "type": "string",
-            "example": "6597a777005e009822d5eb90"
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Data ID",
+            "schema": {
+              "type": "string",
+              "example": "6597a777005e009822d5eb90"
+            }
           }
-        }],
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1562,7 +1536,7 @@
                     "status": {
                       "type": "string",
                       "default": "success"
-                    }        
+                    }
                   }
                 }
               }
@@ -1574,7 +1548,9 @@
         }
       },
       "put": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Update data",
         "description": "Update data",
         "security": [
@@ -1630,7 +1606,9 @@
         }
       },
       "delete": {
-        "tags": ["data"],
+        "tags": [
+          "data"
+        ],
         "summary": "Delete data",
         "description": "Delete data",
         "security": [
