@@ -197,7 +197,7 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
                 isOpen: true,
                 isFailed: false,
                 title: 'Successful',
-                content: 'This device has been updated.',
+                content: 'This data has been updated.',
                 btnTitle: 'Close',
                 callback: () => popToTop(),
                 btnCancelTitle: ''

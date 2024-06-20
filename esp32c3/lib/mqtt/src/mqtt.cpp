@@ -206,6 +206,7 @@ void handleMessage(char *message)
                 }
                 else if (compareStrings(msg.c_str(), "image"))
                 {
+                    preferences.putInt("dataType", 6);
                     type = 9;
                 }
                 else
@@ -322,6 +323,14 @@ void handleMessage(char *message)
                     preferences.putString("dataID", msg);
                     preferences.putString("oldData", oldData);
                     update = 4;
+                    printf("----- update = %d\r\n", update);
+                }
+                else if (type == 9)
+                {
+                    String oldData = preferences.getString("dataID", "");
+                    preferences.putString("dataID", msg);
+                    preferences.putString("oldData", oldData);
+                    update = 10;
                     printf("----- update = %d\r\n", update);
                 }
                 else

@@ -8,7 +8,7 @@ const BROKER = process.env.MQTT_BROKER;
 const USER = process.env.MQTT_USER;
 const PASS = process.env.MQTT_PASSWORD;
 let client = null;
-const responseTimeout = 6000;
+const responseTimeout = 2000;
 let globalMessageHandlers = new Map();
 const deviceTimeouts = new Map();
 // const ca = fs.readFileSync(`/etc/ssl/mongoKey/ca.crt`);
@@ -322,7 +322,7 @@ exports.writeDevice = async (data) => {
     setTimeout(() => {
       resolve();
       globalMessageHandlers.delete("writeOK");
-    }, responseTimeout + 5000);
+    }, responseTimeout + 1000);
   })
 }
 
