@@ -513,7 +513,7 @@ void BLE_Init(const std::string &deviceName)
     pDID->setValue(to_string(ESP.getEfuseMac()));
     pDID->setCallbacks(new CharacteristicCallbacks());
     pDID->notify(true);
-    // Password
+    // TopicID
     NimBLECharacteristic *pTopicID = pServiceWifi->createCharacteristic(
         NimBLEUUID(WIFI_CHR_TOPICID_UUID),
         NIMBLE_PROPERTY::READ |
