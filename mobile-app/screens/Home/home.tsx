@@ -77,6 +77,7 @@ const HomeScreen = ({ navigation }) => {
                         <Image source={require('assets/icons/profile-48px.png')} style={{ width: 32, height: 32 }} tintColor={Color.primary[700]} />
                     }
                     onPressRight={() => navigate('ProfileScreen')}
+                    onPressLeft={() => navigate('AboutScreen')}
                 />
                 <View style={{ paddingHorizontal: 25, gap: 24, }}>
                     <View style={styles.main}>

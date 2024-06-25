@@ -8,6 +8,7 @@ import { RootStackHomeParamList } from "./param-types";
 import SubmitEditDataScreen from "../screens/Home/data/submit-edit-data";
 import EditDevicesScreen from "../screens/Home/devices/edit-devices";
 import ProfileScreen from "../screens/Home/profile/profile";
+import AboutScreen from "../screens/Home/about/about";
 
 const Stack = createNativeStackNavigator<RootStackHomeParamList>();
 
@@ -53,6 +54,11 @@ function HomeStack(props) {
             <Stack.Screen
                 name="ProfileScreen"
                 component={ProfileScreen}
+                options={{ headerShown: false, gestureEnabled: false }}
+            />
+            <Stack.Screen
+                name="AboutScreen"
+                component={AboutScreen}
                 options={{ headerShown: false, gestureEnabled: false }}
             />
         </Stack.Navigator>

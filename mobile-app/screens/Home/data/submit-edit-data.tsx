@@ -64,7 +64,6 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
         sendImage
     } = useBLE(false);
 
-
     const deviceList: SelectItem[] = useMemo(() => {
         const formatActives: Array<SelectItem> = activeDevices.map(e => ({
             label: e.name,
@@ -253,11 +252,18 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
                             onFocus={() => {
                                 scanForPeripherals(true);
                             }}
-                            onSelect={(value) => {
+                            onSelect={async (value) => {
                                 setDevice(value);
                                 let device = allDevices.find((e) => e.id == value.value);
                                 if (device) {
-                                    connectToDevice(device)
+                                    const connected = await connectToDevice(device);
+
+                                    if (connected) {
+                                        setDevice(value);
+                                    }
+                                    else {
+                                        setDevice(null);
+                                    }
                                 }
                             }}
                             onBlur={() => {

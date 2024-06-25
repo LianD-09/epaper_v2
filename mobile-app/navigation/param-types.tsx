@@ -25,6 +25,7 @@ export type RootStackHomeParamList = RootStack & {
     SubmitEditDataScreen: SubmitEditDataScreenProps;
     EditDevicesScreen: SubmitEditDataScreenProps;
     ProfileScreen: undefined;
+    AboutScreen: undefined;
 };
 
 export type RootStackWifiApParamList = RootStack & {

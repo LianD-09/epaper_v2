@@ -104,8 +104,10 @@ const Select = ({
   }, [focus]);
 
   useEffect(() => {
-    dispatch(streamingItems(items));
-  }, [items])
+    if (focus) {
+      dispatch(streamingItems(items));
+    }
+  }, [items, focus])
 
   return (
     <View style={{ gap: 4 }}>

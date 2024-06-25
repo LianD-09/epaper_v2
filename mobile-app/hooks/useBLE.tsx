@@ -66,6 +66,7 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         uniqueId,
         setUniqueId
     } = useContext(BLEContext);
+    const time = Date.now();
 
     const dispatch = useDispatch();
     const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>
@@ -154,13 +155,15 @@ function useBLE(required = true): BluetoothLowEnergyApi {
                 btnTitle: 'Close',
                 btnCancelTitle: ''
             }));
+            result = false;
         }
         return result;
     };
 
-    const disconnectFromDevice = useCallback(async () => {
+    const disconnectFromDevice = async () => {
         try {
             if (connectedDevice !== null) {
+                console.log('Disconnect BLE');
                 await bleManager.cancelDeviceConnection(connectedDevice.id);
                 setConnectedDevice(null);
             }
@@ -169,7 +172,7 @@ function useBLE(required = true): BluetoothLowEnergyApi {
             console.log(error);
 
         }
-    }, [connectedDevice]);
+    };
 
     const stopScanDevices = () => {
         bleManager.stopDeviceScan();

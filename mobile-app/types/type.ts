@@ -143,6 +143,7 @@ export type Room = {
 
 export type Image_ = {
     id: string | number,
+    name: string,
     direction: 'horizontal' | 'vertical',
     data: string,
     active: boolean,

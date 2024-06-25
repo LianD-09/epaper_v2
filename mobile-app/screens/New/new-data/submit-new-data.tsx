@@ -256,11 +256,18 @@ const SubmitNewDataScreen = ({ navigation, route }) => {
                             onFocus={() => {
                                 scanForPeripherals(true);
                             }}
-                            onSelect={(item) => {
+                            onSelect={async (item) => {
                                 setDevice(item);
                                 let device = allDevices.find((e) => e.id == item.value);
                                 if (device) {
-                                    connectToDevice(device)
+                                    const connected = await connectToDevice(device);
+
+                                    if (connected) {
+                                        setDevice(item);
+                                    }
+                                    else {
+                                        setDevice(null);
+                                    }
                                 }
                             }}
                             onBlur={() => {

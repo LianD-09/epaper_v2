@@ -79,6 +79,7 @@ const EditDataScreen = ({ navigation, route }) => {
                 break;
             case DataType.IMAGE:
                 item = data as Image_;
+                setName(item.name);
                 setInput2(item.data);
                 setInput3(item.direction);
                 break;

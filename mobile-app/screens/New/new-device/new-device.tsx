@@ -73,6 +73,7 @@ const NewDeviceScreen = ({ navigation, route }) => {
         connectToDevice,
         changeCharacteristicsValue,
         isScanning,
+        stopScanDevices,
     } = useBLE();
 
     const handleConnect = async (e: Device) => {
@@ -118,7 +119,9 @@ const NewDeviceScreen = ({ navigation, route }) => {
 
     useEffect(() => {
         requestBluetoothPermission();
-
+        return () => {
+            stopScanDevices();
+        }
     }, []);
 
     return (

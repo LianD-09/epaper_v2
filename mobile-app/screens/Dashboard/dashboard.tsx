@@ -126,7 +126,7 @@ const Dashbhoard = ({ navigation }) => {
                 name='Notification'
                 component={Home}
                 options={{
-                    tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.8}>{props.children}</TouchableOpacity>,
+                    tabBarButton: (props) => <TouchableOpacity {...props} activeOpacity={0.8} disabled>{props.children}</TouchableOpacity>,
                     tabBarIcon: (props) => props.focused ?
                         <Image source={require('../../assets/icons/notification-solid-24px.png')} width={props.size} height={props.size} tintColor={props.color} />
                         :
