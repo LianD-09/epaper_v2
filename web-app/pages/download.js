@@ -5,15 +5,11 @@ import Link from 'next/link';
 import Abstract from "@/assets/imgs/abstract.jpg";
 import { instanceCoreApi } from '../services/setupAxios';
 import { useEffect } from 'react';
+import axios from 'axios';
 
 export default function Download() {
     const startDownload = async () => {
-        try {
-            await instanceCoreApi.get(`${process.env.NEXT_PUBLIC_API}/download-apk`);
-        }
-        catch (e) {
-            console.log(e);
-        }
+        window.location.assign(`${process.env.NEXT_PUBLIC_API}/download-apk`);
     }
 
     useEffect(() => {
