@@ -40,6 +40,10 @@ app.use("/api/swagger", swaggerRouter);
 app.use("/api/data", dataRouter);
 app.use("/api/devices", deviceRouter);
 app.use("/api/user", userRouter);
+app.get("/api/download-apk", function (req, res) {
+  const file = `${__dirname}/../apk/epaper.apk`;
+  res.download(file); // Set disposition and send it.
+});
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}...`);

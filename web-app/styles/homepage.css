@@ -3,33 +3,35 @@ main.homepage h1 {
     font-weight: 800;
 }
 
+@media (max-width: 768px) {
+    main.homepage h1 {
+        font-size: 1.5rem;
+        line-height: 2rem;
+    }
+}
+
 main.homepage .anchor {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-bottom: 4rem;
     /* height: 1000px; */
     /* border: 1px solid red; */
 }
 
 main.homepage .heading {
     /* border: 1px solid red; */
-    height: 800px;
     position: relative;
+    display: flex;
+    flex-direction: column;
     background: linear-gradient(0deg, rgba(21, 21, 21, 1) 0%, rgba(17, 17, 17, 1) 65%);
 }
 
 .heading h1 {
-    top: 40%;
-    position: inherit;
-    margin-left: 50px;
     max-width: 500px;
 }
 
 .heading a {
-    position: inherit;
-    top: 45%;
-    margin-left: 50px;
-    font-size: 20px;
     font-weight: 200;
     border: 1px solid rgba(86, 86, 86, 0.736);
     padding: 10px 30px;
@@ -41,13 +43,9 @@ main.homepage .heading {
     background-color: #61616166;
 }
 
-.anchor h1 {
-    margin: 30px 0px;
-}
 
 .anchor p {
     font-weight: 100;
-    font-size: 20px;
 }
 
 .how-it-works .background {
@@ -69,18 +67,10 @@ main.homepage .heading {
     object-fit: stretch;
 }
 
-.how-it-works h1 {
-    z-index: 1;
-    margin-left: 50px;
-    margin-top: 150px;
-    align-self: flex-start;
-}
 
 .how-it-works p {
     z-index: 1;
     align-self: flex-start;
-    margin-left: 50px;
-    max-width: 40%;
 }
 
 .project .techs {
@@ -125,7 +115,8 @@ main.homepage .heading {
     width: auto;
 }
 
-.project .diagram img.tech-3, img.tech-4 {
+.project .diagram img.tech-3,
+img.tech-4 {
     height: 60%;
     width: auto;
     cursor: pointer;
@@ -144,7 +135,7 @@ main.homepage .heading {
     /* position: relative; */
 }
 
-.project .ahihi > div {
+.project .ahihi>div {
     border: 1px solid blue;
 }
 

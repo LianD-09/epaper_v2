@@ -47,7 +47,7 @@ const Header = ({ currentPath }) => {
 
     return (
         <Navbar
-            className="header-container fixed w-full h-30 z-10"
+            className="header-container fixed w-full h-30 z-10 px-4 md:px-12 py-[1rem]"
             light
             expand="md"
         >
@@ -61,22 +61,23 @@ const Header = ({ currentPath }) => {
                     Epaper
                 </NavbarBrand>
             </div>
-            <div className="nav-bar grid text-2xl text-center relative">
-                {navButton.map((button, index) => {
-                    return (
-                        <Link
-                            key={index}
-                            href={button.path}
-                            className="text-xl leading-10 text-black dark:text-white font-thin hover:text-red dark:hover:text-red"
-                            style={{
-                                color: currentPath === button.text && "#C4181A",
-                            }}
-                        >
-                            {button.text}
-                        </Link>
-                    );
-                })}
-            </div>
+            {currentPath == 'Home' &&
+                <div className="nav-bar grid text-2xl text-center relative">
+                    {navButton.map((button, index) => {
+                        return (
+                            <Link
+                                key={index}
+                                href={button.path}
+                                className="text-base md:text-xl leading-10 text-black dark:text-white font-thin hover:text-red dark:hover:text-red"
+                                style={{
+                                    color: currentPath === button.text && "#C4181A",
+                                }}
+                            >
+                                {button.text}
+                            </Link>
+                        );
+                    })}
+                </div>}
             <div className="header-right flex items-center">
                 <Link className="get-started leading-10 font-thin text-white w-32 items-center text-center" href="/dashboard">
                     Get Started
