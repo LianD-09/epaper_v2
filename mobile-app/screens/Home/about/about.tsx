@@ -75,7 +75,7 @@ const AboutScreen = ({ navigation, route }) => {
                                 fontSize={fontSize.Small}
                                 fontFamily={fontWeight.w500}
                             >
-                                This is a product created for control and manage EPD devices. For more information, visit
+                                This is a product created to control and manage EPD devices. For more information, visit
                                 <TouchableOpacity onPress={() => Linking.openURL("https://epaper.toolhub.app/")}>
                                     <Typography
                                         fontSize={fontSize.Small}

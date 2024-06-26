@@ -65,6 +65,11 @@ const HomeCard = forwardRef<View, HomeCardProps>(({
                         label: 'Room',
                         description: `${data?.filter((e, index) => (e as DataRaw).type === capitalize(DataType.ROOM)).length} data`
                     },
+                    {
+                        color: Color.secondary[600],
+                        label: 'Image',
+                        description: `${data?.filter((e, index) => (e as DataRaw).type === capitalize(DataType.IMAGE)).length} data`
+                    },
                 ];
                 break;
             case TitleEnum.devices:
