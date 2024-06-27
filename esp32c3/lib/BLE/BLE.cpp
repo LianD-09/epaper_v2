@@ -666,7 +666,7 @@ void BLE_Init(const std::string &deviceName)
     jType.push_back(make_pair("type", "bluetooth"));
 }
 
-void BLE_Advertise(UBYTE *BlackImage)
+void BLE_Advertise()
 {
     NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
 
@@ -679,10 +679,16 @@ void BLE_Advertise(UBYTE *BlackImage)
     pAdvertising->addServiceUUID(NimBLEUUID(DATA_SRV_UUID));
     Serial.println("Starting to advertise...");
     pAdvertising->start();
+}
 
-    string text = create_json_string(jType);
-    string encodeText = base64_encode(text).c_str();
-    displayQRText(BlackImage, encodeText.c_str(), 3);
+void BLE_ShowQR(UBYTE *BlackImage)
+{
+    if (Control::getShowProcess() == true)
+    {
+        string text = create_json_string(jType);
+        string encodeText = base64_encode(text).c_str();
+        displayQRText(BlackImage, encodeText.c_str(), 3);
+    }
 }
 
 void BLE_Loop(UBYTE *BlackImage)

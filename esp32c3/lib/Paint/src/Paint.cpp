@@ -86,6 +86,7 @@
 #include <stdio.h>
 
 PAINT Paint;
+UBYTE *BlackImage;
 
 int utf8ToUnicodePoint(const char *utf8)
 {
@@ -409,7 +410,7 @@ void Paint_Clear(UWORD Color)
 }
 
 /******************************************************************************
-function: Clear the color of a window
+function: Clear the color of a window (horizontal)
 parameter:
     Xstart : x starting point
     Ystart : Y starting point

@@ -6,6 +6,12 @@
 #include <Arduino.h>
 #include <DEV_Config.h>
 #include <siot_core_lib.h>
+#include <Display.h>
+#include <ArduinoMqttClient.h>
+#include <cstdint>
+#include <ota.h>
+#include <Utils.h>
+
 // #include <Preferences.h>
 
 // Replace the next variables with your SSID/Password combination
@@ -165,6 +171,9 @@ okmLeKAnXwjgNexvZVJFx75B76GDHg==\
 -----END PRIVATE KEY-----"
 */
 // extern Preferences preferences;
+
+static WiFiClient espClient;
+static MqttClient client(espClient);
 
 void MQTT_Client_Init(const char *ssid, const char *password, const char *id, String wifiName, UBYTE *Image);
 void MQTT_Connect(const char *id, UBYTE *Image);

@@ -52,6 +52,9 @@ ESP8266WebServer WiFiSelfEnroll::server(80);
 Preferences WiFiSelfEnroll::preferences;
 
 WiFiClient WiFiSelfEnroll::wificlient;
+
+std::string text;
+
 /*-------------------------------------------------------------------------*/
 /// @brief send the homepage html to client
 /// @details entrypoint http://192.168.15.1/
@@ -323,10 +326,29 @@ void WiFiSelfEnroll::_loop()
     uint8_t count = WiFi.softAPgetStationNum();
     while (time_in_station_mode > 0)
     {
+        if (Control::getMode() != 2)
+        {
+            break;
+        }
+
+        if (Control::getCurrent() != 2)
+        {
+            if (Control::getShowProcess() == true)
+            {
+                std::string encodeText = base64_encode(text).c_str();
+                displayQRText(BlackImage, encodeText.c_str(), 2);
+                Control::setCurrentByMode(2);
+            }
+        }
+
         // Reset time in station mode if has connected client
-        if (count != WiFi.softAPgetStationNum())
+        if (count > WiFi.softAPgetStationNum())
         {
             time_in_station_mode = ADHOC_STATION_DURATION;
+            count = WiFi.softAPgetStationNum();
+        }
+        else if (count < WiFi.softAPgetStationNum())
+        {
             count = WiFi.softAPgetStationNum();
         }
 
@@ -380,9 +402,18 @@ bool WiFiSelfEnroll::IsConfigOK(UBYTE *BlackImage)
     /// Read the ssid and password stored in the flash memory
     ReadWiFiConfig();
 
+    // If already connected WiFi
+    if (WiFi.status() == WL_CONNECTED)
+    {
+        Serial.println();
+        Serial.print("Already connected, IP address: ");
+        Serial.println(WiFi.localIP());
+        Control::setMode(0);
+        return true;
+    }
+
     /// set as a Wi-Fi station and try to connect to the AP
     WiFi.mode(WIFI_STA);
-    WiFi.setTxPower(WIFI_POWER_8_5dBm);
     WiFi.begin(GetSSID(), GetPassword());
 #ifdef _DEBUG_
     Serial.printf("Connecting to %s / %s\n", GetSSID(), GetPassword());
@@ -415,6 +446,7 @@ bool WiFiSelfEnroll::IsConfigOK(UBYTE *BlackImage)
             Serial.print("Connected, IP address: ");
             Serial.println(WiFi.localIP());
 #endif
+            Control::setMode(0);
             return true;
 
         default:
@@ -426,10 +458,23 @@ bool WiFiSelfEnroll::IsConfigOK(UBYTE *BlackImage)
         delay(1000);
     }
 
-    Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-    Paint_DrawString_segment(60, 70, "Failed to connect to Wifi!", &Segoe11, BLACK, WHITE);
-    EPD_2IN9_V2_Display_Partial(BlackImage);
-    delay(2000);
+    if (Control::getShowProcess() == true)
+    {
+        EPD_2IN9_V2_Init();
+        Paint_Clear(0xff);
+        const char *Welcome = "Epaper Project";
+        UWORD x;
+
+        x = alignSegoe(Welcome, &Segoe16Bold, 50);
+        Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
+        EPD_2IN9_V2_Display(BlackImage);
+        DEV_Delay_ms(100);
+
+        Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
+        Paint_DrawString_segment(60, 70, "Failed to connect to Wifi!", &Segoe11, BLACK, WHITE);
+        EPD_2IN9_V2_Display_Partial(BlackImage);
+        delay(2000);
+    }
 
     WiFi.disconnect();
     return false;
@@ -464,20 +509,15 @@ void WiFiSelfEnroll::setup(UBYTE *BlackImage, const char *adhoc_ssid, const char
         wifiAdhocData.push_back(std::make_pair("ssid", adhoc_ssid));
         wifiAdhocData.push_back(std::make_pair("pass", adhoc_password));
 
-        std::string text = create_json_string(wifiAdhocData);
-        std::string encodeText = base64_encode(text).c_str();
+        text = create_json_string(wifiAdhocData);
 
         APMode = true;
-        displayQRText(BlackImage, encodeText.c_str(), 2);
+        if (Control::getShowProcess() == true)
+        {
+            std::string encodeText = base64_encode(text).c_str();
+            displayQRText(BlackImage, encodeText.c_str(), 2);
+            Control::setCurrentByMode(2);
+        }
         SetupStation(adhoc_ssid, adhoc_password);
-
-        EPD_2IN9_V2_Init();
-        Paint_Clear(0xff);
-        const char *Welcome = "Epaper Project";
-        UWORD x;
-
-        x = alignSegoe(Welcome, &Segoe16Bold, 50);
-        Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
-        EPD_2IN9_V2_Display(BlackImage);
     }
 }

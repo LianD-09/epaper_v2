@@ -10,6 +10,7 @@
 #include <Paint.h>
 #include <Display.h>
 #include <ota.h>
+#include <Control.h>
 
 #define WIFI_SRV_UUID "00001a10-0000-1000-8000-00805f9b34fb"
 #define WIFI_CHR_SSID_UUID "00001a11-0000-1000-8000-00805f9b34fb"
@@ -57,7 +58,9 @@ class DescriptorCallbacks : public NimBLEDescriptorCallbacks
 
 void BLE_Init(const std::string &deviceName);
 
-void BLE_Advertise(UBYTE *BlackImage);
+void BLE_Advertise();
+
+void BLE_ShowQR(UBYTE *BlackImage);
 
 void BLE_Loop(UBYTE *BlackImage);
 

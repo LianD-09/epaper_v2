@@ -1,17 +1,8 @@
 #include <DEV_Config.h>
 #include <EPD_2in9_V2.h>
 #include <Paint.h>
-#include <WiFi.h>
 #include <MQTT.h>
-#include <Display.h>
-#include <ArduinoMqttClient.h>
-#include <cstdint>
-#include <ota.h>
-#include <Utils.h>
 
-WiFiClient espClient;
-MqttClient client(espClient);
-WiFiSelfEnroll MyWiFi;
 uint8_t update; // 0 - no update
                 // 1 - write1 update
                 // 2 - write2 update
@@ -32,12 +23,19 @@ void setup_wifi(const char *ssid, const char *password, UBYTE *BlackImage)
     Serial.println();
     Serial.print("Connecting to ");
     Serial.println(ssid);
-    Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-    Paint_DrawString_segment(80, 70, "Connecting to Wifi", &Segoe11, BLACK, WHITE);
-    EPD_2IN9_V2_Display_Partial(BlackImage);
+    if (Control::getShowProcess() == true)
+    {
+        Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+        Paint_DrawString_segment(80, 70, "Connecting to Wifi", &Segoe11, BLACK, WHITE);
+        EPD_2IN9_V2_Display_Partial(BlackImage);
+    }
 
     unsigned long startAttemptTime = millis();
-    WiFi.mode(WIFI_STA);
+
+    // Reset network
+    WiFi.disconnect();
+    delay(10);
+
     WiFi.begin(ssid, password);
 
     while (WiFi.status() != WL_CONNECTED)
@@ -45,9 +43,19 @@ void setup_wifi(const char *ssid, const char *password, UBYTE *BlackImage)
         if (millis() - startAttemptTime >= connectTimeout)
         {
             Serial.println("Failed to connect to WiFi within the timeout period.");
-            Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-            Paint_DrawString_segment(60, 70, "Failed to connect to Wifi!", &Segoe11, BLACK, WHITE);
-            EPD_2IN9_V2_Display_Partial(BlackImage);
+            if (Control::getShowProcess() == true)
+            {
+                const char *Welcome = "Epaper Project";
+                UWORD x;
+
+                x = alignSegoe(Welcome, &Segoe16Bold, 50);
+                Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
+                EPD_2IN9_V2_Display(BlackImage);
+
+                Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+                Paint_DrawString_segment(60, 70, "Failed to connect to Wifi!", &Segoe11, BLACK, WHITE);
+                EPD_2IN9_V2_Display_Partial(BlackImage);
+            }
             break; // Exit the loop
         }
         delay(500);
@@ -64,9 +72,12 @@ void setup_wifi(const char *ssid, const char *password, UBYTE *BlackImage)
         Serial.println("");
         Serial.print("WiFi connected. IP address: ");
         Serial.println(WiFi.localIP());
-        Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-        Paint_DrawString_segment(85, 70, "Connected to Wifi!", &Segoe11, BLACK, WHITE);
-        EPD_2IN9_V2_Display_Partial(BlackImage);
+        if (Control::getShowProcess() == true)
+        {
+            Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+            Paint_DrawString_segment(85, 70, "Connected to Wifi!", &Segoe11, BLACK, WHITE);
+            EPD_2IN9_V2_Display_Partial(BlackImage);
+        }
     }
 }
 
@@ -75,29 +86,32 @@ void MQTT_Client_Init(const char *ssid, const char *password, const char *id, St
     Serial.print(ssid);
     Serial.print(" ");
     Serial.println(password);
-
-    // Check wifi connection first then turn on adhoc if cannot connect
-    MyWiFi.setup(BlackImage, wifiName.c_str(), "12345678");
+    client.setUsernamePassword(MQTT_USERNAME, MQTT_PASSWORD);
+    client.setTxPayloadSize(8192);
+    client.setId(id);
 
     setup_wifi(ssid, password, BlackImage);
-    if (WiFi.status() == WL_CONNECTED)
-    {
-        client.setId(id);
-        client.setUsernamePassword(MQTT_USERNAME, MQTT_PASSWORD);
-        client.setTxPayloadSize(8192);
-    }
 }
 
 void MQTT_Connect(const char *id, UBYTE *BlackImage)
 {
     if (WiFi.status() == WL_CONNECTED)
     {
-        Paint_ClearWindows(30, 70, 30 + 14 * 20, 70 + Segoe11.Height, WHITE);
-        Paint_DrawString_segment(40, 70, "Attempting MQTT connection", &Segoe11, BLACK, WHITE);
-        EPD_2IN9_V2_Display_Partial(BlackImage);
-        Serial.println("Attempting MQTT connection...");
+        if (Control::getShowProcess() == true && !client.connected())
+        {
+            Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+            Paint_DrawString_segment(40, 70, "Attempting MQTT connection", &Segoe11, BLACK, WHITE);
+            EPD_2IN9_V2_Display_Partial(BlackImage);
+        }
+
         while (!client.connected())
         {
+            if (Control::getMode() != 0)
+            {
+                break;
+            }
+
+            Serial.println("Attempting MQTT connection...");
             if (client.connect(MQTT_BROKER, MQTT_PORT))
             {
                 Serial.println(" connected");
@@ -106,9 +120,12 @@ void MQTT_Connect(const char *id, UBYTE *BlackImage)
                 client.subscribe(id);
                 Serial.println(client.connected());
                 DEV_Delay_ms(200);
-                Paint_ClearWindows(30, 70, 30 + 14 * 20, 70 + Segoe11.Height, WHITE);
-                Paint_DrawString_segment(48, 70, "Connected to MQTT Broker", &Segoe11, BLACK, WHITE);
-                EPD_2IN9_V2_Display_Partial(BlackImage);
+                if (Control::getShowProcess() == true)
+                {
+                    Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+                    Paint_DrawString_segment(48, 70, "Connected to MQTT Broker", &Segoe11, BLACK, WHITE);
+                    EPD_2IN9_V2_Display_Partial(BlackImage);
+                }
 
                 bool adhocUpdated = preferences.getBool("adhoc", false);
 

@@ -877,3 +877,52 @@ void displayImage(UBYTE *BlackImage)
     EPD_2IN9_V2_Display(BlackImage);
     delete[] imageData;
 }
+
+void displayStoredData(UBYTE *BlackImage)
+{
+    Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
+    Paint_Clear(0xff);
+    EPD_2IN9_V2_Clear();
+    DEV_Delay_ms(200);
+
+    String dataID = preferences.getString("dataID", "");
+    int dataType = preferences.getInt("dataType", 0);
+    Serial.println(dataID);
+    Serial.println(dataType);
+
+    if (!dataID.isEmpty() && dataType != 0)
+    {
+        Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+        Paint_DrawString_segment(70, 70, "Displaying stored data", &Segoe11, BLACK, WHITE);
+        EPD_2IN9_V2_Display_Partial(BlackImage);
+
+        if (dataType == 1)
+        {
+            displayWrite1(BlackImage);
+        }
+        else if (dataType == 2)
+        {
+            displayWrite2(BlackImage);
+        }
+        else if (dataType == 3)
+        {
+            displayWrite3(BlackImage);
+        }
+        else if (dataType == 4)
+        {
+            displayWrite4(BlackImage);
+        }
+        else if (dataType == 5)
+        {
+            displayWrite5(BlackImage);
+        }
+        else if (dataType == 6)
+        {
+            displayImage(BlackImage);
+        }
+    }
+    else
+    {
+        displayEmpty(BlackImage);
+    }
+}

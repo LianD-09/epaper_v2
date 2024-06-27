@@ -7,6 +7,7 @@
 #include <ota.h>
 #include <stdlib.h>
 #include <BLE.h>
+#include <Control.h>
 
 // change larger loop stack space - default 8192
 SET_LOOP_TASK_STACK_SIZE(16 * 1024)
@@ -15,28 +16,45 @@ using namespace std;
 
 #define ENABLE_BLUETOOTH 1
 #define MODE_BUTTON_PIN 20
+#define SHOW_PROCESS_BUTTON_PIN 21
 
 String wifiName;
 Preferences preferences;
-UBYTE *BlackImage;
+WiFiSelfEnroll MyWiFi;
 UWORD Imagesize = ((EPD_2IN9_V2_WIDTH % 8 == 0) ? (EPD_2IN9_V2_WIDTH / 8) : (EPD_2IN9_V2_WIDTH / 8 + 1)) * EPD_2IN9_V2_HEIGHT;
 uint64_t chipid = ESP.getEfuseMac();
-int mode = 0;
 portMUX_TYPE mux = portMUX_INITIALIZER_UNLOCKED;
 
 void IRAM_ATTR ISR_Mode()
 {
     portENTER_CRITICAL_ISR(&mux);
-    static unsigned long last_interrupt_time = 0;
+    static unsigned long last_interrupt_time_mode = 0;
     unsigned long interrupt_time = millis();
 
-    if (interrupt_time - last_interrupt_time > 200)
+    if (interrupt_time - last_interrupt_time_mode > 200)
     {
         // debounce the button press
-        Serial.print("Button press");
-        mode = (mode + 1) % 2;
-        last_interrupt_time = interrupt_time;
+        Serial.println("Button press 20");
+        Control::setNextMode();
     }
+    last_interrupt_time_mode = interrupt_time;
+    portEXIT_CRITICAL_ISR(&mux);
+}
+
+void IRAM_ATTR ISR_ShowProcess()
+{
+    portENTER_CRITICAL_ISR(&mux);
+    static unsigned long last_interrupt_time_show_process = 0;
+    unsigned long interrupt_time = millis();
+    bool showProcess = Control::getShowProcess();
+
+    if (interrupt_time - last_interrupt_time_show_process > 200)
+    {
+        // debounce the button press
+        Serial.println("Button press 21");
+        Control::setShowProcess(!showProcess);
+    }
+    last_interrupt_time_show_process = interrupt_time;
     portEXIT_CRITICAL_ISR(&mux);
 }
 
@@ -45,17 +63,24 @@ void setup()
     Serial.begin(115200);
 
     pinMode(MODE_BUTTON_PIN, INPUT_PULLUP);
+    pinMode(SHOW_PROCESS_BUTTON_PIN, INPUT_PULLUP);
     attachInterrupt(MODE_BUTTON_PIN, ISR_Mode, FALLING);
+    attachInterrupt(SHOW_PROCESS_BUTTON_PIN, ISR_ShowProcess, FALLING);
     Serial.println("epd say hi");
     pinMode(2, OUTPUT); // Initialize the built-in LED pin as an output
     digitalWrite(2, LOW);
-    DEV_Delay_ms(1000);
     pinMode(9, INPUT_PULLUP);
+
+    WiFi.mode(WIFI_STA);
+    WiFi.setTxPower(WIFI_POWER_8_5dBm);
+
+    Control::init(0, false);
+    preferences.begin("my-app", false);
+    wifiName = "AP-" + String(chipid);
+
     DEV_Module_Init();
 
     EPD_2IN9_V2_Init();
-    EPD_2IN9_V2_Clear();
-    DEV_Delay_ms(500);
 
     // Initialize SPIFFS
     if (!SPIFFS.begin(true))
@@ -74,12 +99,9 @@ void setup()
         while (1)
             ;
     }
+
     printf("Paint_NewImage\r\n");
     Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
-    Serial.println(uxTaskGetStackHighWaterMark(NULL));
-#if 1
-    preferences.begin("my-app", false);
-    wifiName = "AP-" + String(chipid);
 
     // bool debugMode = preferences.getBool("debugMode", false);
     // if (debugMode)
@@ -90,38 +112,44 @@ void setup()
     // }
 
     Paint_Clear(0xff);
-    const char *Welcome = "Epaper Project";
-    UWORD x;
 
-    x = alignSegoe(Welcome, &Segoe16Bold, 50);
-    Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
-    EPD_2IN9_V2_Display(BlackImage);
+    DEV_Delay_ms(5000);
+    Serial.println(uxTaskGetStackHighWaterMark(NULL));
 
-    Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-    x = alignSegoe("Initializing", &Segoe11Bold, 50);
-    Paint_DrawString_segment(x, 70, "Initializing", &Segoe11, BLACK, WHITE);
-    EPD_2IN9_V2_Display_Partial(BlackImage);
-    DEV_Delay_ms(3000);
+    if (Control::getShowProcess() == true)
+    {
+        EPD_2IN9_V2_Clear();
+        DEV_Delay_ms(500);
 
-    x = alignSegoe("Getting local data", &Segoe11Bold, 50);
-    Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
-    Paint_DrawString_segment(x, 70, "Getting local data", &Segoe11, BLACK, WHITE);
-    EPD_2IN9_V2_Display_Partial(BlackImage);
+        const char *Welcome = "Epaper Project";
+        UWORD x;
+
+        x = alignSegoe(Welcome, &Segoe16Bold, 50);
+        Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
+        EPD_2IN9_V2_Display(BlackImage);
+
+        Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+        x = alignSegoe("Initializing", &Segoe11, 50);
+        Paint_DrawString_segment(x, 70, "Initializing", &Segoe11, BLACK, WHITE);
+        EPD_2IN9_V2_Display_Partial(BlackImage);
+        DEV_Delay_ms(500);
+
+        x = alignSegoe("Getting local data", &Segoe11, 50);
+        Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+        Paint_DrawString_segment(x, 70, "Getting local data", &Segoe11, BLACK, WHITE);
+        EPD_2IN9_V2_Display_Partial(BlackImage);
+    }
 
     // Get Preferences local data
     String ssid = preferences.getString("ssid", "");
     String password = preferences.getString("pass", "");
     String topic = preferences.getString("_id", "");
     String active = preferences.getString("active", "false");
-    String dataID = preferences.getString("dataID", "");
-    int dataType = preferences.getInt("dataType", 0);
 
     Serial.println(ssid);
     Serial.println(password);
     Serial.println(topic);
     Serial.println(active);
-    Serial.println(dataID);
-    Serial.println(dataType);
 
     if (!ssid.isEmpty() && !password.isEmpty())
     {
@@ -134,42 +162,10 @@ void setup()
     }
     MQTT_Connect(topic.c_str(), BlackImage);
 
-    if (!dataID.isEmpty() && dataType != 0)
+    if (Control::getShowProcess() == true)
     {
-        Paint_ClearWindows(30, 70, 30 + 14 * 20, 70 + Segoe11.Height, WHITE);
-        Paint_DrawString_segment(70, 70, "Displaying stored data", &Segoe11, BLACK, WHITE);
-        EPD_2IN9_V2_Display_Partial(BlackImage);
-
-        if (dataType == 1)
-        {
-            displayWrite1(BlackImage);
-        }
-        else if (dataType == 2)
-        {
-            displayWrite2(BlackImage);
-        }
-        else if (dataType == 3)
-        {
-            displayWrite3(BlackImage);
-        }
-        else if (dataType == 4)
-        {
-            displayWrite4(BlackImage);
-        }
-        else if (dataType == 5)
-        {
-            displayWrite5(BlackImage);
-        }
-        else if (dataType == 6)
-        {
-            displayImage(BlackImage);
-        }
+        displayStoredData(BlackImage);
     }
-    else
-    {
-        displayEmpty(BlackImage);
-    }
-#endif
 
 #if defined(ENABLE_BLUETOOTH)
     string deviceName = "EPD-" + to_string(chipid);
@@ -179,10 +175,59 @@ void setup()
 
 void loop()
 {
+    int mode = Control::getMode();
+    Serial.print("mode: ");
+    Serial.println(mode);
+    Serial.print("current show mode: ");
+    Serial.println(Control::getCurrent());
+
+    // Clear screen if enable show process
+    if (mode != Control::getCurrent() && Control::getShowProcess())
+    {
+        Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
+        Paint_Clear(0xff);
+        EPD_2IN9_V2_Display(BlackImage);
+        DEV_Delay_ms(200);
+    }
+
+    if (mode == 0)
+    {
+        String topic = preferences.getString("_id", "");
+        MQTT_Connect(topic.c_str(), BlackImage);
+        if (Control::getShowProcess() && Control::getCurrent() != 0)
+        {
+            displayStoredData(BlackImage);
+        }
+    }
+
     if (mode == 1)
     {
         BLE_Loop(BlackImage);
-        BLE_Advertise(BlackImage);
+        BLE_Advertise();
+        if (Control::getCurrent() != 1)
+        {
+            BLE_ShowQR(BlackImage);
+        }
+    }
+    else
+    {
+        NimBLEAdvertising *pAdvertising = NimBLEDevice::getAdvertising();
+        if (pAdvertising->isAdvertising())
+        {
+            pAdvertising->stop();
+        }
+    }
+
+    if (mode == 2)
+    {
+        // Check wifi connection first then turn on adhoc if cannot connect
+        MyWiFi.setup(BlackImage, wifiName.c_str(), "12345678");
+    }
+
+    // Update current after perform modes
+    if (mode != Control::getCurrent())
+    {
+        Control::setCurrentByMode(mode);
     }
 
     // if (digitalRead(20) == LOW)

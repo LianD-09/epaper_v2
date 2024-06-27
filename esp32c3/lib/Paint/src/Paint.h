@@ -82,6 +82,13 @@
 #include <fonts.h>
 
 /**
+ * Global RAM image cache
+ * This will store value of WIDTH * HEIGHT pixels
+ * Change when call function Paint_Draw... and Paint_Set...
+ **/
+extern UBYTE *BlackImage;
+
+/**
  * Image attributes
  **/
 typedef struct

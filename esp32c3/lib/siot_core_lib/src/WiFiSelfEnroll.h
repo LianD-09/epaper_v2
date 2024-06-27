@@ -6,6 +6,7 @@
 #include <WebServer.h> /// create webserver
 #include <Paint.h>
 #include <Display.h>
+#include <Control.h>
 #elif defined(ARDUINO_ARCH_ESP8266)
 #include <Preferences.h> /// use vshymanskyy/Preferences
 #include <ESP8266WiFi.h>
