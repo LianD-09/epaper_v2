@@ -66,7 +66,6 @@ function useBLE(required = true): BluetoothLowEnergyApi {
         uniqueId,
         setUniqueId
     } = useContext(BLEContext);
-    const time = Date.now();
 
     const dispatch = useDispatch();
     const isDuplicteDevice = (devices: Device[], nextDevice: Device) =>

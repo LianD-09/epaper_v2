@@ -10,6 +10,7 @@
 #include <qrcode.h>
 #include <fonts.h>
 #include <Utils.h>
+#include <Control.h>
 
 extern Preferences preferences;
 

@@ -892,9 +892,12 @@ void displayStoredData(UBYTE *BlackImage)
 
     if (!dataID.isEmpty() && dataType != 0)
     {
-        Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
-        Paint_DrawString_segment(70, 70, "Displaying stored data", &Segoe11, BLACK, WHITE);
-        EPD_2IN9_V2_Display_Partial(BlackImage);
+        if (Control::getShowProcess() == true)
+        {
+            Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+            Paint_DrawString_segment(70, 70, "Displaying stored data", &Segoe11, BLACK, WHITE);
+            EPD_2IN9_V2_Display_Partial(BlackImage);
+        }
 
         if (dataType == 1)
         {

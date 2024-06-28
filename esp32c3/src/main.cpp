@@ -53,6 +53,11 @@ void IRAM_ATTR ISR_ShowProcess()
         // debounce the button press
         Serial.println("Button press 21");
         Control::setShowProcess(!showProcess);
+        if (showProcess)
+        {
+            // If change showProcess to false then update current show = -1 to show storage data
+            Control::setCurrentByMode(-1);
+        }
     }
     last_interrupt_time_show_process = interrupt_time;
     portEXIT_CRITICAL_ISR(&mux);
@@ -190,11 +195,18 @@ void loop()
         DEV_Delay_ms(200);
     }
 
+    // Show store data if change showProcess from true to false
+    if (Control::getCurrent() == -1)
+    {
+        displayStoredData(BlackImage);
+        Control::setCurrentByMode(mode);
+    }
+
     if (mode == 0)
     {
         String topic = preferences.getString("_id", "");
         MQTT_Connect(topic.c_str(), BlackImage);
-        if (Control::getShowProcess() && Control::getCurrent() != 0)
+        if (Control::getCurrent() != 0)
         {
             displayStoredData(BlackImage);
         }
@@ -225,7 +237,7 @@ void loop()
     }
 
     // Update current after perform modes
-    if (mode != Control::getCurrent())
+    if (mode != Control::getCurrent() && Control::getShowProcess())
     {
         Control::setCurrentByMode(mode);
     }

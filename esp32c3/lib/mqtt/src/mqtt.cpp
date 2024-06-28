@@ -25,8 +25,11 @@ void setup_wifi(const char *ssid, const char *password, UBYTE *BlackImage)
     Serial.println(ssid);
     if (Control::getShowProcess() == true)
     {
+        UWORD x;
+
         Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
-        Paint_DrawString_segment(80, 70, "Connecting to Wifi", &Segoe11, BLACK, WHITE);
+        x = alignSegoe("Connecting to Wifi", &Segoe11, 50);
+        Paint_DrawString_segment(x, 70, "Connecting to Wifi", &Segoe11, BLACK, WHITE);
         EPD_2IN9_V2_Display_Partial(BlackImage);
     }
 

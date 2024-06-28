@@ -412,6 +412,8 @@ bool WiFiSelfEnroll::IsConfigOK(UBYTE *BlackImage)
         return true;
     }
 
+    bool isShownProcess = false;
+
     /// set as a Wi-Fi station and try to connect to the AP
     WiFi.mode(WIFI_STA);
     WiFi.begin(GetSSID(), GetPassword());
@@ -420,6 +422,34 @@ bool WiFiSelfEnroll::IsConfigOK(UBYTE *BlackImage)
 #endif
     while (try_access_times > 0)
     {
+        // Return imediately if press change mode
+        if (Control::getMode() != 2)
+        {
+            WiFi.disconnect();
+            return false;
+        }
+
+        if (Control::getShowProcess() == true && !isShownProcess)
+        {
+            isShownProcess = true;
+
+            EPD_2IN9_V2_Init();
+            Paint_Clear(0xff);
+            const char *Title = "WiFi Adhoc";
+            UWORD x;
+
+            x = alignSegoe(Title, &Segoe16Bold, 50);
+            Paint_DrawString_segment(x, 40, Title, &Segoe16Bold, BLACK, WHITE);
+            EPD_2IN9_V2_Display(BlackImage);
+            DEV_Delay_ms(100);
+
+            Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
+            x = alignSegoe("Connecting to Wifi", &Segoe11, 50);
+            Paint_DrawString_segment(x, 70, "Connecting to Wifi", &Segoe11, BLACK, WHITE);
+            EPD_2IN9_V2_Display_Partial(BlackImage);
+            delay(200);
+        }
+
         wf_status = WiFi.status();
 #ifdef _DEBUG_
         switch (wf_status)
@@ -462,15 +492,15 @@ bool WiFiSelfEnroll::IsConfigOK(UBYTE *BlackImage)
     {
         EPD_2IN9_V2_Init();
         Paint_Clear(0xff);
-        const char *Welcome = "Epaper Project";
+        const char *Title = "WiFi Adhoc";
         UWORD x;
 
-        x = alignSegoe(Welcome, &Segoe16Bold, 50);
-        Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
+        x = alignSegoe(Title, &Segoe16Bold, 50);
+        Paint_DrawString_segment(x, 40, Title, &Segoe16Bold, BLACK, WHITE);
         EPD_2IN9_V2_Display(BlackImage);
         DEV_Delay_ms(100);
 
-        Paint_ClearWindows(30, 70, 30 + 14 * 15, 70 + Segoe11.Height, WHITE);
+        Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
         Paint_DrawString_segment(60, 70, "Failed to connect to Wifi!", &Segoe11, BLACK, WHITE);
         EPD_2IN9_V2_Display_Partial(BlackImage);
         delay(2000);
@@ -503,6 +533,11 @@ void WiFiSelfEnroll::setup(UBYTE *BlackImage, const char *adhoc_ssid, const char
     /// Turn to Adhoc station mode if the Boot button pressed or cannot connect to the AP
     if (digitalRead(BOOT_BUTTON) == LOW || !IsConfigOK(BlackImage))
     {
+        if (Control::getMode() != 2)
+        {
+            return;
+        }
+
         std::vector<json_pattern> wifiAdhocData;
 
         wifiAdhocData.push_back(std::make_pair("type", "wifi"));
