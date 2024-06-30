@@ -447,7 +447,7 @@ bool WiFiSelfEnroll::IsConfigOK(UBYTE *BlackImage)
             x = alignSegoe("Connecting to Wifi", &Segoe11, 50);
             Paint_DrawString_segment(x, 70, "Connecting to Wifi", &Segoe11, BLACK, WHITE);
             EPD_2IN9_V2_Display_Partial(BlackImage);
-            delay(200);
+            DEV_Delay_ms(200);
         }
 
         wf_status = WiFi.status();

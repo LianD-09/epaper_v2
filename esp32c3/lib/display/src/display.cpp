@@ -880,7 +880,6 @@ void displayImage(UBYTE *BlackImage)
 
 void displayStoredData(UBYTE *BlackImage)
 {
-    Paint_NewImage(BlackImage, EPD_2IN9_V2_WIDTH, EPD_2IN9_V2_HEIGHT, 90, WHITE);
     Paint_Clear(0xff);
     EPD_2IN9_V2_Clear();
     DEV_Delay_ms(200);
@@ -894,8 +893,11 @@ void displayStoredData(UBYTE *BlackImage)
     {
         if (Control::getShowProcess() == true)
         {
+            UWORD x;
+
             Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
-            Paint_DrawString_segment(70, 70, "Displaying stored data", &Segoe11, BLACK, WHITE);
+            x = alignSegoe("Displaying stored data", &Segoe11, 50);
+            Paint_DrawString_segment(x, 70, "Displaying stored data", &Segoe11, BLACK, WHITE);
             EPD_2IN9_V2_Display_Partial(BlackImage);
         }
 

@@ -105,6 +105,7 @@ void MQTT_Connect(const char *id, UBYTE *BlackImage)
             Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
             Paint_DrawString_segment(40, 70, "Attempting MQTT connection", &Segoe11, BLACK, WHITE);
             EPD_2IN9_V2_Display_Partial(BlackImage);
+            DEV_Delay_ms(1000);
         }
 
         while (!client.connected())
