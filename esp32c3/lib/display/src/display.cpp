@@ -144,7 +144,7 @@ UWORD alignMono(const char *text, const mFONT *font, uint8_t percentage, bool ho
     }
 }
 
-const unsigned char *textToQR(const char *data)
+const unsigned char *textToQR(const char *data, bool inverted = false)
 {
     uint8_t qrVersion = 11; // Adjust the QR version as needed
     int bufferSize = qrcode_getBufferSize(qrVersion);
@@ -172,21 +172,30 @@ const unsigned char *textToQR(const char *data)
         return nullptr;
     }
 
-    memset(epdArray, 0, size);
+    if (inverted)
+    {
+        memset(epdArray, 1, size);
+    }
+    else
+    {
+        memset(epdArray, 0, size);
+    }
 
     for (int y = 0; y < qrcode.size; y++)
     {
-        for (int x = 0; x < qrcode.size + 1; x++)
+        for (int x = 0; x < qrcode.size + (8 - qrcode.size % 8); x++)
         {
             int byteIndex = (y * (qrcode.size + 8 - (qrcode.size % 8)) + x) / 8;
             int bitIndex = x % 8;
-            if (qrcode_getModule(&qrcode, x, y))
+
+            // Rotate -90 to right position
+            if (qrcode_getModule(&qrcode, qrcode.size - x - 1, y))
             {
-                epdArray[byteIndex] |= (unsigned char)(0 << (7 - bitIndex));
+                epdArray[byteIndex] |= inverted ? (unsigned char)(1 << (7 - bitIndex)) : (unsigned char)(0 << (7 - bitIndex));
             }
             else
             {
-                epdArray[byteIndex] |= (unsigned char)(1 << (7 - bitIndex));
+                epdArray[byteIndex] |= inverted ? (unsigned char)(0 << (7 - bitIndex)) : (unsigned char)(1 << (7 - bitIndex));
             }
         }
         Serial.print("\n");
@@ -607,6 +616,7 @@ void displayWrite3(UBYTE *BlackImage)
 // Product
 void displayWrite4(UBYTE *BlackImage)
 {
+    String dataID = preferences.getString("dataID", "");
     String name = preferences.getString("name", "");
     String category = preferences.getString("input2", "");
     String price = preferences.getString("input3", "");
@@ -674,12 +684,19 @@ void displayWrite4(UBYTE *BlackImage)
     {
         if (segoe)
         {
-            UWORD xName = alignSegoe(name.c_str(), &sFont, 50);
-            UWORD xPrice = alignSegoe(price.c_str(), &Segoe11, 50);
-            UWORD xCategory = alignSegoe(category.c_str(), &Segoe11, 50);
-            Paint_DrawString_segment(xName, 50, name.c_str(), &sFont, BLACK, WHITE);
-            Paint_DrawString_segment(xPrice, 90, price.c_str(), &Segoe16, BLACK, WHITE);
-            Paint_DrawString_segment(xCategory, 20, category.c_str(), &Segoe11, BLACK, WHITE);
+            const unsigned char *qrCodeArray = textToQR(String(dataID + '|' + name + '|' + price).c_str());
+            Paint_ClearWindows(199, 0, 296, EPD_2IN9_V2_HEIGHT, BLACK);
+            Paint_ClearWindows(212, 30, 283, 101, WHITE);
+
+            Paint_DrawImage(qrCodeArray, 35, 217, 61, 61);
+
+            UWORD xName = alignSegoe(name.c_str(), &sFont, 10);
+            UWORD xPrice = alignSegoe(price.c_str(), &Segoe16Bold, 10);
+            UWORD xCategory = alignSegoe(category.c_str(), &Segoe11, 10);
+            Paint_DrawString_segment(xName, 15, name.c_str(), &sFont, BLACK, WHITE);
+            Paint_DrawLine(0, 15 + 5 + sFont.Height, 199, 15 + 5 + sFont.Height, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
+            Paint_DrawString_segment(xPrice, 65, price.c_str(), &Segoe16Bold, BLACK, WHITE);
+            Paint_DrawString_segment(xCategory, 95, category.c_str(), &Segoe11, BLACK, WHITE);
         }
         else
         {
