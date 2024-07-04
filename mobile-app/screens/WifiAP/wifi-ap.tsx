@@ -18,6 +18,7 @@ import { clearSettings, getSettings, restartDevice } from "../../services/wifi-a
 import { openBottomModal } from '../../redux/slice/bottom-modal-slice';
 import { navigate } from '../../navigation/root-navigation';
 import NetInfo, { NetInfoStateType } from "@react-native-community/netinfo";
+import WifiManager from "react-native-wifi-reborn";
 
 export default function WifiApScreen() {
     const dispatch = useDispatch();
@@ -121,18 +122,27 @@ export default function WifiApScreen() {
 
     }
 
+    const getConnectingWifi = async () => {
+        await WifiManager.getCurrentWifiSSID().then(
+            res => setConnecting(res)
+        )
+    }
+
+
     useEffect(() => {
         // Subscribe
         const unsubscribe = NetInfo.addEventListener(state => {
             if (state.type === NetInfoStateType.wifi && state.isConnected) {
                 setConnecting(state.details.ssid ?? '');
-                // getConnectingWifi();
             }
         });
+        getConnectingWifi();
 
         return () => {
             // Unsubscribe
             unsubscribe();
+            console.log('Unsubscribe!');
+
         }
     }, [])
 

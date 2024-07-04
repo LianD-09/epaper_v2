@@ -13,7 +13,8 @@ export const getSettings = async () => {
     }
     catch (e) {
         console.log(e);
-        throw new Error('Get settings failed. Make sure wifi AP mode is enable.');
+        // throw new Error('Get settings failed. Make sure wifi AP mode is enable.');
+        throw e
     }
 }
 

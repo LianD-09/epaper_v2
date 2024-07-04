@@ -89,6 +89,17 @@ const addInterceptor = (instant: AxiosInstance) => {
                 }
                 return Promise.reject(newError);
             }
+            else {
+                return Promise.reject(
+                    new AxiosError(
+                        'Something was wrong!',
+                        error.code,
+                        error.config,
+                        error.request,
+                        error.response
+                    )
+                );
+            }
             return Promise.reject(error);
         }
     )
