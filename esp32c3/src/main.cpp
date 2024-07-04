@@ -123,8 +123,6 @@ void setup()
 
     if (Control::getShowProcess() == true)
     {
-        EPD_2IN9_V2_Clear();
-        DEV_Delay_ms(500);
 
         const char *Welcome = "Epaper Project";
         UWORD x;
@@ -209,6 +207,7 @@ void loop()
         if (Control::getCurrent() != 0)
         {
             displayStoredData(BlackImage);
+            Control::setCurrentByMode(0);
         }
     }
 

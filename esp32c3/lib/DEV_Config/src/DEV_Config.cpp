@@ -29,6 +29,10 @@
 ******************************************************************************/
 #include <DEV_Config.h>
 
+#if (SPI_PIN_CONFIGURE == 1)
+SPISettings _spi_settings;
+#endif
+
 /******************************************************************************
 function:	Module Initialize, the BCM2835 library and initialize the pins, SPI protocol
 parameter:
@@ -47,6 +51,10 @@ UBYTE DEV_Module_Init(void)
 
     digitalWrite(EPD_CS_PIN, HIGH);
     digitalWrite(EPD_SCK_PIN, LOW);
+#if (SPI_PIN_CONFIGURE == 1)
+    _spi_settings = SPISettings(4000000, MSBFIRST, SPI_MODE0);
+    SPI.begin(EPD_SCK_PIN, EPD_MISO_PIN, EPD_MOSI_PIN, EPD_CS_PIN);
+#endif
 
     Serial.println("dev init ok");
 
@@ -59,9 +67,14 @@ function:
 ******************************************************************************/
 void DEV_SPI_WriteByte(UBYTE data)
 {
-    // SPI.beginTransaction(spi_settings);
+#if (SPI_PIN_CONFIGURE == 1)
+    UBYTE sData = data;
+    SPI.beginTransaction(_spi_settings);
+#endif
+
     digitalWrite(EPD_CS_PIN, GPIO_PIN_RESET);
 
+#if (SPI_PIN_CONFIGURE == 0)
     for (int i = 0; i < 8; i++)
     {
         if ((data & 0x80) == 0)
@@ -73,8 +86,15 @@ void DEV_SPI_WriteByte(UBYTE data)
         digitalWrite(EPD_SCK_PIN, GPIO_PIN_SET);
         digitalWrite(EPD_SCK_PIN, GPIO_PIN_RESET);
     }
+#endif
 
-    // SPI.transfer(data);
+#if (SPI_PIN_CONFIGURE == 1)
+    SPI.transfer(sData);
+#endif
+
     digitalWrite(EPD_CS_PIN, GPIO_PIN_SET);
-    // SPI.endTransaction();
+
+#if (SPI_PIN_CONFIGURE == 1)
+    SPI.endTransaction();
+#endif
 }
