@@ -316,6 +316,12 @@ void WiFiSelfEnroll::SetupStation(const char *adhoc_ssid, const char *adhoc_pass
     /// Show the own website
     server.begin();
     _loop();
+    server.close();
+
+    // If Wifi Adhoc timeout go to normal mode
+    WiFi.mode(WIFI_STA);
+    delay(10);
+    Control::setMode(0);
     // _Reboot();
 }
 

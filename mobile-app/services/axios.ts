@@ -65,7 +65,7 @@ const addInterceptor = (instant: AxiosInstance) => {
                 const dataErr = error.response?.data;
                 if (
                     dataErr &&
-                    "message" in dataErr || "error" in dataErr
+                    dataErr?.["message"] || dataErr?.["error"]
                 ) {
                     if (!!dataErr["message"]) {
                         newError = new AxiosError(
@@ -182,4 +182,6 @@ export const instanceNonToken = createInstanceNonToken(API);
 
 export const instanceAdhoc = axios.create({
     baseURL: API_ADHOC,
+    timeout: 10000,
+    timeoutErrorMessage: 'Please check connected wifi network and try again'
 });

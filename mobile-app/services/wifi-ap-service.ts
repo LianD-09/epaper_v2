@@ -1,7 +1,6 @@
 import { instanceAdhoc } from "./axios"
 
 const instance = instanceAdhoc;
-
 const urlEnpoint = instance.getUri() + '/cgi';
 const urlRestart = instance.getUri() + '/restart';
 
