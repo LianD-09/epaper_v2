@@ -3,16 +3,12 @@
 
 export const fonts = [
     {
-        db: "Monospace 12pt",
-        sign: 'F12'
+        db: "Segoe UI Light, 9pt",
+        sign: "s9"
     },
     {
-        db: "Monospace 16pt",
-        sign: "F16"
-    },
-    {
-        db: "Monospace 20pt",
-        sign: "F20"
+        db: "Segoe UI Bold, 9pt",
+        sign: "s9"
     },
     {
         db: "Segoe UI Light, 11pt",
@@ -33,6 +29,26 @@ export const fonts = [
     {
         db: "Segoe UI Light, 20pt",
         sign: "s20"
+    },
+    {
+        db: "Segoe UI Bold, 20pt",
+        sign: "S20"
+    },
+    {
+        db: "Segoe UI Bold, 48pt",
+        sign: "S48"
+    },
+    {
+        db: "Monospace 12pt",
+        sign: 'F12'
+    },
+    {
+        db: "Monospace 16pt",
+        sign: "F16"
+    },
+    {
+        db: "Monospace 20pt",
+        sign: "F20"
     },
 ];
 

@@ -251,6 +251,14 @@ void handleMessage(char *message)
                     {
                         preferences.putString("font", "Font20");
                     }
+                    else if (compareStrings(msg.c_str(), "s9"))
+                    {
+                        preferences.putString("font", "Segoe9");
+                    }
+                    else if (compareStrings(msg.c_str(), "S9"))
+                    {
+                        preferences.putString("font", "Segoe9Bold");
+                    }
                     else if (compareStrings(msg.c_str(), "s11"))
                     {
                         preferences.putString("font", "Segoe11");
@@ -270,6 +278,14 @@ void handleMessage(char *message)
                     else if (compareStrings(msg.c_str(), "s20"))
                     {
                         preferences.putString("font", "Segoe20");
+                    }
+                    else if (compareStrings(msg.c_str(), "S20"))
+                    {
+                        preferences.putString("font", "Segoe20Bold");
+                    }
+                    else if (compareStrings(msg.c_str(), "S48"))
+                    {
+                        preferences.putString("font", "Segoe48Bold");
                     }
                 }
                 else if (type == 7)

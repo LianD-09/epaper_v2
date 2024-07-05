@@ -32,7 +32,7 @@ def generate_cpp_struct(input):
             if match3:
                 # Extract font name and size
                 font_name = match3.group(1).split()[0]
-                font_style = "Bold" if match3.group(1).split()[2] == "Bold" else ""
+                font_style = "Bold" if "Bold" in match3.group(1) else ""
                 font_size = match3.group(2)
                 
                 # Format the string as required
@@ -73,7 +73,7 @@ def generate_cpp_struct(input):
     return output, filename
     
 if __name__ == "__main__":
-    input = open(sys.argv[1], "r")
+    input = open(sys.argv[1], "r", encoding="utf8")
     output, filename = generate_cpp_struct(input)
-    with open(filename, "w") as out:
+    with open(filename, "w", encoding="utf8") as out:
         out.write(output)

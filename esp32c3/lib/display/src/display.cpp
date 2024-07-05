@@ -270,6 +270,70 @@ bool compareStrings(const char *str1, const char *str2)
     }
 }
 
+void findFont(String ft, sFONT &sFont, mFONT &mFont, bool &segoe)
+{
+    if (ft == "Segoe11")
+    {
+        sFont = Segoe11;
+        segoe = true;
+    }
+    else if (ft == "Segoe9")
+    {
+        sFont = Segoe9;
+        segoe = true;
+    }
+    else if (ft == "Segoe9Bold")
+    {
+        sFont = Segoe9Bold;
+        segoe = true;
+    }
+    else if (ft == "Segoe11Bold")
+    {
+        sFont = Segoe11Bold;
+        segoe = true;
+    }
+    else if (ft == "Segoe16")
+    {
+        sFont = Segoe16;
+        segoe = true;
+    }
+    else if (ft == "Segoe16Bold")
+    {
+        sFont = Segoe16Bold;
+        segoe = true;
+    }
+    else if (ft == "Segoe20")
+    {
+        sFont = Segoe20;
+        segoe = true;
+    }
+    else if (ft == "Segoe20Bold")
+    {
+        sFont = Segoe20Bold;
+        segoe = true;
+    }
+    else if (ft == "Segoe48Bold")
+    {
+        sFont = Segoe48Bold;
+        segoe = true;
+    }
+    else if (ft == "Font12")
+    {
+        mFont = Font12;
+        segoe = false;
+    }
+    else if (ft == "Font16")
+    {
+        segoe = false;
+        mFont = Font16;
+    }
+    else if (ft == "Font20")
+    {
+        mFont = Font20;
+        segoe = false;
+    }
+}
+
 // Client
 void displayWrite1(UBYTE *BlackImage)
 {
@@ -293,46 +357,7 @@ void displayWrite1(UBYTE *BlackImage)
     Serial.print(" -- schema: ");
     Serial.println(schema);
 
-    if (ft == "Segoe11")
-    {
-        sFont = Segoe11;
-        segoe = true;
-    }
-    else if (ft == "Segoe11Bold")
-    {
-        sFont = Segoe11Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe16")
-    {
-        sFont = Segoe16;
-        segoe = true;
-    }
-    else if (ft == "Segoe16Bold")
-    {
-        sFont = Segoe16Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe20")
-    {
-        sFont = Segoe20;
-        segoe = true;
-    }
-    else if (ft == "Font12")
-    {
-        mFont = Font12;
-        segoe = false;
-    }
-    else if (ft == "Font16")
-    {
-        segoe = false;
-        mFont = Font16;
-    }
-    else if (ft == "Font20")
-    {
-        mFont = Font20;
-        segoe = false;
-    }
+    findFont(ft, sFont, mFont, segoe);
 
     EPD_2IN9_V2_Init();
     Paint_Clear(0xff);
@@ -406,46 +431,7 @@ void displayWrite2(UBYTE *BlackImage)
     Serial.print(" -- schema: ");
     Serial.println(schema);
 
-    if (ft == "Segoe11")
-    {
-        sFont = Segoe11;
-        segoe = true;
-    }
-    else if (ft == "Segoe11Bold")
-    {
-        sFont = Segoe11Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe16")
-    {
-        sFont = Segoe16;
-        segoe = true;
-    }
-    else if (ft == "Segoe16Bold")
-    {
-        sFont = Segoe16Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe20")
-    {
-        sFont = Segoe20;
-        segoe = true;
-    }
-    else if (ft == "Font12")
-    {
-        mFont = Font12;
-        segoe = false;
-    }
-    else if (ft == "Font16")
-    {
-        segoe = false;
-        mFont = Font16;
-    }
-    else if (ft == "Font20")
-    {
-        mFont = Font20;
-        segoe = false;
-    }
+    findFont(ft, sFont, mFont, segoe);
 
     EPD_2IN9_V2_Init();
     Paint_Clear(0xff);
@@ -521,46 +507,7 @@ void displayWrite3(UBYTE *BlackImage)
     Serial.print(" -- schema: ");
     Serial.println(schema);
 
-    if (ft == "Segoe11")
-    {
-        sFont = Segoe11;
-        segoe = true;
-    }
-    else if (ft == "Segoe11Bold")
-    {
-        sFont = Segoe11Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe16")
-    {
-        sFont = Segoe16;
-        segoe = true;
-    }
-    else if (ft == "Segoe16Bold")
-    {
-        sFont = Segoe16Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe20")
-    {
-        sFont = Segoe20;
-        segoe = true;
-    }
-    else if (ft == "Font12")
-    {
-        mFont = Font12;
-        segoe = false;
-    }
-    else if (ft == "Font16")
-    {
-        segoe = false;
-        mFont = Font16;
-    }
-    else if (ft == "Font20")
-    {
-        mFont = Font20;
-        segoe = false;
-    }
+    findFont(ft, sFont, mFont, segoe);
 
     EPD_2IN9_V2_Init();
     Paint_Clear(0xff);
@@ -637,42 +584,7 @@ void displayWrite4(UBYTE *BlackImage)
     Serial.print(" -- schema: ");
     Serial.println(schema);
 
-    if (ft == "Segoe11")
-    {
-        sFont = Segoe11;
-        segoe = true;
-    }
-    else if (ft == "Segoe11Bold")
-    {
-        sFont = Segoe11Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe16")
-    {
-        sFont = Segoe16;
-        segoe = true;
-    }
-    else if (ft == "Segoe16Bold")
-    {
-        sFont = Segoe16Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe20")
-    {
-        sFont = Segoe20;
-        segoe = true;
-    }
-    else if (ft == "Font12")
-    {
-        mFont = Font12;
-        segoe = false;
-    }
-    else if (ft == "Font16")
-    {
-        segoe = false;
-        mFont = Font16;
-    }
-    else if (ft == "Font20")
+    findFont(ft, sFont, mFont, segoe);
     {
         mFont = Font20;
         segoe = false;
@@ -752,46 +664,7 @@ void displayWrite5(UBYTE *BlackImage)
     Serial.print(" -- schema: ");
     Serial.println(schema);
 
-    if (ft == "Segoe11")
-    {
-        sFont = Segoe11;
-        segoe = true;
-    }
-    else if (ft == "Segoe11Bold")
-    {
-        sFont = Segoe11Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe16")
-    {
-        sFont = Segoe16;
-        segoe = true;
-    }
-    else if (ft == "Segoe16Bold")
-    {
-        sFont = Segoe16Bold;
-        segoe = true;
-    }
-    else if (ft == "Segoe20")
-    {
-        sFont = Segoe20;
-        segoe = true;
-    }
-    else if (ft == "Font12")
-    {
-        mFont = Font12;
-        segoe = false;
-    }
-    else if (ft == "Font16")
-    {
-        segoe = false;
-        mFont = Font16;
-    }
-    else if (ft == "Font20")
-    {
-        mFont = Font20;
-        segoe = false;
-    }
+    findFont(ft, sFont, mFont, segoe);
 
     EPD_2IN9_V2_Init();
     Paint_Clear(0xff);

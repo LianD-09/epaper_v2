@@ -223,6 +223,12 @@ exports.writeDevice = async (data) => {
     case "Monospace 20pt":
       payload = payload + "F20|";
       break;
+    case "Segoe UI Light, 9pt":
+      payload = payload + "s9|";
+      break;
+    case "Segoe UI Bold, 9pt":
+      payload = payload + "S9|";
+      break;
     case "Segoe UI Light, 11pt":
       payload = payload + "s11|";
       break;
@@ -237,6 +243,12 @@ exports.writeDevice = async (data) => {
       break;
     case "Segoe UI Light, 20pt":
       payload = payload + "s20|";
+      break;
+    case "Segoe UI Bold, 20pt":
+      payload = payload + "S20|";
+      break;
+    case "Segoe UI Bold, 48pt":
+      payload = payload + "S48|";
       break;
     default:
       if (data.type !== "Image") {
