@@ -98,6 +98,7 @@ extern "C"
   extern const sFONT Segoe11Bold;
   extern const sFONT Segoe16Bold;
   extern const sFONT Segoe20Bold;
+  extern const sFONT Segoe36Bold;
   extern const sFONT Segoe48Bold;
 
 #ifdef __cplusplus

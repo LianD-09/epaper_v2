@@ -283,6 +283,10 @@ void handleMessage(char *message)
                     {
                         preferences.putString("font", "Segoe20Bold");
                     }
+                    else if (compareStrings(msg.c_str(), "S36"))
+                    {
+                        preferences.putString("font", "Segoe36Bold");
+                    }
                     else if (compareStrings(msg.c_str(), "S48"))
                     {
                         preferences.putString("font", "Segoe48Bold");

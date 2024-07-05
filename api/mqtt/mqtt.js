@@ -247,6 +247,9 @@ exports.writeDevice = async (data) => {
     case "Segoe UI Bold, 20pt":
       payload = payload + "S20|";
       break;
+    case "Segoe UI Bold, 36pt":
+      payload = payload + "S36|";
+      break;
     case "Segoe UI Bold, 48pt":
       payload = payload + "S48|";
       break;

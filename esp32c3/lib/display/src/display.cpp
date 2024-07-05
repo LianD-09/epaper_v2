@@ -312,6 +312,11 @@ void findFont(String ft, sFONT &sFont, mFONT &mFont, bool &segoe)
         sFont = Segoe20Bold;
         segoe = true;
     }
+    else if (ft == "Segoe36Bold")
+    {
+        sFont = Segoe36Bold;
+        segoe = true;
+    }
     else if (ft == "Segoe48Bold")
     {
         sFont = Segoe48Bold;
@@ -585,10 +590,6 @@ void displayWrite4(UBYTE *BlackImage)
     Serial.println(schema);
 
     findFont(ft, sFont, mFont, segoe);
-    {
-        mFont = Font20;
-        segoe = false;
-    }
 
     EPD_2IN9_V2_Init();
     Paint_Clear(0xff);
@@ -603,12 +604,12 @@ void displayWrite4(UBYTE *BlackImage)
             Paint_DrawImage(qrCodeArray, 35, 217, 61, 61);
 
             UWORD xName = alignSegoe(name.c_str(), &sFont, 10);
-            UWORD xPrice = alignSegoe(price.c_str(), &Segoe16Bold, 10);
-            UWORD xCategory = alignSegoe(category.c_str(), &Segoe11, 10);
+            UWORD xPrice = alignSegoe(price.c_str(), &Segoe20Bold, 10);
+            UWORD xCategory = alignSegoe(category.c_str(), &Segoe9, 10);
             Paint_DrawString_segment(xName, 15, name.c_str(), &sFont, BLACK, WHITE);
             Paint_DrawLine(0, 15 + 5 + sFont.Height, 199, 15 + 5 + sFont.Height, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
-            Paint_DrawString_segment(xPrice, 65, price.c_str(), &Segoe16Bold, BLACK, WHITE);
-            Paint_DrawString_segment(xCategory, 95, category.c_str(), &Segoe11, BLACK, WHITE);
+            Paint_DrawString_segment(xPrice, 65, price.c_str(), &Segoe20Bold, BLACK, WHITE);
+            Paint_DrawString_segment(xCategory, 65 + Segoe20Bold.Height, category.c_str(), &Segoe9, BLACK, WHITE);
         }
         else
         {
@@ -624,9 +625,15 @@ void displayWrite4(UBYTE *BlackImage)
     {
         if (segoe)
         {
-            Paint_DrawString_segment(10, 50, name.c_str(), &sFont, BLACK, WHITE);
-            Paint_DrawString_segment(10, 90, price.c_str(), &Segoe16, BLACK, WHITE);
-            Paint_DrawString_segment(10, 20, category.c_str(), &Segoe11, BLACK, WHITE);
+            UWORD xName = alignSegoe(name.c_str(), &sFont, 0);
+            UWORD xPrice = alignSegoe(price.c_str(), &Segoe20Bold, 100);
+            UWORD xCategory = alignSegoe(category.c_str(), &Segoe9, 0);
+            uint8_t lineW = utf8_strlen(name.c_str(), &sFont);
+
+            Paint_DrawString_segment(10, 0, name.c_str(), &sFont, BLACK, WHITE);
+            Paint_DrawLine(10, 5 + sFont.Height, 10 + lineW, 5 + sFont.Height, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
+            Paint_DrawString_segment(xPrice, 90, price.c_str(), &Segoe20Bold, BLACK, WHITE);
+            Paint_DrawString_segment(10, 118 - Segoe9.Height, category.c_str(), &Segoe9, BLACK, WHITE);
         }
         else
         {

@@ -35,6 +35,10 @@ export const fonts = [
         sign: "S20"
     },
     {
+        db: "Segoe UI Bold, 36pt",
+        sign: "S36"
+    },
+    {
         db: "Segoe UI Bold, 48pt",
         sign: "S48"
     },

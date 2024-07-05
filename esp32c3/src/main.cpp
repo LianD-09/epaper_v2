@@ -127,8 +127,8 @@ void setup()
         const char *Welcome = "Epaper Project";
         UWORD x;
 
-        x = alignSegoe(Welcome, &Segoe48Bold, 50);
-        Paint_DrawString_segment(0, 0, Welcome, &Segoe48Bold, BLACK, WHITE);
+        x = alignSegoe(Welcome, &Segoe16Bold, 50);
+        Paint_DrawString_segment(x, 40, Welcome, &Segoe16Bold, BLACK, WHITE);
         EPD_2IN9_V2_Display(BlackImage);
 
         Paint_ClearWindows(0, 70, EPD_2IN9_V2_HEIGHT, 70 + Segoe11.Height, WHITE);
