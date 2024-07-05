@@ -189,7 +189,12 @@ const NewDeviceFillScreen = ({ navigation, route }) => {
                             }
                         />
                     </View>
-                    <Button onPress={handlePress}>{'Submit'}</Button>
+                    <Button
+                        onPress={handlePress}
+                        disable={!validateSSID(ssid) || !validateWifiPass(pass) || !validateName(name)}
+                    >
+                        {'Submit'}
+                    </Button>
                 </Card>
             </ScrollView>
         </View>
