@@ -289,7 +289,7 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
                     </View>
                     <Button
                         onPress={handleSubmit}
-                        disable={!device || !font || !theme}
+                        disable={!device || (dataType !== DataType.IMAGE && (!font || !theme))}
                     >
                         Submit
                     </Button>
