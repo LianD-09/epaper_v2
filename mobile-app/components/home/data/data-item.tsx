@@ -122,8 +122,8 @@ const DataItem = ({
             </View>
             <Divider />
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{name}</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800}>{capitalize(dataType)}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} style={{ flex: 9 }} textAlign="left" numberOfLines={1}>{name}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w800} style={{ flex: 0 }}>{capitalize(dataType)}</Typography>
             </View>
         </Card>
     )

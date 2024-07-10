@@ -280,6 +280,14 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
         {
             preferences.putString("font", "Font20");
         }
+        else if (compareStrings(chrVal.c_str(), "s9"))
+        {
+            preferences.putString("font", "Segoe9");
+        }
+        else if (compareStrings(chrVal.c_str(), "S9"))
+        {
+            preferences.putString("font", "Segoe9Bold");
+        }
         else if (compareStrings(chrVal.c_str(), "s11"))
         {
             preferences.putString("font", "Segoe11");
@@ -299,6 +307,18 @@ void CharacteristicCallbacks::onWrite(NimBLECharacteristic *pCharacteristic)
         else if (compareStrings(chrVal.c_str(), "s20"))
         {
             preferences.putString("font", "Segoe20");
+        }
+        else if (compareStrings(chrVal.c_str(), "S20"))
+        {
+            preferences.putString("font", "Segoe20Bold");
+        }
+        else if (compareStrings(chrVal.c_str(), "S36"))
+        {
+            preferences.putString("font", "Segoe36Bold");
+        }
+        else if (compareStrings(chrVal.c_str(), "S48"))
+        {
+            preferences.putString("font", "Segoe48Bold");
         }
         return;
     }

@@ -26,9 +26,9 @@ export function popToTop() {
     }
 }
 
-export function pop() {
+export function pop(count?: number) {
     if (navigationRef.isReady()) {
-        navigationRef.dispatch(StackActions.pop());
+        navigationRef.dispatch(StackActions.pop(count));
     }
 }
 

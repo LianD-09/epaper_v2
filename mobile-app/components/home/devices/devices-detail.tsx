@@ -236,6 +236,10 @@ const DevicesDetail = ({
                 <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{id}</Typography>
             </View>
             <View style={styles.itemRow}>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>SSID:</Typography>
+                <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>{ssid}</Typography>
+            </View>
+            <View style={styles.itemRow}>
                 <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800}>Status:</Typography>
                 <Typography fontSize={fontSize.Small} fontFamily={fontWeight.w800} color={color}>{capitalize(Status[status])}</Typography>
             </View>

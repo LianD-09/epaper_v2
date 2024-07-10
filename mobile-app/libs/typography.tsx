@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, StyleProp, TextStyle, ColorValue } from 'react-native';
+import { View, StyleSheet, Text, StyleProp, TextStyle, ColorValue, TextProps } from 'react-native';
 import Color from '../themes/color';
 import FontSize from '../themes/font-size';
 import FontWeight from '../themes/font-weight';
@@ -15,6 +15,7 @@ type TypographyProps = {
     lineHeight?: number | undefined,
     children?: React.ReactNode,
     styleText?: StyleProp<TextStyle>
+    ellipsizeMode?: TextProps['ellipsizeMode']
 }
 
 const Typography = ({
@@ -27,21 +28,25 @@ const Typography = ({
     letterSpacing,
     lineHeight,
     children,
-    styleText
+    styleText,
+    ellipsizeMode = 'tail'
 }: TypographyProps) => {
     return (
         <View style={[styles.container, style]}>
-            <Text numberOfLines={numberOfLines} style={[
-                styles.titleStyle,
-                {
-                    color: color ? color : Color.primary[700],
-                    fontFamily: fontFamily ? fontFamily : FontWeight.w500,
-                    fontSize: fontSize ? fontSize : FontSize.Normal,
-                    textAlign: textAlign ? textAlign : 'center',
-                    letterSpacing: letterSpacing ? letterSpacing : 0.01,
-                    lineHeight: lineHeight ? lineHeight : (fontSize ?? 17) * 1.2,
-                }, styleText
-            ]}>
+            <Text
+                numberOfLines={numberOfLines}
+                ellipsizeMode={ellipsizeMode}
+                style={[
+                    styles.titleStyle,
+                    {
+                        color: color ? color : Color.primary[700],
+                        fontFamily: fontFamily ? fontFamily : FontWeight.w500,
+                        fontSize: fontSize ? fontSize : FontSize.Normal,
+                        textAlign: textAlign ? textAlign : 'center',
+                        letterSpacing: letterSpacing ? letterSpacing : 0.01,
+                        lineHeight: lineHeight ? lineHeight : (fontSize ?? 17) * 1.2,
+                    }, styleText
+                ]}>
                 {children}
             </Text>
         </View>

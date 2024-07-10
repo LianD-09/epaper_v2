@@ -15,7 +15,7 @@ import Button from '../../../libs/button';
 import Select from '../../../libs/select';
 import { fonts, themes } from '../../../utils/constants';
 import { SelectItem } from '../../../redux/types';
-import { popToTop, replace } from '../../../navigation/root-navigation';
+import { pop } from '../../../navigation/root-navigation';
 import { SubmitEditDataScreenProps } from '../../../navigation/param-types';
 import { getActiveDevices } from '../../../services/device-services';
 import useBLE from '../../../hooks/useBLE';
@@ -198,7 +198,7 @@ const SubmitEditDataScreen = ({ navigation, route }) => {
                 title: 'Successful',
                 content: 'This data has been updated.',
                 btnTitle: 'Close',
-                callback: () => popToTop(),
+                callback: () => pop(2),
                 btnCancelTitle: ''
             }))
         }

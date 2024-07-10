@@ -154,8 +154,8 @@ const DevicesItem = ({
             </View>
             <Divider />
             <View style={styles.itemRow}>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{dataName}</Typography>
-                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600}>{ssid}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600} style={{ flex: 9 }} textAlign="left" numberOfLines={1}>{dataName}</Typography>
+                <Typography fontSize={fontSize.Medium} fontFamily={fontWeight.w600} style={{ flex: 0 }}>{ssid}</Typography>
             </View>
         </Card>
     )

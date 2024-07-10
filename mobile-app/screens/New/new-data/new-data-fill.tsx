@@ -111,6 +111,7 @@ const NewDataFillScreen = ({ navigation, route }) => {
                             label={'Name'}
                             onChange={setName}
                             disable={false}
+                            multiline
                         />
                         <TextField
                             value={input2}
