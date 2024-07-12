@@ -144,9 +144,9 @@ UWORD alignMono(const char *text, const mFONT *font, uint8_t percentage, bool ho
     }
 }
 
-const unsigned char *textToQR(const char *data, bool inverted = false)
+const unsigned char *textToQR(const char *data, uint8_t version = 11, bool inverted = false)
 {
-    uint8_t qrVersion = 11; // Adjust the QR version as needed
+    uint8_t qrVersion = version; // Adjust the QR version as needed
     int bufferSize = qrcode_getBufferSize(qrVersion);
 
     // Dynamically allocate memory for the QR code
@@ -189,7 +189,10 @@ const unsigned char *textToQR(const char *data, bool inverted = false)
             int bitIndex = x % 8;
 
             // Rotate -90 to right position
-            if (qrcode_getModule(&qrcode, qrcode.size - x - 1, y))
+            if (qrcode_getModule(&qrcode,
+                                 // qrcode.size - x - 1,
+                                 x,
+                                 y))
             {
                 epdArray[byteIndex] |= inverted ? (unsigned char)(1 << (7 - bitIndex)) : (unsigned char)(0 << (7 - bitIndex));
             }
@@ -597,8 +600,8 @@ void displayWrite4(UBYTE *BlackImage)
     {
         if (segoe)
         {
-            const unsigned char *qrCodeArray = textToQR(String(dataID + '|' + name + '|' + price).c_str());
-            Paint_ClearWindows(199, 0, 296, EPD_2IN9_V2_HEIGHT, BLACK);
+            const unsigned char *qrCodeArray = textToQR(String(dataID).c_str());
+            Paint_ClearWindows(199, 0, 296, EPD_2IN9_V2_WIDTH, BLACK);
             Paint_ClearWindows(212, 30, 283, 101, WHITE);
 
             Paint_DrawImage(qrCodeArray, 35, 217, 61, 61);
@@ -606,8 +609,8 @@ void displayWrite4(UBYTE *BlackImage)
             UWORD xName = alignSegoe(name.c_str(), &sFont, 10);
             UWORD xPrice = alignSegoe(price.c_str(), &Segoe20Bold, 10);
             UWORD xCategory = alignSegoe(category.c_str(), &Segoe9, 10);
-            Paint_DrawString_segment(xName, 15, name.c_str(), &sFont, BLACK, WHITE);
-            Paint_DrawLine(0, 15 + 5 + sFont.Height, 199, 15 + 5 + sFont.Height, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
+            Paint_DrawString_segment(xName, 5, name.c_str(), &sFont, BLACK, WHITE);
+            Paint_DrawLine(0, 5 + 5 + sFont.Height, 199, 5 + 5 + sFont.Height, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
             Paint_DrawString_segment(xPrice, 65, price.c_str(), &Segoe20Bold, BLACK, WHITE);
             Paint_DrawString_segment(xCategory, 65 + Segoe20Bold.Height, category.c_str(), &Segoe9, BLACK, WHITE);
         }
@@ -629,11 +632,17 @@ void displayWrite4(UBYTE *BlackImage)
             UWORD xPrice = alignSegoe(price.c_str(), &Segoe20Bold, 100);
             UWORD xCategory = alignSegoe(category.c_str(), &Segoe9, 0);
             uint8_t lineW = utf8_strlen(name.c_str(), &sFont);
+            const unsigned char *qrCodeArray = textToQR(String(dataID).c_str(), 4);
+            Paint_ClearWindows(0, 86, 296, EPD_2IN9_V2_WIDTH, BLACK);
+            Paint_ClearWindows(8, 88, 45, 125, WHITE);
+
+            Paint_DrawImageAbsolute(qrCodeArray, 10, 90, 33, 33);
 
             Paint_DrawString_segment(10, 0, name.c_str(), &sFont, BLACK, WHITE);
             Paint_DrawLine(10, 5 + sFont.Height, 10 + lineW, 5 + sFont.Height, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
-            Paint_DrawString_segment(xPrice, 90, price.c_str(), &Segoe20Bold, BLACK, WHITE);
-            Paint_DrawString_segment(10, 118 - Segoe9.Height, category.c_str(), &Segoe9, BLACK, WHITE);
+
+            Paint_DrawString_segment(xPrice - 5, 88, price.c_str(), &Segoe20Bold, WHITE, BLACK);
+            Paint_DrawString_segment(10, 80 - Segoe9.Height, category.c_str(), &Segoe9, BLACK, WHITE);
         }
         else
         {
@@ -753,7 +762,7 @@ void displayQRText(UBYTE *BlackImage, const char *text, int mode)
 
     EPD_2IN9_V2_Init();
     Paint_Clear(0xff);
-    Paint_DrawImage(qrCodeArray, 35, 16, 61, 61);
+    Paint_DrawImageAbsolute(qrCodeArray, 16, 35, 61, 61);
     Paint_DrawLine(82, 25, 82, 102, BLACK, DOT_PIXEL_1X1, LINE_STYLE_SOLID);
     Paint_DrawString_segment(87, 35, modeText.c_str(), &Segoe16Bold, BLACK, WHITE);
     Paint_DrawString_segment(87, 65, "Scan QR to get started", &Segoe11, BLACK, WHITE);

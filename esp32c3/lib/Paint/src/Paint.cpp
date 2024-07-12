@@ -984,3 +984,29 @@ void Paint_DrawImage(const unsigned char *image_buffer, UWORD xStart, UWORD ySta
             }
         }
 }
+
+/******************************************************************************
+function:	Display image absolute byte pixel coordinates (slower)
+parameter:
+    image            ：Image start address
+    xStart           : X starting coordinates
+    yStart           : Y starting coordinates
+    xEnd             ：Image width
+    yEnd             : Image height
+******************************************************************************/
+void Paint_DrawImageAbsolute(const unsigned char *image_buffer, UWORD xStart, UWORD yStart, UWORD W_Image, UWORD H_Image)
+{
+    UWORD x, y;
+    UWORD w_byte = (W_Image % 8) ? (W_Image / 8) + 1 : W_Image / 8;
+    UDOUBLE Addr = 0;
+    Serial.print(image_buffer[0]);
+
+    for (y = 0; y < H_Image; y++)
+        for (x = 0; x < W_Image; x++)
+        {
+            { // 8 pixel =  1 byte
+                Addr = (x / 8) + (y * w_byte);
+                Paint_SetPixel(x + xStart, y + yStart, ((unsigned char)image_buffer[Addr] & (0x80 >> (x % 8))) != 0 ? WHITE : BLACK);
+            }
+        }
+}
