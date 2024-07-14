@@ -448,14 +448,32 @@ void displayWrite2(UBYTE *BlackImage)
     {
         if (segoe)
         {
-            UWORD xName = alignSegoe(name.c_str(), &sFont, 50);
-            UWORD xClass = alignSegoe(_class.c_str(), &Segoe11, 50);
-            UWORD xEmail = alignSegoe(email.c_str(), &Segoe11, 50);
-            UWORD xID = alignSegoe(studentID.c_str(), &Segoe11, 50);
-            Paint_DrawString_segment(xName, 20, name.c_str(), &sFont, BLACK, WHITE);
-            Paint_DrawString_segment(xClass, 50, _class.c_str(), &Segoe11Bold, BLACK, WHITE);
-            Paint_DrawString_segment(xID, 70, studentID.c_str(), &Segoe11, BLACK, WHITE);
-            Paint_DrawString_segment(xEmail, 90, email.c_str(), &Segoe11, BLACK, WHITE);
+            // UWORD xName = alignSegoe(name.c_str(), &sFont, 10);
+            // UWORD xClass = alignSegoe(_class.c_str(), &Segoe11, 10);
+            // UWORD xEmail = alignSegoe(email.c_str(), &Segoe11, 10);
+            // UWORD xID = alignSegoe(studentID.c_str(), &Segoe9, 95);
+            UWORD xLabel = alignSegoe("Student ID card", &Segoe9Bold, 90);
+            uint8_t idWidth = utf8_strlen(studentID.c_str(), &Segoe9);
+            const unsigned char *qrCodeArray = textToQR(studentID.c_str(), 8);
+
+            Paint_DrawString_segment(xLabel, 5, "Student ID card", &Segoe9Bold, BLACK, WHITE);
+            Paint_DrawLine(10, 24, 286, 24, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
+
+            Paint_DrawString_segment(10, 34, name.c_str(), &sFont, BLACK, WHITE);
+            Paint_DrawString_segment(10, 34 + sFont.Height + 5, _class.c_str(), &Segoe11Bold, BLACK, WHITE);
+            Paint_DrawString_segment(10, 34 + sFont.Height + Segoe11Bold.Height + 5, email.c_str(), &Segoe9, BLACK, WHITE);
+
+            // Center ID
+            if (idWidth > 49)
+            {
+                Paint_DrawString_segment(286 - idWidth, 120 - Segoe9.Height, studentID.c_str(), &Segoe9, BLACK, WHITE);
+                Paint_DrawImageAbsolute(qrCodeArray, 237 - (idWidth - 49) / 2, 44, 49, 49);
+            }
+            else
+            {
+                Paint_DrawString_segment(286 - (49 + idWidth) / 2, 120 - Segoe9.Height, studentID.c_str(), &Segoe9, BLACK, WHITE);
+                Paint_DrawImageAbsolute(qrCodeArray, 237, 44, 49, 49);
+            }
         }
         else
         {
@@ -523,14 +541,23 @@ void displayWrite3(UBYTE *BlackImage)
     {
         if (segoe)
         {
-            UWORD xName = alignSegoe(name.c_str(), &sFont, 0);
-            UWORD xEmail = alignSegoe(email.c_str(), &Segoe11, 50);
-            UWORD xID = alignSegoe(employeeID.c_str(), &Segoe11, 100);
-            UWORD xDepartment = alignSegoe(department.c_str(), &Segoe11, 25);
-            Paint_DrawString_segment(xName, 30, name.c_str(), &sFont, BLACK, WHITE);
-            Paint_DrawString_segment(xEmail, 50, email.c_str(), &Segoe11, BLACK, WHITE);
-            Paint_DrawString_segment(xID, 70, employeeID.c_str(), &Segoe11, BLACK, WHITE);
-            Paint_DrawString_segment(xDepartment, 90, department.c_str(), &Segoe11, BLACK, WHITE);
+            // UWORD xName = alignSegoe(name.c_str(), &sFont, 0);
+            // UWORD xEmail = alignSegoe(email.c_str(), &Segoe11, 50);
+            // UWORD xID = alignSegoe(employeeID.c_str(), &Segoe11, 100);
+            // UWORD xDepartment = alignSegoe(department.c_str(), &Segoe11, 25);
+            uint8_t departmentWidth = utf8_strlen(department.c_str(), &Segoe9);
+
+            Paint_DrawString_segment(10, 5, "Epaper company", &Segoe9Bold, BLACK, WHITE);
+            Paint_DrawString_segment(286 - departmentWidth, 5, department.c_str(), &Segoe9, BLACK, WHITE);
+            Paint_DrawLine(10, 24, 286, 24, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
+
+            const unsigned char *qrCodeArray = textToQR(employeeID.c_str(), 8);
+            Paint_DrawImageAbsolute(qrCodeArray, 10, 44, 49, 49);
+
+            Paint_DrawString_segment(75, 30, name.c_str(), &sFont, BLACK, WHITE);
+            Paint_DrawString_segment(75, 30 + sFont.Height + 10, email.c_str(), &Segoe11, BLACK, WHITE);
+            Paint_DrawString_segment(75, 30 + sFont.Height + 10 + Segoe11.Height, "ID: ", &Segoe11, BLACK, WHITE);
+            Paint_DrawString_segment(100, 30 + sFont.Height + 10 + Segoe11.Height, employeeID.c_str(), &Segoe11, BLACK, WHITE);
         }
         else
         {
@@ -688,14 +715,20 @@ void displayWrite5(UBYTE *BlackImage)
     {
         if (segoe)
         {
-            UWORD xName = alignSegoe(name.c_str(), &sFont, 50);
-            UWORD xPurpose = alignSegoe(purpose.c_str(), &Segoe11, 50);
-            UWORD xManager = alignSegoe(manager.c_str(), &Segoe11, 50);
-            UWORD xStatus = alignSegoe(status.c_str(), &Segoe11, 50);
-            Paint_DrawString_segment(xName, 30, name.c_str(), &sFont, BLACK, WHITE);
-            Paint_DrawString_segment(xPurpose, 50, purpose.c_str(), &Segoe11, BLACK, WHITE);
-            Paint_DrawString_segment(xManager, 70, manager.c_str(), &Segoe11, BLACK, WHITE);
-            Paint_DrawString_segment(xStatus, 90, status.c_str(), &Segoe11, BLACK, WHITE);
+            // UWORD xName = alignSegoe(name.c_str(), &sFont, 50);
+            // UWORD xPurpose = alignSegoe(purpose.c_str(), &Segoe11, 50);
+            // UWORD xManager = alignSegoe(manager.c_str(), &Segoe11, 50);
+            // UWORD xStatus = alignSegoe(status.c_str(), &Segoe11, 50);
+            uint8_t nameWidth = utf8_strlen(name.c_str(), &sFont);
+
+            Paint_DrawString_segment(10, 20, name.c_str(), &sFont, BLACK, WHITE);
+            Paint_DrawString_segment(10, 123 - Segoe11Bold.Height, status.c_str(), &Segoe11Bold, BLACK, WHITE);
+
+            Paint_DrawLine(10 + nameWidth + 5, 0, 10 + nameWidth + 60, 128, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
+            Paint_DrawString_segment(10 + nameWidth + 5 + 60, (118 - Segoe11Bold.Height - Segoe16.Height) / 2, purpose.c_str(), &Segoe16, BLACK, WHITE);
+
+            Paint_DrawLine(10 + nameWidth + 50, 118 - Segoe11Bold.Height, 296, 118 - Segoe11Bold.Height, BLACK, DOT_PIXEL_2X2, LINE_STYLE_SOLID);
+            Paint_DrawString_segment(10 + nameWidth + 5 + 75, 123 - Segoe11Bold.Height, manager.c_str(), &Segoe11Bold, BLACK, WHITE);
         }
         else
         {
